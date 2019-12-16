@@ -50,7 +50,7 @@ include_file_name = name
 bc_file = os.path.expanduser('~/python_fatigue/rolling_contact/input_files/roller_bc.inc')
 
 # Path to interaction property file
-interaction_property_file = package_directory + 'data_files/interaction_properties.inc'
+interaction_property_file = package_directory + '/data_files/interaction_properties.inc'
 
 # Name of the diffusion file, will be created in include_file_directory
 diffusion_file_name = 'diffusivity.inc'
