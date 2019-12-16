@@ -4,6 +4,7 @@ import shutil
 
 from case_hardening_toolbox.case_hardening_toolbox import CaseHardeningToolbox
 from case_hardening_toolbox.case_hardening_toolbox import write_geometry_files_for_dante
+from case_hardening_toolbox.common import package_directory
 
 from case_hardening_toolbox.diffusivity import write_diffusion_file
 
@@ -49,7 +50,7 @@ include_file_name = name
 bc_file = os.path.expanduser('~/python_fatigue/rolling_contact/input_files/roller_bc.inc')
 
 # Path to interaction property file
-interaction_property_file = 'data_files/interaction_properties.inc'
+interaction_property_file = package_directory + 'data_files/interaction_properties.inc'
 
 # Name of the diffusion file, will be created in include_file_directory
 diffusion_file_name = 'diffusivity.inc'
