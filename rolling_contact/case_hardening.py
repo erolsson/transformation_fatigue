@@ -2,12 +2,12 @@ from collections import namedtuple
 import os
 import shutil
 
-from case_hardening_toolbox import CaseHardeningToolbox
-from case_hardening_toolbox import write_geometry_files_for_dante
+from case_hardening_toolbox.case_hardening_toolbox import CaseHardeningToolbox
+from case_hardening_toolbox.case_hardening_toolbox import write_geometry_files_for_dante
 
-from diffusivity import write_diffusion_file
+from case_hardening_toolbox.diffusivity import write_diffusion_file
 
-from case_hardening_materials.gear_materials import SS2506
+from materials.gear_materials import SS2506
 
 """
     This file can be used as a template for setting up heat treatment simulations. The file creates one directory for 
