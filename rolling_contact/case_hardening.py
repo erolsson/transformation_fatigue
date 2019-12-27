@@ -34,14 +34,14 @@ base_directory = os.path.expanduser('~/rolling_contact/')
 
 name = 'roller'
 
-simulations = [Simulation(simulation_directory='1',
+simulations = [Simulation(simulation_directory='2',
                           times=[300., 90.], temperatures=[930, 850], carbon=[1.1, 0.75], tempering=(170, 120))]
 
 # In this directory all common files for all heat treatment simulations will be placed
 include_file_directory = base_directory + '/include_files/'
 
 # This file contains all nodes, elements and sets to be further processed by the script
-geometry_file_name = os.path.expanduser('~/python_fatigue/rolling_contact/input_files/roller.inp')
+geometry_file_name = os.path.expanduser('~/python_fatigue/rolling_contact/input_files/roller2.inp')
 
 # All included files will be named after this like include_file_name_geo.inc or include_file_name_sets.inc
 include_file_name = name
