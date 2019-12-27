@@ -8,7 +8,7 @@ from common import package_directory
 
 from diffusivity import write_diffusion_file
 
-from gear_materials import SS2506
+from case_hardening_materials.gear_materials import SS2506
 
 """
     This file can be used as a template for setting up heat treatment simulations. The file creates one directory for 
