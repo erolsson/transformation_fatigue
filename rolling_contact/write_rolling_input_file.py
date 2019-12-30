@@ -77,7 +77,7 @@ def create_roller_model(simulation_file_name, geometry_file_name, p0, rolling_an
         file_lines.append('\t*End instance')
 
     file_lines.append('\t*Node, nset=plane_ref_pt')
-    file_lines.append('\t\t, 0., 0., 0.')
+    file_lines.append('\t\t900001, 0., 0., 0.')
     file_lines.append('\t*Surface, type=CYLINDER, name=rigid_plane')
     q = rolling_angle/2*180/np.pi
     print(q)
