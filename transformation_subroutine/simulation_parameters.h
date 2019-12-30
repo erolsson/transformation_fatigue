@@ -26,8 +26,8 @@ public:
 
     // Parameters for kinematic hardnening
     [[nodiscard]] unsigned back_stresses() const { return back_stresses_; }
-    [[nodiscard]] double Cm(unsigned n) const { return data_[11 + 4*n] + data_[11+4*n + 1]*hv_; }
-    [[nodiscard]] double gamma(unsigned n) const { return data_[11 + 2*n] + data_[11+3*n + 1]*hv_; }
+    [[nodiscard]] double Cm(unsigned n) const { return data_[11 + 4*n] + data_[11 + 4*n + 1]*hv_; }
+    [[nodiscard]] double gamma(unsigned n) const { return data_[11 + 4*n + 2] + data_[11 + 4*n + 3]*hv_; }
 
     // Parameter for the SDE effect
     [[nodiscard]] const double& a() const { return data_[11 + 4*back_stresses_]; } ;
