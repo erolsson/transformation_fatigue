@@ -167,7 +167,7 @@ def create_roller_model(simulation_file_name, geometry_file_name, p0, rolling_an
     file_lines.append('*End step')
     file_lines.append('*step, name=rolling, nlgeom=Yes')
     file_lines.append('\t*Static')
-    file_lines.append('\t\t1e-5, 1., 1e-12, 1.')
+    file_lines.append('\t\t1e-5, 1., 1e-12, 0.1')
     file_lines.append('\t*Controls, reset')
     file_lines.append('\t*Controls, parameters=line search')
     file_lines.append('\t\t5, , , , ')
