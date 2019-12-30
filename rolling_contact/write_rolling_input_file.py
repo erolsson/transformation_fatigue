@@ -79,7 +79,7 @@ def create_roller_model(simulation_file_name, geometry_file_name, p0, rolling_an
         file_lines.append('\t*End instance')
 
     file_lines.append('\t*Instance, name=rigid_plane, part=rigid_plane')
-    # file_lines.append('\t\t0., 0., 0.')
+    file_lines.append('\t\t0., 0., 0.')
     rotation_matrix_z = np.array([[0, -1, 0], [1, 0, 0], [0., 0., 1]])
     q = rolling_angle/2*np.pi/180
     rotation_matrix_y = np.array([[np.cos(q), 0, np.sin(q)], [0, 1, 0], [-np.sin(q), 0., np.cos(q)]])
@@ -89,8 +89,8 @@ def create_roller_model(simulation_file_name, geometry_file_name, p0, rolling_an
                            rotation_matrix[1, 0] - rotation_matrix[0, 1]])
     rot_vector /= np.linalg.norm(rot_vector)
     q = np.arccos((rotation_matrix[0, 0] + rotation_matrix[1, 1] + rotation_matrix[2, 2] - 1)/2)*180/np.pi
-    # file_lines.append('\t\t0., 0., 0.,  ' + str(rot_vector[0]) + ', ' + str(rot_vector[1]) + ', '
-    #                  + str(rot_vector[2]) + ', ' + str(q))
+    file_lines.append('\t\t0., 0., 0.,  ' + str(rot_vector[0]) + ', ' + str(rot_vector[1]) + ', '
+                      + str(rot_vector[2]) + ', ' + str(q))
     file_lines.append('\t\t*Node, nset=plane_ref_pt')
     file_lines.append('\t\t\t1, 0., 0., 0.')
     file_lines.append('\t\t*Surface, type=CYLINDER, name=rigid_plane')
