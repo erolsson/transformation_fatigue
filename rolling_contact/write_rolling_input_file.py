@@ -158,7 +158,7 @@ def create_roller_model(simulation_file_name, geometry_file_name, p0):
 
 
 if __name__ == '__main__':
-    simulation_directory = r'D:/rolling_contact/mechanical_FEM/'
+    simulation_directory = os.path.expanduser('~/rolling_contact/mechanical_FEM/')
     if not os.path.isdir(simulation_directory):
         os.makedirs(simulation_directory)
 
