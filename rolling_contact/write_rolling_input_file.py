@@ -80,7 +80,7 @@ def create_roller_model(simulation_file_name, geometry_file_name, p0, rolling_an
     file_lines.append('\t\t900001, 0., 0., 0.')
     file_lines.append('\t*Surface, type=CYLINDER, name=rigid_plane')
     q = rolling_angle/2*180/np.pi
-    print(q)
+    print(q, rolling_angle)
     a = np.array([-np.cos(q)*20.1, 0., -20.1*np.sin(q)])
     b = a + np.array([20.1*np.sin(q), 0., -np.cos(q)*20.1])
     file_lines.append('\t\t' + str(a[0]) + ', ' + str(a[1]) + ', ' + str(a[2]) + ', ' + str(b[0]) + ', ' + str(b[1])
