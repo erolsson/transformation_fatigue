@@ -65,6 +65,8 @@ def create_roller_model(simulation_file_name, geometry_file_name, p0, rolling_an
                  '\t\t1.0',
                  '*End Part']
         file_lines.extend(lines)
+    file_lines.append('*Part, name=rigid_plane')
+    file_lines.append('*End Part')
 
     file_lines.append('*Material, name=SS2506')
     file_lines.append('\t*Elastic')
@@ -76,17 +78,26 @@ def create_roller_model(simulation_file_name, geometry_file_name, p0, rolling_an
         file_lines.append('\t\t0., 0., 20.')
         file_lines.append('\t*End instance')
 
-    file_lines.append('\t*Node, nset=plane_ref_pt')
-    file_lines.append('\t\t900001, 0., 0., 0.')
-    file_lines.append('\t*Surface, type=CYLINDER, name=rigid_plane')
+    file_lines.append('\t*Instance, name=rigid_plane, part=rigid_plane')
+    file_lines.append('\t\t0., 0., 0.')
+    rotation_matrix_x = np.array([[1, 0, 0], [0, 0, -1], [0., 1., 0]])
     q = rolling_angle/2*np.pi/180
-    a = np.array([np.sin(q)*20.1, 0., -20.1*np.cos(q)])
-    b = a + np.array([20.1*np.cos(q), 0., np.sin(q)*20.1])
-    file_lines.append('\t\t' + str(a[0]) + ', ' + str(a[1]) + ', ' + str(a[2]) + ', ' + str(b[0]) + ', ' + str(b[1])
-                      + ', ' + str(b[2]))
-    file_lines.append('\t\tSTART, -50.,    0.')
+    rotation_matrix_y = np.array([[np.cos(q), 0, np.sin(q)], [0, 1, 0], [-np.sin(q), 0., np.cos(q)]])
+    rotation_matrix = np.dot(rotation_matrix_x, rotation_matrix_y)
+    rot_vector = np.array([rotation_matrix[2, 1] - rotation_matrix[1, 2],
+                           rotation_matrix[0, 2] - rotation_matrix[2, 0],
+                           rotation_matrix[1, 0] - rotation_matrix[0, 1]])
+    rot_vector /= np.linalg.norm(rot_vector)
+    q = np.arccos((rotation_matrix[0, 0] + rotation_matrix[1, 1] + rotation_matrix[2, 2] - 1)/2)*180/np.pi
+    file_lines.append('\t\t0., 0., 0.,  ' + str(rot_vector[0]) + ', ' + str(rot_vector[1]) + ', '
+                      + str(rot_vector[2]) + ', ' + str(q))
+    file_lines.append('\t\t*Node, nset=plane_ref_pt')
+    file_lines.append('\t\t\t1, 0., 0., 0.')
+    file_lines.append('\t\t*Surface, type=CYLINDER, name=rigid_plane')
+    file_lines.append('\t\tSTART, -50.,  0.')
     file_lines.append('\t\tLINE,  50.,   0.')
-    file_lines.append('\t*Rigid Body, ref node=plane_ref_pt, analytical surface=rigid_plane')
+    file_lines.append('\t\t*Rigid Body, ref node=plane_ref_pt, analytical surface=rigid_plane')
+    file_lines.append('\t*End instance')
 
     file_lines.append('\t*Tie, name=tie_x0')
     file_lines.append('\t\troller_x_pos.x0_Surface, roller_x_neg.x0_Surface')
@@ -99,8 +110,8 @@ def create_roller_model(simulation_file_name, geometry_file_name, p0, rolling_an
     file_lines.append('\t*Node, nset=roller_ref_node')
     file_lines.append('\t\t900000, 0., 0., 20.')
     file_lines.append('\t*Transform, nset=roller_ref_node')
-    file_lines.append('\t\t' + str(np.cos(q)) + ', 0., ' + str(np.sin(q)) + ', ' + str(-np.sin(q)) + ', 0., '
-                      + str(np.cos(q)))
+    file_lines.append('\t\t' + str(np.cos(rolling_angle/2)) + ', ' + str(np.sin(rolling_angle/2)) + ', 0., '
+                      + str(-np.sin(rolling_angle/2)) + ', ' + str(np.cos(rolling_angle/2)) + ', 0.')
     file_lines.append('\t*Coupling, Constraint name=roller_load_coupling, ref node=roller_ref_node, '
                       'surface=coupling_surface')
     file_lines.append('\t\t*Kinematic')
@@ -108,11 +119,11 @@ def create_roller_model(simulation_file_name, geometry_file_name, p0, rolling_an
 
     file_lines.append('*Surface interaction, name=frictionless_contact')
     file_lines.append('*Contact pair, interaction=frictionless_contact, type=surface to surface')
-    file_lines.append('\tcontact_surface, rigid_plane')
+    file_lines.append('\tcontact_surface, rigid_plane.rigid_plane')
     file_lines.append('*Boundary')
     file_lines.append('\troller_ref_node, 1, 2')
     file_lines.append('\troller_ref_node, 4, 6')
-    file_lines.append('\tplane_ref_pt, 1, 6')
+    file_lines.append('\trigid_plane.plane_ref_pt, 1, 6')
     file_lines.append('\troller_x_pos.y0_nodes, 2, 2')
     file_lines.append('\troller_x_neg.y0_nodes, 2, 2')
     file_lines.append('*step, name=initiate_contact, nlgeom=Yes')
@@ -123,7 +134,7 @@ def create_roller_model(simulation_file_name, geometry_file_name, p0, rolling_an
     file_lines.append('\t\t5, , , , ')
     file_lines.append('\t*Contact Controls, Stabilize')
     file_lines.append('\t*Contact Interference, shrink')
-    file_lines.append('\t\tcontact_surface, rigid_plane')
+    file_lines.append('\t\tcontact_surface, rigid_plane.rigid_plane')
     force = calculate_elastic_contact_force(40.2/2, 46, 1.)
     file_lines.append('\t*Cload')
     file_lines.append('\t\troller_ref_node, 3, ' + str(-force/2))
@@ -165,4 +176,4 @@ if __name__ == '__main__':
         os.makedirs(simulation_directory)
 
     model_file = os.path.expanduser('~/python_fatigue/rolling_contact/input_files/roller.inp')
-    create_roller_model(simulation_directory + 'roller_model.inp', model_file, 2000, 10.)
+    create_roller_model(simulation_directory + 'roller_model.inp', model_file, 2000, 10)
