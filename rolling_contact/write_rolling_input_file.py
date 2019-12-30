@@ -112,8 +112,8 @@ def create_roller_model(simulation_file_name, geometry_file_name, p0, rolling_an
     file_lines.append('\t*Node, nset=roller_ref_node')
     file_lines.append('\t\t900000, 0., 0., 20.')
     file_lines.append('\t*Transform, nset=roller_ref_node')
-    file_lines.append('\t\t' + str(np.cos(q)) + ', ' + ', 0., ' + str(-np.sin(q))
-                      + str(np.sin(q)) + ', ' + ', 0.' + str(np.cos(q)))
+    file_lines.append('\t\t' + str(np.cos(q)) + ', 0., ' + str(-np.sin(q)) + ', ' +
+                      str(np.sin(q)) + ',  0.' + str(np.cos(q)))
     file_lines.append('\t*Coupling, Constraint name=roller_load_coupling, ref node=roller_ref_node, '
                       'surface=coupling_surface')
     file_lines.append('\t\t*Kinematic')
