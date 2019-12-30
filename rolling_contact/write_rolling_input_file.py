@@ -160,5 +160,5 @@ if __name__ == '__main__':
     if not os.path.isdir(simulation_directory):
         os.makedirs(simulation_directory)
 
-    model_file = os.path.expanduser('~/pyth_fatigue/rolling_contact/roller.inp')
+    model_file = os.path.expanduser('~/python_fatigue/rolling_contact/roller.inp')
     create_roller_model(simulation_directory + 'roller_model.inp', model_file, 2000)
