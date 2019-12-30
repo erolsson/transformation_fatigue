@@ -73,7 +73,7 @@ def create_roller_model(simulation_file_name, geometry_file_name, p0, rolling_an
     file_lines.append('\t\t200E3, 0.3')
 
     file_lines.append('*Assembly, name=rolling_contact_model')
-    for side in ['pos', 'neg']:
+    for side in ['x_pos', 'x_neg']:
         file_lines.append('\t*Instance, name=roller_' + side + ', part=roller_' + side)
         file_lines.append('\t\t0., 0., 20.')
         file_lines.append('\t*End instance')
@@ -100,13 +100,13 @@ def create_roller_model(simulation_file_name, geometry_file_name, p0, rolling_an
     file_lines.append('\t*End instance')
 
     file_lines.append('\t*Tie, name=tie_x0')
-    file_lines.append('\t\troller_pos.x0_Surface, roller_neg.x0_Surface')
+    file_lines.append('\t\troller_x_pos.x0_Surface, roller_x_neg.x0_Surface')
     file_lines.append('\t*Surface, name=coupling_surface, combine=union')
-    file_lines.append('\t\troller_pos.z0_surface')
-    file_lines.append('\t\troller_neg.z0_surface')
+    file_lines.append('\t\troller_x_pos.z0_surface')
+    file_lines.append('\t\troller_x_neg.z0_surface')
     file_lines.append('\t*Surface, name=contact_surface, combine=union')
-    file_lines.append('\t\troller_pos.exposed_surface')
-    file_lines.append('\t\troller_neg.exposed_surface')
+    file_lines.append('\t\troller_x_pos.exposed_surface')
+    file_lines.append('\t\troller_x_neg.exposed_surface')
     file_lines.append('\t*Node, nset=roller_ref_node')
     file_lines.append('\t\t900000, 0., 0., 20.')
     file_lines.append('\t*Coupling, Constraint name=roller_load_coupling, ref node=roller_ref_node, '
@@ -121,8 +121,8 @@ def create_roller_model(simulation_file_name, geometry_file_name, p0, rolling_an
     file_lines.append('\troller_ref_node, 1, 2')
     file_lines.append('\troller_ref_node, 4, 6')
     file_lines.append('\trigid_plane.plane_ref_pt, 1, 6')
-    file_lines.append('\troller_pos.y0_nodes, 2, 2')
-    file_lines.append('\troller_neg.y0_nodes, 2, 2')
+    file_lines.append('\troller_x_pos.y0_nodes, 2, 2')
+    file_lines.append('\troller_x_neg.y0_nodes, 2, 2')
     file_lines.append('*step, name=initiate_contact, nlgeom=Yes')
     file_lines.append('\t*Static')
     file_lines.append('\t\t1e-5, 1., 1e-12, 1.')
