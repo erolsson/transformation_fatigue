@@ -47,13 +47,13 @@ def create_roller_model(simulation_file_name, geometry_file_name, p0, rolling_an
         element_data[:, 1:5] = temp_connectivity
         elements_neg[e_type] = element_data
 
-    reader.write_geom_include_file(simulation_directory + '/roller_part_pos.inc')
+    reader.write_geom_include_file(simulation_directory + '/roller_part_x_pos.inc')
     surfaces = [('EXPOSED_SURFACE', 'EXPOSED_ELEMENTS'), ('X0_SURFACE', 'X0_ELEMENTS'), ('Z0_SURFACE', 'Z0_ELEMENTS'),
                 ('INNER_SURFACE', 'INNER_ELEMENTS')]
     reader.write_sets_file(simulation_directory + '/roller_sets.inc', surfaces_from_element_sets=surfaces)
     reader.nodal_data = nodes_neg
     reader.elements = elements_neg
-    reader.write_geom_include_file(simulation_directory + '/roller_part_neg.inc')
+    reader.write_geom_include_file(simulation_directory + '/roller_part_x_neg.inc')
 
     file_lines = ['*Heading',
                   '\tModel of cylinder rolling on a rigid plane']
