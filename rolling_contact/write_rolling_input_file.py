@@ -48,7 +48,7 @@ def create_roller_model(simulation_file_name, geometry_file_name, p0):
         elements_neg[e_type] = element_data
 
     reader.write_geom_include_file(simulation_directory + '/roller_part_pos.inc')
-    surfaces = [('EXPOSED_SURFACE', 'EXPOSED_ELEMENTS'), ('X0_SURFACE', 'X0_ELEMENTS'),
+    surfaces = [('EXPOSED_SURFACE', 'EXPOSED_ELEMENTS'), ('X0_SURFACE', 'X0_ELEMENTS'), ('Z0_SURFACE', 'Z0_ELEMENTS'),
                 ('INNER_SURFACE', 'INNER_ELEMENTS')]
     reader.write_sets_file(simulation_directory + '/roller_sets.inc', surfaces_from_element_sets=surfaces)
     reader.nodal_data = nodes_neg
@@ -91,16 +91,16 @@ def create_roller_model(simulation_file_name, geometry_file_name, p0):
 
     file_lines.append('\t*Tie, name=tie_x0')
     file_lines.append('\t\troller_pos.x0_Surface, roller_neg.x0_Surface')
-    file_lines.append('\t*Surface, name=inner_surface, combine=union')
-    file_lines.append('\t\troller_pos.inner_surface')
-    file_lines.append('\t\troller_neg.inner_surface')
+    file_lines.append('\t*Surface, name=coupling_surface, combine=union')
+    file_lines.append('\t\troller_pos.z0_surface')
+    file_lines.append('\t\troller_neg.z0_surface')
     file_lines.append('\t*Surface, name=contact_surface, combine=union')
     file_lines.append('\t\troller_pos.exposed_surface')
     file_lines.append('\t\troller_neg.exposed_surface')
     file_lines.append('\t*Node, nset=roller_ref_node')
     file_lines.append('\t\t900000, 0., 0., 20.')
     file_lines.append('\t*Coupling, Constraint name=roller_load_coupling, ref node=roller_ref_node, '
-                      'surface=inner_surface')
+                      'surface=coupling_surface')
     file_lines.append('\t\t*Kinematic')
     file_lines.append('*End Assembly')
 
