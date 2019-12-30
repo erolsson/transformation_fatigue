@@ -79,10 +79,9 @@ def create_roller_model(simulation_file_name, geometry_file_name, p0, rolling_an
     file_lines.append('\t*Node, nset=plane_ref_pt')
     file_lines.append('\t\t900001, 0., 0., 0.')
     file_lines.append('\t*Surface, type=CYLINDER, name=rigid_plane')
-    q = rolling_angle/2*180/np.pi
-    print(q, rolling_angle)
-    a = np.array([-np.cos(q)*20.1, 0., -20.1*np.sin(q)])
-    b = a + np.array([20.1*np.sin(q), 0., -np.cos(q)*20.1])
+    q = rolling_angle/2*np.pi/180
+    a = np.array([np.cos(q)*20.1, 0., -20.1*np.sin(q)])
+    b = a + np.array([20.1*np.sin(q), 0., np.cos(q)*20.1])
     file_lines.append('\t\t' + str(a[0]) + ', ' + str(a[1]) + ', ' + str(a[2]) + ', ' + str(b[0]) + ', ' + str(b[1])
                       + ', ' + str(b[2]))
     file_lines.append('\t\tSTART, -50.,    0.')
@@ -100,8 +99,8 @@ def create_roller_model(simulation_file_name, geometry_file_name, p0, rolling_an
     file_lines.append('\t*Node, nset=roller_ref_node')
     file_lines.append('\t\t900000, 0., 0., 20.')
     file_lines.append('\t*Transform, nset=roller_ref_node')
-    file_lines.append('\t\t' + str(np.cos(rolling_angle/2)) + ', ' + str(np.sin(rolling_angle/2)) + ', 0., '
-                      + str(-np.sin(rolling_angle/2)) + ', ' + str(np.cos(rolling_angle/2)) + ', 0.')
+    file_lines.append('\t\t' + str(np.cos(q)) + ', 0., ' + str(np.sin(q)) + ', ' + str(np.sin(q)) + ', 0., '
+                      + str(np.cos(q)))
     file_lines.append('\t*Coupling, Constraint name=roller_load_coupling, ref node=roller_ref_node, '
                       'surface=coupling_surface')
     file_lines.append('\t\t*Kinematic')
