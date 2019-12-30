@@ -109,7 +109,7 @@ def create_roller_model(simulation_file_name, geometry_file_name, p0, rolling_an
     file_lines.append('\t\troller_x_neg.exposed_surface')
     file_lines.append('\t*Node, nset=roller_ref_node')
     file_lines.append('\t\t900000, 0., 0., 20.')
-    file_lines.append('\t*Transform, nset=roller_ref_pt')
+    file_lines.append('\t*Transform, nset=roller_ref_node')
     file_lines.append('\t\t' + str(np.cos(rolling_angle/2)) + ', ' + str(np.sin(rolling_angle/2)) + ', 0., '
                       + str(-np.sin(rolling_angle/2)) + ', ' + str(np.cos(rolling_angle/2)) + ', 0.')
     file_lines.append('\t*Coupling, Constraint name=roller_load_coupling, ref node=roller_ref_node, '
