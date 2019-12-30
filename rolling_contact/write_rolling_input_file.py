@@ -83,7 +83,7 @@ def create_roller_model(simulation_file_name, geometry_file_name, p0, rolling_an
     rotation_matrix_x = np.array([[1, 0, 0], [0, 0, -1], [0., 1., -1]])
     q = rolling_angle/2*np.pi/180
     rotation_matrix_y = np.array([[np.cos(q), 0, np.sin(q)], [0, 1, 0], [-np.sin(q), 0., np.cos(q)]])
-    rotation_matrix = np.dot(rotation_matrix_y, rotation_matrix_x)
+    rotation_matrix = np.dot(rotation_matrix_x, rotation_matrix_y)
     rot_vector = np.array([rotation_matrix[2, 1] - rotation_matrix[1, 2],
                            rotation_matrix[0, 2] - rotation_matrix[2, 0],
                            rotation_matrix[1, 0] - rotation_matrix[0, 1]])
@@ -109,6 +109,9 @@ def create_roller_model(simulation_file_name, geometry_file_name, p0, rolling_an
     file_lines.append('\t\troller_x_neg.exposed_surface')
     file_lines.append('\t*Node, nset=roller_ref_node')
     file_lines.append('\t\t900000, 0., 0., 20.')
+    file_lines.append('\t*Transform, nset=roller_ref_pt')
+    file_lines.append('\t\t' + str(np.cos(rolling_angle/2)) + ', ' + str(np.sin(rolling_angle/2)) + ', 0., '
+                      + str(-np.sin(rolling_angle/2)) + ', ' + str(np.cos(rolling_angle/2)) + ', 0.')
     file_lines.append('\t*Coupling, Constraint name=roller_load_coupling, ref node=roller_ref_node, '
                       'surface=coupling_surface')
     file_lines.append('\t\t*Kinematic')
