@@ -84,6 +84,7 @@ def create_roller_model(simulation_file_name, geometry_file_name, p0, rolling_an
     q = rolling_angle/2*np.pi/180
     rotation_matrix_y = np.array([[np.cos(q), 0, np.sin(q)], [0, 1, 0], [-np.sin(q), 0., np.cos(q)]])
     rotation_matrix = np.dot(rotation_matrix_x, rotation_matrix_y)
+    print(rotation_matrix)
     rot_vector = np.array([rotation_matrix[2, 1] - rotation_matrix[1, 2],
                            rotation_matrix[0, 2] - rotation_matrix[2, 0],
                            rotation_matrix[1, 0] - rotation_matrix[0, 1]])
