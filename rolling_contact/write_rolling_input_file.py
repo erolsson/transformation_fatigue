@@ -165,4 +165,4 @@ if __name__ == '__main__':
         os.makedirs(simulation_directory)
 
     model_file = os.path.expanduser('~/python_fatigue/rolling_contact/input_files/roller.inp')
-    create_roller_model(simulation_directory + 'roller_model.inp', model_file, 2000, 10)
+    create_roller_model(simulation_directory + 'roller_model.inp', model_file, 2000, 10.)
