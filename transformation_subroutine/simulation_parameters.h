@@ -37,33 +37,33 @@ public:
     [[nodiscard]] const double& R2() const { return data_[13 + 4*back_stresses_]; } ;
 
     // Volume expansion of martensite compared to austenite
-    [[nodiscard]] const double& dV() const { return data_[14 + 2*back_stresses_]; } ;
+    [[nodiscard]] const double& dV() const { return data_[14 + 4*back_stresses_]; } ;
 
     // Martensite start temperature
-    [[nodiscard]] const double& Ms() const { return data_[15 + 2*back_stresses_]; } ;
+    [[nodiscard]] const double& Ms() const { return data_[15 + 4*back_stresses_]; } ;
 
     // Stabilisation temperature due to tempering
-    [[nodiscard]] const double& Mss() const { return data_[16 + 2*back_stresses_]; } ;
+    [[nodiscard]] const double& Mss() const { return data_[16 + 4*back_stresses_]; } ;
 
     // Koistinen-Marburger parameter
-    [[nodiscard]] const double& k() const { return data_[17 + 2*back_stresses_]; } ;
+    [[nodiscard]] const double& k() const { return data_[17 + 4*back_stresses_]; } ;
 
     // Material parameters for stress induced phase transformations
-    [[nodiscard]] const double& a1() const { return data_[18 + 2*back_stresses_]; } ;
-    [[nodiscard]] const double& a2() const { return data_[19 + 2*back_stresses_]; } ;
-    [[nodiscard]] const double& a3() const { return data_[20 + 2*back_stresses_]; } ;
+    [[nodiscard]] const double& a1() const { return data_[18 + 4*back_stresses_]; } ;
+    [[nodiscard]] const double& a2() const { return data_[19 + 4*back_stresses_]; } ;
+    [[nodiscard]] const double& a3() const { return data_[20 + 4*back_stresses_]; } ;
 
     // Material parameters for the strain induced phase transformations
-    [[nodiscard]] const double& beta() const { return data_[21 + 2*back_stresses_]; } ;
-    [[nodiscard]] const double& alpha() const { return data_[22 + 2*back_stresses_]; } ;
-    [[nodiscard]] const double& n() const { return data_[23 + 2*back_stresses_]; } ;
+    [[nodiscard]] const double& beta() const { return data_[21 + 4*back_stresses_]; } ;
+    [[nodiscard]] const double& alpha() const { return data_[22 + 4*back_stresses_]; } ;
+    [[nodiscard]] const double& n() const { return data_[23 + 4*back_stresses_]; } ;
 
-    [[nodiscard]] const double& g0() const { return data_[24 + 2*back_stresses_]; } ;
-    [[nodiscard]] const double& g1() const { return data_[25 + 2*back_stresses_]; } ;
-    [[nodiscard]] const double& g2() const { return data_[26 + 2*back_stresses_]; } ;
+    [[nodiscard]] const double& g0() const { return data_[24 + 4*back_stresses_]; } ;
+    [[nodiscard]] const double& g1() const { return data_[25 + 4*back_stresses_]; } ;
+    [[nodiscard]] const double& g2() const { return data_[26 + 4*back_stresses_]; } ;
 
-    [[nodiscard]] const double& g_mean() const { return data_[27 + 2*back_stresses_]; } ;
-    [[nodiscard]] const double& g_std() const { return data_[28 + 2*back_stresses_]; } ;
+    [[nodiscard]] const double& g_mean() const { return data_[27 + 4*back_stresses_]; } ;
+    [[nodiscard]] const double& g_std() const { return data_[28 + 4*back_stresses_]; } ;
 
 
     [[nodiscard]] bool plastic() const { return sy0M() > 0 && sy0A() > 0; }
