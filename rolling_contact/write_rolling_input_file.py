@@ -80,7 +80,7 @@ def create_roller_model(simulation_file_name, geometry_file_name, p0, rolling_an
 
     file_lines.append('\t*Instance, name=rigid_plane, part=rigid_plane')
     file_lines.append('\t\t0., 0., 0.')
-    rotation_matrix_x = np.array([[1, 0, 0], [0, 0, -1], [0., 1., -1]])
+    rotation_matrix_x = np.array([[1, 0, 0], [0, 0, -1], [0., 1., 0]])
     q = rolling_angle/2*np.pi/180
     rotation_matrix_y = np.array([[np.cos(q), 0, np.sin(q)], [0, 1, 0], [-np.sin(q), 0., np.cos(q)]])
     rotation_matrix = np.dot(rotation_matrix_x, rotation_matrix_y)
