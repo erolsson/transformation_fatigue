@@ -23,6 +23,7 @@ def calculate_elastic_contact_force(R1, R2, p0):
     x = calculate_elliptic_eccentricity(R1, R2)
     e = np.sqrt(1-x**2)
     F1 = (4/np.pi/e**2*x**1.5*((ellipe(e**2)/x**2-ellipk(e**2))*(ellipk(e**2) - ellipe(e**2)))**0.5)**(1./3)
+    print(F1)
     E0 = 200E3/(1-0.3**2)
     R0 = np.sqrt(R1*R2)
     return F1**6*p0**3*np.pi**3*R0**2/6/E0**2
@@ -136,9 +137,6 @@ def create_roller_model(simulation_file_name, geometry_file_name, p0):
     file_lines.append('\t*Controls, reset')
     file_lines.append('\t*Controls, parameters=line search')
     file_lines.append('\t\t5, , , , ')
-    file_lines.append('\t*Contact Controls, Stabilize')
-    file_lines.append('\t*Contact Interference, shrink')
-    file_lines.append('\t\tcontact_surface, rigid_plane.rigid_plane')
     force = calculate_elastic_contact_force(40.2/2, 46, 2000.)
     file_lines.append('\t*Cload')
     file_lines.append('\t\troller_ref_node, 3, ' + str(-force/2))
@@ -162,5 +160,5 @@ if __name__ == '__main__':
     if not os.path.isdir(simulation_directory):
         os.makedirs(simulation_directory)
 
-    model_file = os.path.expanduser('roller_model/roller.inp')
+    model_file = os.path.expanduser('~/pyth_fatigue/rolling_contact/roller.inp')
     create_roller_model(simulation_directory + 'roller_model.inp', model_file, 2000)
