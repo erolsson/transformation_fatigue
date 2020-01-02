@@ -84,8 +84,8 @@ std::size_t reorder_gauss_pt(std::size_t gp, std::string part_name) {
 
 std::pair<std::size_t, std::string> user_model_data(int noel) {
     int user_elem_number = 0;
-    char* out_char = new char[80];
-    int out_len = 79;
+    char out_char[80];
+    int out_len = 70;
     int err = 0;
     {
         std::lock_guard<std::mutex> lock(part_info_mutex);
@@ -93,7 +93,6 @@ std::pair<std::size_t, std::string> user_model_data(int noel) {
     }
     std::cout << out_char << "  " << out_len << std::endl;
     std::cout << std::string(out_char, out_char+out_len) << " " << user_elem_number << std::endl;
-    delete [] out_char;
     return std::make_pair(user_elem_number, std::string(out_char, out_char+out_len));
 }
 
