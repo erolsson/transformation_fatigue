@@ -44,11 +44,9 @@ extern "C" void uexternaldb_(const int* lop, const int* lrestart, const double* 
         std::string run_directory = get_fortran_string(getoutdir_);
         std::string job_name = get_fortran_string(getjobname_);
         std::string data_file_name = job_name + ".htd";
-        std::ifstream data_file(run_directory + data_file_name);
+        std::ifstream data_file(run_directory + "/" + data_file_name);
         std::string data_line;
-        std::cout << "Opening" << run_directory + data_file_name << std::endl;
         while (getline(data_file, data_line)) {
-            std::cout << data_line << std::endl;
             std::vector<std::string> line_data;
             std::stringstream line(data_line);
             std::string val;
@@ -111,7 +109,6 @@ std::vector<HeatTreatmentData>::iterator find_heat_treatment_data(int noel, int 
 extern "C" void sdvini_(double* statev, const double* coords, const int& nstatev, const int& ncrds, const int& noel,
                         const int& npt, const int& layer, const int& kspt) {
     auto it = find_heat_treatment_data(noel, npt);
-    std::cout << "SDV_INI " << std::endl;
     statev[0] = 0.;
     for (unsigned i = 0; i != 9; ++i) {
         if (i != 4) {
@@ -131,7 +128,6 @@ extern "C" void sdvini_(double* statev, const double* coords, const int& nstatev
 extern "C" void sigini_(double* sigma, const double* coords, const int& ntens, const int& ncords, const int& noel,
                         const int& npt, const int& layer, const int& kspt, const int& rebar, const char* names) {
     auto it = find_heat_treatment_data(noel, npt);
-    std::cout << "SIG_INI " << std::endl;
     for (unsigned i = 0; i != ntens; ++i) {
         sigma[i] = it->stress(i);
     }
