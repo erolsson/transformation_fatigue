@@ -139,7 +139,8 @@ extern "C" void sigini_(double* sigma, const double* coords, const int& ntens, c
         std::lock_guard<std::mutex> lock(part_info_mutex);
         part_name = get_fortran_string(getpartname_);
     }
-
+    std::transform(part_name.begin(), part_name.end(), part_name.begin(),
+                   [](unsigned char c){ return std::tolower(c); });
     if (part_name.find("x_neg") != std::string::npos) {
         sigma[3] *= -1;
         sigma[4] *= -1;
