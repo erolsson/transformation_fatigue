@@ -62,7 +62,7 @@ def create_roller_model(simulation_file_name, geometry_file_name, material, p0, 
         lines = ['*Part, name=roller_' + side,
                  '\t*Include, Input=roller_part_' + side + '.inc',
                  '\t*Include, Input=roller_sets.inc',
-                 '\t*Solid Section, elset=ALL_ELEMENTS, material=SS2506',
+                 '\t*Solid Section, elset=ALL_ELEMENTS, material=' + material.name,
                  '\t\t1.0',
                  '*End Part']
         file_lines.extend(lines)
