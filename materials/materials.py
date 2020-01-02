@@ -105,7 +105,7 @@ class ElasticPlasticTransformMaterial:
             file_lines.append('\t\t' + str(counter) + ', TOTAL_BACK_STRESS_' + comp)
         file_lines.append('\t*User Material, constants=' + str(len(parameters)) + ', unsymm')
         parameter_str = ''
-        for i, par in enumerate(self.gamma_m.shape[1]):
+        for i, par in enumerate(parameters):
             if i % 8 == 0 and i != 0:
                 file_lines.append('\t\t' + parameter_str)
                 parameter_str = ''
