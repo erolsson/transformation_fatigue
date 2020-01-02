@@ -91,7 +91,7 @@ std::pair<std::size_t, std::string> user_model_data(int noel) {
         std::lock_guard<std::mutex> lock(part_info_mutex);
         getpartinfoc_(out_char, out_len, noel, 1, user_elem_number, err);
     }
-    std::cout << out_char << std::endl;
+    std::cout << out_char << "  " << out_len << std::endl;
     std::cout << std::string(out_char, out_char+out_len) << " " << user_elem_number << std::endl;
     delete [] out_char;
     return std::make_pair(user_elem_number, std::string(out_char, out_char+out_len));
