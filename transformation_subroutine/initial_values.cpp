@@ -24,7 +24,7 @@ public:
     }
 };
 
-std::array<std::size_t, 8> gp_order_x_neg = {2, 1, 4, 3, 6, 5, 8, 7};
+std::array<std::size_t, 8> gp_order_x_neg = {5, 6, 7, 8, 1, 2, 3, 4};
 
 std::mutex part_info_mutex;
 
@@ -148,11 +148,9 @@ extern "C" void sigini_(double* sigma, const double* coords, const int& ntens, c
     for (unsigned i = 0; i != ntens; ++i) {
         if (user_data.second.find("x_neg") != std::string::npos && (i == 3 || i == 4)) {
             sigma[i] = -(it->stress(i));
-            std::cout << "Neg stress" << std::endl;
         }
         else {
             sigma[i] = it->stress(i);
-            std::cout << "Pos stress" << std::endl;
         }
     }
 }
