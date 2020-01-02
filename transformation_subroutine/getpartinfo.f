@@ -1,6 +1,6 @@
         SUBROUTINE GETPARTINFOC(NAME, LOCNUM, JTYPE, USER_NUMBER, JRCD)
         USE ISO_C_BINDING
-        CHARACTER(kind=C_CHAR), dimension(*), intent(in) :: NAME
+        type(C_PTR), value :: NAME
         EXTERNAL GETPARTINFO
         CALL GETPARTINFO(LOCNUM, JTYPE, NAME, USER_NUMBER, JRCD)
         END
