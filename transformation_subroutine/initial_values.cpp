@@ -71,7 +71,9 @@ extern "C" void uexternaldb_(const int* lop, const int* lrestart, const double* 
     }
 }
 
-std::size_t reorder_gauss_pt(std::size_t gp, const std::string& part_name) {
+std::size_t reorder_gauss_pt(std::size_t gp, std::string part_name) {
+    std::transform(part_name.begin(), part_name.end(), part_name.begin(),
+                   [](unsigned char c){ return std::tolower(c); });
     if (part_name.find("x_neg") != std::string::npos) {
         return gp_order_x_neg[gp - 1];
     }
