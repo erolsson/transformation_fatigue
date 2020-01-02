@@ -110,6 +110,7 @@ std::vector<HeatTreatmentData>::iterator find_heat_treatment_data(int noel, int 
 extern "C" void sdvini_(double* statev, const double* coords, const int& nstatev, const int& ncrds, const int& noel,
                         const int& npt, const int& layer, const int& kspt) {
     auto it = find_heat_treatment_data(noel, npt);
+    std::cout << "SDV_INI " << std::endl;
     statev[0] = 0.;
     for (unsigned i = 0; i != 9; ++i) {
         if (i != 4) {
@@ -129,7 +130,7 @@ extern "C" void sdvini_(double* statev, const double* coords, const int& nstatev
 extern "C" void sigini_(double* sigma, const double* coords, const int& ntens, const int& ncords, const int& noel,
                         const int& npt, const int& layer, const int& kspt, const int& rebar, const char* names) {
     auto it = find_heat_treatment_data(noel, npt);
-
+    std::cout << "SIG_INI " << std::endl;
     for (unsigned i = 0; i != ntens; ++i) {
         sigma[i] = it->stress(i);
     }
