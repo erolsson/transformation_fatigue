@@ -104,6 +104,7 @@ std::vector<HeatTreatmentData>::iterator find_heat_treatment_data(int noel, int 
 
     HeatTreatmentData tmp;
     tmp.element = noel;
+    tmp.gauss_point = npt;
     auto it = std::lower_bound(heat_treatment_data.begin(), heat_treatment_data.end(), tmp,
                                HeatTreatmentDataCompare());
     if (tmp.element != it->element || tmp.gauss_point != it->gauss_point) {
