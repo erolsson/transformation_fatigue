@@ -97,7 +97,7 @@ class ElasticPlasticTransformMaterial:
                       '\t\t13, FSB',
                       '\t\t14, FSB0',
                       '\t\t15, R']
-        counter = 15
+        counter = 16
         for m in range(len(self.Cm)):
             for comp in ['11', '22', '33', '12', '13', '23']:
                 file_lines.append('\t\t' + str(counter) + ', BACK_STRESS_' + str(m) + '_' + comp)
