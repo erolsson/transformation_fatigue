@@ -84,11 +84,10 @@ std::size_t reorder_gauss_pt(std::size_t gp, std::string part_name) {
 std::pair<std::size_t, std::string> user_model_data(int noel) {
     int user_elem_number = 0;
     char out_char[256];
-    int out_len = 255;
     int err = 0;
     {
         std::lock_guard<std::mutex> lock(part_info_mutex);
-        getpartinfoc_(out_char, out_len, noel, 1, user_elem_number, err);
+        getpartinfoc_(out_char, noel, 1, user_elem_number, err);
         getelemnumberuser_(noel, user_elem_number);
     }
     std::size_t i = 0;
@@ -150,7 +149,6 @@ extern "C" void sigini_(double* sigma, const double* coords, const int& ntens, c
     auto user_data = user_model_data(noel);
     std::size_t gp = reorder_gauss_pt(npt, user_data.second);
     auto it = find_heat_treatment_data(user_data.first, gp);
-    std::cout << user_data.second << std::endl;
     for (unsigned i = 0; i != ntens; ++i) {
         if (user_data.second.find("x_neg") != std::string::npos && (i == 3 || i == 4)) {
             sigma[i] = -(it->stress(i));
