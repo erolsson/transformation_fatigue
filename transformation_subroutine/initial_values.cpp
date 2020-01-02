@@ -95,7 +95,6 @@ std::pair<std::size_t, std::string> user_model_data(int noel) {
     while (isalnum(out_char[i]) || out_char[i] == '_') {
         ++i;
     }
-    std::cout << std::string(out_char, out_char+i) << " " << user_elem_number << std::endl;
     std::string part_name = std::string(out_char, out_char+i);
     std::transform(part_name.begin(), part_name.end(), part_name.begin(),
                    [](unsigned char c){ return std::tolower(c); });
