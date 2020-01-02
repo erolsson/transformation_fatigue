@@ -113,7 +113,7 @@ extern "C" void sdvini_(double* statev, const double* coords, const int& nstatev
     auto it = find_heat_treatment_data(noel, npt);
     statev[0] = 0.;
     for (unsigned i = 0; i != 9; ++i) {
-        if (i != 4) {
+        if (i != 3) {
             statev[i+1] = it->phase_data[i];
         }
         else {
@@ -141,6 +141,7 @@ extern "C" void sigini_(double* sigma, const double* coords, const int& ntens, c
     }
     std::transform(part_name.begin(), part_name.end(), part_name.begin(),
                    [](unsigned char c){ return std::tolower(c); });
+    std::cout << part_name << std::endl
     if (part_name.find("x_neg") != std::string::npos) {
         sigma[3] *= -1;
         sigma[4] *= -1;
