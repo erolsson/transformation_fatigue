@@ -93,7 +93,7 @@ std::pair<std::size_t, std::string> user_model_data(int noel) {
         getelemnumberuser_(noel, user_elem_number);
     }
     std::size_t i = 0;
-    while (isalnum(out_char[i])) {
+    while (isalnum(out_char[i]) || out_char[i] == '_') {
         ++i;
     }
     std::cout << std::string(out_char, out_char+i) << " " << user_elem_number << std::endl;
