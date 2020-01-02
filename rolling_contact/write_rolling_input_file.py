@@ -7,8 +7,8 @@ import numpy as np
 from scipy.optimize import fmin
 from scipy.special import ellipe, ellipk
 
-from input_file_reader.input_file_reader import InputFileReader
-from transformation_materials.transformation_materials import SS2506_no_trans
+from transformation_fatigue.input_file_reader.input_file_reader import InputFileReader
+from transformation_fatigue.materials.materials import SS2506_no_trans
 
 
 def calculate_elliptic_eccentricity(R1, R2):
