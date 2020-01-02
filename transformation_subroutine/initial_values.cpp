@@ -34,7 +34,10 @@ std::string get_fortran_string(void (*fortran_func)(char*, int&, int)){
     char out_char[256];
     int out_len = 0;
     fortran_func(out_char, out_len, 256);
-    return std::string(out_char, out_char+out_len);
+    std::string string = std::string(out_char, out_char+out_len);
+    std::cout << string << "  " << out_len << std::endl;
+    return string;
+
 }
 
 extern "C" void uexternaldb_(const int* lop, const int* lrestart, const double* time, const double* dtime,
@@ -141,7 +144,6 @@ extern "C" void sigini_(double* sigma, const double* coords, const int& ntens, c
     }
     std::transform(part_name.begin(), part_name.end(), part_name.begin(),
                    [](unsigned char c){ return std::tolower(c); });
-    std::cout << part_name << std::endl;
     if (part_name.find("x_neg") != std::string::npos) {
         sigma[3] *= -1;
         sigma[4] *= -1;
