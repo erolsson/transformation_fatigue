@@ -46,8 +46,9 @@ extern "C" void uexternaldb_(const int* lop, const int* lrestart, const double* 
         std::string data_file_name = job_name + ".htd";
         std::ifstream data_file(run_directory + data_file_name);
         std::string data_line;
-
+        std::cout << "Opening" << run_directory + data_file_name << std::endl;
         while (getline(data_file, data_line)) {
+            std::cout << data_line << std::endl;
             std::vector<std::string> line_data;
             std::stringstream line(data_line);
             std::string val;
