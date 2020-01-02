@@ -122,7 +122,7 @@ extern "C" void sdvini_(double* statev, const double* coords, const int& nstatev
             statev[i+1] = HV;
         }
     }
-    for( unsigned i = 10; i != 15; ++i) {
+    for( unsigned i = 10; i != nstatev; ++i) {
         statev[i] = 0;
     }
 }
