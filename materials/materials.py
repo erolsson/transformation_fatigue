@@ -71,7 +71,7 @@ class ElasticPlasticTransformMaterial:
 
     def material_input_file_string(self):
         parameters = [self.E, self.v, self.sy0M[0], self.sy0M[1], self.sy0A[0],  self.sy0A[1], self.Q[0], self.Q[1],
-                      self.b[0], self.b[1], self.gamma_m.shape[0]]
+                      self.b[0], self.b[1], len(self.gamma_m)]
         kinematic_hardening_params = []
         for C, g in zip(self.Cm, self.gamma_m):
             kinematic_hardening_params += [C[0], C[1], g[0], g[1]]
@@ -82,9 +82,30 @@ class ElasticPlasticTransformMaterial:
         file_lines = ['*Material, name=' + self.name,
                       '\t*Depvar',
                       '\t\t' + str(self.umat_depvar()),
-                      '\t*User Material, constants=' + str(len(parameters)) + ', unsymm']
+                      '\t\t1, PLASTIC_STRAIN',
+                      '\t\t2, AUSTENITE',
+                      '\t\t3, CARBON',
+                      '\t\t4, FERRITE',
+                      '\t\t5, HARDNESS',
+                      '\t\t6, LBAINITE',
+                      '\t\t7, PEARLITE',
+                      '\t\t8, Q_MARTENSITE',
+                      '\t\t9, T_MARTENSTE',
+                      '\t\t10, U_BAINITE',
+                      '\t\t11, S_MARTENSITE',
+                      '\t\t12, E_MARTENSITE',
+                      '\t\t13, FSB',
+                      '\t\t14, FSB0',
+                      '\t\t15, R']
+        counter = 15
+        for m in range(len(self.Cm)):
+            for comp in ['11', '22', '33', '12', '13', '23']:
+                file_lines.append('\t\t' + str(counter) + ', BACK_STRESS_' + str(m) + comp)
+        for comp in ['11', '22', '33', '12', '13', '23']:
+            file_lines.append('\t\t' + str(counter) + ', TOTAL_BACK_STRESS_' + comp)
+        file_lines.append('\t*User Material, constants=' + str(len(parameters)) + ', unsymm')
         parameter_str = ''
-        for i, par in enumerate(parameters):
+        for i, par in enumerate(self.gamma_m.shape[1]):
             if i % 8 == 0 and i != 0:
                 file_lines.append('\t\t' + parameter_str)
                 parameter_str = ''
