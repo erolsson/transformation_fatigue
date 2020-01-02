@@ -98,6 +98,7 @@ std::pair<std::size_t, std::string> user_model_data(int noel) {
     std::string part_name = std::string(out_char, out_char+i);
     std::transform(part_name.begin(), part_name.end(), part_name.begin(),
                    [](unsigned char c){ return std::tolower(c); });
+    std::cout << "Part name " << part_name << std::endl;
     return std::make_pair(user_elem_number, part_name);
 }
 
@@ -152,19 +153,12 @@ extern "C" void sigini_(double* sigma, const double* coords, const int& ntens, c
     std::cout << user_data.second << std::endl;
     for (unsigned i = 0; i != ntens; ++i) {
         if (user_data.second.find("x_neg") != std::string::npos && (i == 3 || i == 4)) {
-            sigma[i] = -it->stress(i);
+            sigma[i] = -(it->stress(i));
             std::cout << "Neg stress" << std::endl;
         }
         else {
             sigma[i] = it->stress(i);
             std::cout << "Pos stress" << std::endl;
         }
-    }
-
-    std::string part_name = user_data.second;
-
-    if (part_name.find("x_neg") != std::string::npos) {
-        sigma[3] *= -1;
-        sigma[4] *= -1;
     }
 }
