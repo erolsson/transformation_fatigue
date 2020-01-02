@@ -150,15 +150,17 @@ extern "C" void sigini_(double* sigma, const double* coords, const int& ntens, c
     std::size_t gp = reorder_gauss_pt(npt, user_data.second);
     auto it = find_heat_treatment_data(user_data.first, gp);
     for (unsigned i = 0; i != ntens; ++i) {
-        sigma[i] = it->stress(i);
+        if (user_data.second.find("x_neg") != std::string::npos && (i == 3 || i == 4)) {
+            sigma[i] = -it->stress(i);
+        }
+        else {
+            sigma[i] = it->stress(i);
+        }
     }
 
     std::string part_name = user_data.second;
 
-    std::transform(part_name.begin(), part_name.end(), part_name.begin(),
-                   [](unsigned char c){ return std::tolower(c); });
     if (part_name.find("x_neg") != std::string::npos) {
-        std::cout << "negative stress" << std::endl;
         sigma[3] *= -1;
         sigma[4] *= -1;
     }
