@@ -152,9 +152,11 @@ extern "C" void sigini_(double* sigma, const double* coords, const int& ntens, c
     for (unsigned i = 0; i != ntens; ++i) {
         if (user_data.second.find("x_neg") != std::string::npos && (i == 3 || i == 4)) {
             sigma[i] = -it->stress(i);
+            std::cout << "Neg stress" << std::endl;
         }
         else {
             sigma[i] = it->stress(i);
+            std::cout << "Pos stress" << std::endl;
         }
     }
 
