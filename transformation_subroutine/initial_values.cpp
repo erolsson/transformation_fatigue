@@ -110,15 +110,38 @@ std::vector<HeatTreatmentData>::iterator find_heat_treatment_data(int noel, int 
 extern "C" void sdvini_(double* statev, const double* coords, const int& nstatev, const int& ncrds, const int& noel,
                         const int& npt, const int& layer, const int& kspt) {
     auto it = find_heat_treatment_data(noel, npt);
+    statev[0] = 0.;
     for (unsigned i = 0; i != 9; ++i) {
-        statev[i] = it->phase_data[i];
+        if (i != 4) {
+            statev[i+1] = it->phase_data[i];
+        }
+        else {
+            double HRC = it->phase_data[i];
+            double HV = (223*HRC - 14500)/(100-HRC);
+            statev[i+1] = HV;
+        }
+    }
+    for( unsigned i = 10; i != 15; ++i) {
+        statev[i] = 0;
     }
 }
 
 extern "C" void sigini_(double* sigma, const double* coords, const int& ntens, const int& ncords, const int& noel,
                         const int& npt, const int& layer, const int& kspt, const int& rebar, const char* names) {
     auto it = find_heat_treatment_data(noel, npt);
+
     for (unsigned i = 0; i != ntens; ++i) {
         sigma[i] = it->stress(i);
+    }
+
+    std::string part_name;
+    {
+        std::lock_guard<std::mutex> lock(part_info_mutex);
+        part_name = get_fortran_string(getpartname_);
+    }
+
+    if (part_name.find("x_neg") != std::string::npos) {
+        sigma[3] *= -1;
+        sigma[4] *= -1;
     }
 }

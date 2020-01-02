@@ -8,6 +8,7 @@ from scipy.optimize import fmin
 from scipy.special import ellipe, ellipk
 
 from input_file_reader.input_file_reader import InputFileReader
+from transformation_materials.transformation_materials import SS2506_no_trans
 
 
 def calculate_elliptic_eccentricity(R1, R2):
@@ -31,7 +32,7 @@ def calculate_elastic_contact_force(R1, R2, p0):
     return F1**6*p0**3*np.pi**3*R0**2/6/E0**2
 
 
-def create_roller_model(simulation_file_name, geometry_file_name, p0, rolling_angle):
+def create_roller_model(simulation_file_name, geometry_file_name, material, p0, rolling_angle):
     reader = InputFileReader()
     reader.read_input_file(geometry_file_name)
 
@@ -68,9 +69,7 @@ def create_roller_model(simulation_file_name, geometry_file_name, p0, rolling_an
     file_lines.append('*Part, name=rigid_plane')
     file_lines.append('*End Part')
 
-    file_lines.append('*Material, name=SS2506')
-    file_lines.append('\t*Elastic')
-    file_lines.append('\t\t200E3, 0.3')
+    file_lines.extend(material.material_input_file_string())
     q = rolling_angle/2*np.pi/180
     file_lines.append('*Assembly, name=rolling_contact_model')
     overlap = 0.03
@@ -196,4 +195,4 @@ if __name__ == '__main__':
         os.makedirs(simulation_directory)
 
     model_file = os.path.expanduser('~/python_fatigue/rolling_contact/input_files/roller.inp')
-    create_roller_model(simulation_directory + 'roller_model.inp', model_file, 2000, 10)
+    create_roller_model(simulation_directory + 'roller_model.inp', model_file, SS2506_no_trans, 2000, 10)
