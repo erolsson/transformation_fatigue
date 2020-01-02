@@ -35,7 +35,6 @@ std::string get_fortran_string(void (*fortran_func)(char*, int&, int)){
     int out_len = 0;
     fortran_func(out_char, out_len, 256);
     std::string string = std::string(out_char, out_char+out_len);
-    std::cout << string << "  " << out_len << std::endl;
     return string;
 
 }
@@ -83,17 +82,23 @@ std::size_t reorder_gauss_pt(std::size_t gp, std::string part_name) {
     return gp;
 }
 
-std::vector<HeatTreatmentData>::iterator find_heat_treatment_data(int noel, int npt) {
+std::pair<std::size_t, std::string> user_model_data(int noel) {
     int user_elem_number = 0;
+    char out_char[256];
+    int out_len = 0;
+    int err = 0;
     std::string part_name;
     {
         std::lock_guard<std::mutex> lock(part_info_mutex);
-        getelemnumberuser_(noel, user_elem_number);
-        part_name = get_fortran_string(getpartname_);
+        getpartinfoc_(out_char, out_len, noel, 1, user_elem_number, err);
     }
+    return std::make_pair(user_elem_number, std::string(out_char, out_char+out_len));
+}
+
+std::vector<HeatTreatmentData>::iterator find_heat_treatment_data(int noel, int npt) {
+
     HeatTreatmentData tmp;
-    tmp.element = user_elem_number;
-    tmp.gauss_point = reorder_gauss_pt(npt, part_name);
+    tmp.element = noel;
     auto it = std::lower_bound(heat_treatment_data.begin(), heat_treatment_data.end(), tmp,
                                HeatTreatmentDataCompare());
     if (tmp.element != it->element || tmp.gauss_point != it->gauss_point) {
@@ -113,7 +118,9 @@ std::vector<HeatTreatmentData>::iterator find_heat_treatment_data(int noel, int 
 
 extern "C" void sdvini_(double* statev, const double* coords, const int& nstatev, const int& ncrds, const int& noel,
                         const int& npt, const int& layer, const int& kspt) {
-    auto it = find_heat_treatment_data(noel, npt);
+    auto user_data = user_model_data(noel);
+    std::size_t gp = reorder_gauss_pt(npt, user_data.second);
+    auto it = find_heat_treatment_data(user_data.first, gp);
     statev[0] = 0.;
     for (unsigned i = 0; i != 9; ++i) {
         if (i != 3) {
@@ -132,16 +139,15 @@ extern "C" void sdvini_(double* statev, const double* coords, const int& nstatev
 
 extern "C" void sigini_(double* sigma, const double* coords, const int& ntens, const int& ncords, const int& noel,
                         const int& npt, const int& layer, const int& kspt, const int& rebar, const char* names) {
-    auto it = find_heat_treatment_data(noel, npt);
+    auto user_data = user_model_data(noel);
+    std::size_t gp = reorder_gauss_pt(npt, user_data.second);
+    auto it = find_heat_treatment_data(user_data.first, gp);
     for (unsigned i = 0; i != ntens; ++i) {
         sigma[i] = it->stress(i);
     }
 
-    std::string part_name;
-    {
-        std::lock_guard<std::mutex> lock(part_info_mutex);
-        part_name = get_fortran_string(getpartname_);
-    }
+    std::string part_name = user_data.second;
+
     std::transform(part_name.begin(), part_name.end(), part_name.begin(),
                    [](unsigned char c){ return std::tolower(c); });
     if (part_name.find("x_neg") != std::string::npos) {
