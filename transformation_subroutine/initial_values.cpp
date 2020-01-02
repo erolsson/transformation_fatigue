@@ -81,24 +81,19 @@ std::size_t reorder_gauss_pt(std::size_t gp, std::string part_name) {
     return gp;
 }
 
-std::pair<std::size_t, std::string> user_model_data(int noel) {
+std::pair<std::size_t, std::string> user_model_data(int noel, const double* coords) {
     int user_elem_number = 0;
-    char out_char[256];
-    int out_len = 256;
-    int err = 0;
     {
         std::lock_guard<std::mutex> lock(part_info_mutex);
-        getpartinfoc_(out_char, out_len, noel, 1, user_elem_number, err);
         getelemnumberuser_(noel, user_elem_number);
     }
-    std::size_t i = 0;
-    while (isalnum(out_char[i]) || out_char[i] == '_') {
-        ++i;
+    std::string part_name;
+    if (coords[0] < 0) {
+        part_name = "x_neg";
     }
-    std::string part_name = std::string(out_char, out_char+i);
-    std::transform(part_name.begin(), part_name.end(), part_name.begin(),
-                   [](unsigned char c){ return std::tolower(c); });
-    std::cout << "Part name " << part_name << std::endl;
+    else {
+        part_name = "x_pos";
+    }
     return std::make_pair(user_elem_number, part_name);
 }
 
@@ -126,7 +121,7 @@ std::vector<HeatTreatmentData>::iterator find_heat_treatment_data(int noel, int 
 
 extern "C" void sdvini_(double* statev, const double* coords, const int& nstatev, const int& ncrds, const int& noel,
                         const int& npt, const int& layer, const int& kspt) {
-    auto user_data = user_model_data(noel);
+    auto user_data = user_model_data(noel, coords);
     std::size_t gp = reorder_gauss_pt(npt, user_data.second);
     auto it = find_heat_treatment_data(user_data.first, gp);
     statev[0] = 0.;
@@ -147,7 +142,7 @@ extern "C" void sdvini_(double* statev, const double* coords, const int& nstatev
 
 extern "C" void sigini_(double* sigma, const double* coords, const int& ntens, const int& ncords, const int& noel,
                         const int& npt, const int& layer, const int& kspt, const int& rebar, const char* names) {
-    auto user_data = user_model_data(noel);
+    auto user_data = user_model_data(noel, coords);
     std::size_t gp = reorder_gauss_pt(npt, user_data.second);
     auto it = find_heat_treatment_data(user_data.first, gp);
     for (unsigned i = 0; i != ntens; ++i) {
