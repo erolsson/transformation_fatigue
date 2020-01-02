@@ -74,8 +74,7 @@ extern "C" void uexternaldb_(const int* lop, const int* lrestart, const double* 
 }
 
 std::size_t reorder_gauss_pt(std::size_t gp, std::string part_name) {
-    std::transform(part_name.begin(), part_name.end(), part_name.begin(),
-                   [](unsigned char c){ return std::tolower(c); });
+
     if (part_name.find("x_neg") != std::string::npos) {
         return gp_order_x_neg[gp - 1];
     }
@@ -97,7 +96,10 @@ std::pair<std::size_t, std::string> user_model_data(int noel) {
         ++i;
     }
     std::cout << std::string(out_char, out_char+i) << " " << user_elem_number << std::endl;
-    return std::make_pair(user_elem_number, std::string(out_char, out_char+out_len));
+    std::string part_name = std::string(out_char, out_char+i);
+    std::transform(part_name.begin(), part_name.end(), part_name.begin(),
+                   [](unsigned char c){ return std::tolower(c); });
+    return std::make_pair(user_elem_number, part_name);
 }
 
 std::vector<HeatTreatmentData>::iterator find_heat_treatment_data(int noel, int npt) {
