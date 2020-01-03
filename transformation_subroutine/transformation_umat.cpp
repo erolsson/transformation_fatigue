@@ -81,8 +81,7 @@ double stress_temperature_transformation(const Eigen::Matrix<double, 6, 1>& stre
 
 double stress_transformation_function(const Eigen::Matrix<double, 6, 1>& stress, double T,
                                       const TransformationMaterialParameters& params, const State& state, double fM) {
-    return -10;
-    // return (1 - exp(-stress_temperature_transformation(stress, params, T)))*(1 - state.other_phases()) - fM;
+    return (1 - exp(-stress_temperature_transformation(stress, params, T)))*(1 - state.other_phases()) - fM;
 }
 
 double normal_pdf(double x) {

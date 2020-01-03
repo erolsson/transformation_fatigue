@@ -74,7 +74,8 @@ def create_roller_model(simulation_file_name, geometry_file_name, material, p0, 
     file_lines.append('*Initial Conditions, type=Solution, user')
     file_lines.append('*Initial Conditions, type=Stress, user')
     file_lines.append('*Initial conditions, type=temperature')
-    file_lines.append('\tALL_NODES , 200.')
+    file_lines.append('\tRoller_x_pos , 22.')
+    file_lines.append('\tRoller_x_neg , 22.')
     file_lines.append('*Assembly, name=rolling_contact_model')
     overlap = 0.03
     d = 20.1 + (20.1*(1 - np.cos(q)) - overlap)*np.cos(q)
@@ -142,7 +143,7 @@ def create_roller_model(simulation_file_name, geometry_file_name, material, p0, 
     file_lines.append('\t\tcontact_surface, rigid_plane.rigid_plane')
     force = calculate_elastic_contact_force(40.2/2, 46, 1.)
     file_lines.append('\t*Cload')
-    file_lines.append('\t\troller_ref_node, 3, ' + str(-force/2))
+    file_lines.append('\t\troller_ref_node, 2, ' + str(-force/2))
     file_lines.append('\t*Output, field')
     file_lines.append('\t\t*Element Output')
     file_lines.append('\t\t\tS, SDV')
