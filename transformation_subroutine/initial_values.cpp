@@ -132,8 +132,8 @@ extern "C" void sdvini_(double* statev, const double* coords, const int& nstatev
         }
         else {
             double HRC = it->phase_data[i];
-            std::cout << HRC << std::endl;
             double HV = (223*HRC - 14500)/(100-HRC);
+            std::cout << HRC << "  " << HV << std::endl;
             statev[i+1] = HV;
         }
     }
