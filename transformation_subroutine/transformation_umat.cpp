@@ -113,7 +113,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
 
     // Yield stress at start of increment
     double sy = params.sy0M()*state.fM() + params.sy0A()*(1-state.fM()) + state.R();
-
+    std::cout << "sy: " << sy << std::endl;
     Vector6 sigma_t = stress_vec + Del*de;  // Trial stress
     Vector6 sij_t = deviator(sigma_t);
 
