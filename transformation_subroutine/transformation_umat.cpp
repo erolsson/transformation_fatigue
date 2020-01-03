@@ -81,7 +81,8 @@ double stress_temperature_transformation(const Eigen::Matrix<double, 6, 1>& stre
 
 double stress_transformation_function(const Eigen::Matrix<double, 6, 1>& stress, double T,
                                       const TransformationMaterialParameters& params, const State& state, double fM) {
-    return (1 - exp(-stress_temperature_transformation(stress, params, T)))*(1 - state.other_phases()) - fM;
+    return -10;
+    // return (1 - exp(-stress_temperature_transformation(stress, params, T)))*(1 - state.other_phases()) - fM;
 }
 
 double normal_pdf(double x) {
@@ -124,12 +125,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
     bool stress_transformations = stress_transformation_function(sigma_t, temp, params, state, state.fM()) >= 0;
     bool strain_transformations = params.beta() > 0 && plastic;
     bool elastic = !plastic && !stress_transformations;
-    if (! elastic) {
-        std::cout << "stress_transformations: " << strain_transformations << std::endl;
-        std::cout << "plastic: " << plastic << std::endl;
-        std::cout << "sigma_t" << sigma_t.transpose().format(CleanFmt) << std::endl;
-        std::cout << "yield func: " << yield_function(sigma_t, state.total_back_stress(), sy, params) << std::endl;
-    }
+
     if (elastic) {     // Use the trial stress as the stress and the elastic stiffness matrix as the tangent
         D_alg = Del;
         stress_vec = sigma_t;
