@@ -105,7 +105,8 @@ std::vector<HeatTreatmentData>::iterator find_heat_treatment_data(int noel, int 
     auto it = std::lower_bound(heat_treatment_data.begin(), heat_treatment_data.end(), tmp,
                                HeatTreatmentDataCompare());
     if (tmp.element != it->element || tmp.gauss_point != it->gauss_point) {
-        std::cout << "Element numbering in model does not correspond to the numbering in the data file, exiting!";
+        std::cout << "Element numbering in model does not correspond to the numbering in the data file, exiting!"
+                  << std::endl;
         std::cout << "Element number is " << tmp.element << " and Gauss point is " << tmp.gauss_point << std::endl;
         if (it == heat_treatment_data.end()) {
             std::cout << "The element is not found!" << std::endl;
@@ -131,6 +132,7 @@ extern "C" void sdvini_(double* statev, const double* coords, const int& nstatev
         }
         else {
             double HRC = it->phase_data[i];
+            std::cout << HRC << std::endl;
             double HV = (223*HRC - 14500)/(100-HRC);
             statev[i+1] = HV;
         }

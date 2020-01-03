@@ -73,6 +73,8 @@ def create_roller_model(simulation_file_name, geometry_file_name, material, p0, 
     q = rolling_angle/2*np.pi/180
     file_lines.append('*Initial Conditions, type=Solution, user')
     file_lines.append('*Initial Conditions, type=Stress, user')
+    file_lines.append('*Initial conditions, type=temperature')
+    file_lines.append('\tALL_NODES , 200.')
     file_lines.append('*Assembly, name=rolling_contact_model')
     overlap = 0.03
     d = 20.1 + (20.1*(1 - np.cos(q)) - overlap)*np.cos(q)
