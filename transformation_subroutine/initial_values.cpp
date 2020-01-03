@@ -148,10 +148,10 @@ extern "C" void sigini_(double* sigma, const double* coords, const int& ntens, c
     auto it = find_heat_treatment_data(user_data.first, gp);
     for (unsigned i = 0; i != ntens; ++i) {
         if (user_data.second.find("x_neg") != std::string::npos && (i == 3 || i == 4)) {
-            sigma[i] = -(it->stress(i));
+            sigma[i] = -(it->stress(i))/1.5;
         }
         else {
-            sigma[i] = it->stress(i);
+            sigma[i] = it->stress(i)/1.5;
         }
     }
 }
