@@ -109,7 +109,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
     using Vector6 = Eigen::Matrix<double, 6, 1>;
 
     const TransformationMaterialParameters params(props, statev[4]);
-    State state(statev, params.back_stresses());
+    State state(statev, params.back_stresses(), drot);
 
     Eigen::Map<Vector6> stress_vec(stress);
 
