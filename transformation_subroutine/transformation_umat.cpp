@@ -3,6 +3,7 @@
 //
 
 #include "transformation_umat.h"
+#include "transformation_subroutine_header.h"
 
 #include <cmath>
 #include <iostream>
@@ -17,7 +18,16 @@ const double pi = 3.14159265359;
 class State {
 public:
     using Vector6 = Eigen::Matrix<double, 6, 1>;
-    explicit State(double* data, unsigned back_stresses) : data_(data), back_stresses_(back_stresses) {}
+    explicit State(double* data, unsigned back_stresses, double* drot) :
+        data_(data), back_stresses_(back_stresses) {
+        for(unsigned i = 0; i != back_stresses_; ++i) {
+            double alpha[6] = {0, 0, 0, 0, 0, 0};
+            rotsig_(data_[15 + i*6], drot, alpha, 1, 3, 3);
+            for(unsigned j = 0; j != 6; ++j) {
+                data_[15+i*6+j] = alpha[j];
+            }
+        }
+    }
     double& ep_eff() { return data_ [0]; }
     double& austenite() { return  data_[1]; }
     double& carbon() { return  data_[2]; }

@@ -22,6 +22,9 @@ extern "C" void getjobname_(char* outdir, int&, int);
 extern "C" void getpartinfoc_(char* name, int& name_len, const int& num, const int& jtype, int& user_num, int& error);
 extern "C" void getelemnumberuser_(const int& num, int& user_num);
 extern "C" void getpartname_(char* outdir, int&, int);
+extern "C" void rotsig_(double* S, double* R, double* Srot, const int& lstr, const int& ndi,
+                        const int& nshr);
+
 
 #endif //CASE_HARDENING_TOOLBOX_COOLING_SUBROUTINE_HEADER_H
 
