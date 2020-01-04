@@ -144,6 +144,8 @@ def create_roller_model(simulation_file_name, geometry_file_name, material, p0, 
     force = calculate_elastic_contact_force(40.2/2, 46, p0)
     file_lines.append('\t*Cload')
     file_lines.append('\t\troller_ref_node, 2, ' + str(-force/2))
+    file_lines.append('\t*Boundary')
+    file_lines.append('\troller_ref_node, 6, 6, ' + str(-q*2))
     file_lines.append('\t*Output, field')
     file_lines.append('\t\t*Element Output')
     file_lines.append('\t\t\tS, SDV')
