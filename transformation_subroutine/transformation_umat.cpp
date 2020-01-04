@@ -186,8 +186,10 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
         Matrix6x6 nnt = Matrix6x6::Zero();
         Matrix6x6 Aijkl = Matrix6x6::Zero();
         Vector6 nij2 = 1.5*stilde2;
-        if (s_eq_2 > 0) {
+        if (s_eq_2 > 1e-12) {
             nij2 /= s_eq_2;
+        } else {
+            nij2 *= 0;
         }
 
         Vector6 bij = Vector6::Zero();
@@ -242,7 +244,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
             sigma_2 -= K*params.dV()*delta_ij*DfM;
             Vector6 dsijdDfM = -K*params.dV()*delta_ij;
 
-            if ( s_eq_prime > 1e-12) {
+            if (s_eq_prime > 1e-12) {
                 sigma_2 -= 2*G*(DL + RA*DfM)*nij2;
                 dsijdDfM -= 2*G*(RA + DfM*params.R2()/params.sy0A()*ds_eq_2_dfM)*nij2;
             }
@@ -260,7 +262,8 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                 Sigma = I1_2/s_vM_2;
                 double DI1 = 3*K*(de[0] + de[1] + de[2] - DfM*params.dV());
                 double DvM = 1.5/s_vM_2*double_contract(deviator(sigma_t),
-                        static_cast<Vector6>(2*G*(deviator(static_cast<Vector6>(de)) - (DL + RA*DfM)*nij2)));
+                                                        static_cast<Vector6>(2*G*(deviator(static_cast<Vector6>(de)) -
+                                                                                  (DL + RA*DfM)*nij2)));
                 DSigma = Sigma*(DI1/I1_2 - DvM/s_vM_2);
                 double n = params.n();
                 double dSigmadDL = -Sigma/s_vM_2*double_contract(dsvMdsij, dsijdDL);
@@ -270,8 +273,8 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                 fsb2 = 1 - (1 - state.fsb0())*exp(-params.alpha()*(state.ep_eff() + DL));
                 dfsb2dDL = params.alpha()*(1 - state.fsb0())*exp(-params.alpha()*(state.ep_eff() + DL));
 
-                double c = params.alpha()*params.beta()*n*(1-fsb2)*pow(fsb2, n-1);
-                double dcdDL = n*params.alpha()*params.beta()*pow(fsb2, n-2)*(n*(1-fsb2) - 1)*dfsb2dDL;
+                double c = params.alpha()*params.beta()*n*(1 - fsb2)*pow(fsb2, n - 1);
+                double dcdDL = n*params.alpha()*params.beta()*pow(fsb2, n - 2)*(n*(1 - fsb2) - 1)*dfsb2dDL;
                 double Gamma = params.g0() - params.g1()*temp/params.Ms() + params.g2()*Sigma;
                 norm_drivning_force = (Gamma - params.g_mean())/params.g_std();
                 P = 0.5*(1 + erf(norm_drivning_force));
@@ -283,12 +286,12 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                 double dAsdfM = c*params.g2()*pdf*dSigmadDfM;
 
                 double dBsdDL = (pdf*n*pow(fsb2, n - 1)*dfsb2dDL
-                        -  Bs*norm_drivning_force/params.g_std()*params.g2()*dSigmadDL)*(DSigma > 0);
+                                 - Bs*norm_drivning_force/params.g_std()*params.g2()*dSigmadDL)*(DSigma > 0);
                 double dBsdfM = -Bs*norm_drivning_force/params.g_std()*params.g2()*dSigmadDfM;
-                h_strain = (1 - fM2)*(1-state.other_phases())*(As*DL + Bs*DSigma) - DfM_strain;
-                dh_straindDL = (1 - fM2)*(1-state.other_phases())*(As + DL*dAsdDL + Bs*dDSigmadDL + DSigma*dBsdDL);
+                h_strain = (1 - fM2)*(1 - state.other_phases())*(As*DL + Bs*DSigma) - DfM_strain;
+                dh_straindDL = (1 - fM2)*(1 - state.other_phases())*(As + DL*dAsdDL + Bs*dDSigmadDL + DSigma*dBsdDL);
                 dh_strainDfM = -(As*DL + Bs*DSigma) +
-                        (1 - fM2)*(1-state.other_phases())*(DL*dAsdfM + Bs*dDSigmadDfM + DSigma*dBsdfM);
+                               (1 - fM2)*(1 - state.other_phases())*(DL*dAsdfM + Bs*dDSigmadDfM + DSigma*dBsdfM);
             }
 
             if (stress_transformations) {
@@ -302,19 +305,25 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                 dh_stressDfM = double_contract(bij, dsijdDfM) - 1;
             }
 
-            if ( !plastic ) {
+            if (!plastic) {
                 dDfM_stress = h_stress/dh_stressDfM;
             }
             else {
-                if ( !stress_transformations && !strain_transformations) {
-                    dDL = f/dfdDL;
+                if (!stress_transformations && !strain_transformations) {
+                    if (dfdDL > 0) {
+                        dDL = f/dfdDL;
+                    }
+                    else {
+                        pnewdt = 0.25;
+                        return;
+                    }
                 }
-                else if (! stress_transformations) {
+                else if (!stress_transformations) {
                     double det = dfdDL*(dh_strainDfM - 1) - dfdDfM*dh_straindDL;
-                    dDL = ((dh_strainDfM-1)*f - dfdDfM*h_strain)/det;
+                    dDL = ((dh_strainDfM - 1)*f - dfdDfM*h_strain)/det;
                     dDfM_strain = (-dh_straindDL*f + dfdDL*h_strain)/det;
                 }
-                else if (! strain_transformations) {
+                else if (!strain_transformations) {
                     double det = dfdDL*dh_stressDfM - dfdDfM*dh_stressDfM;
                     dDL = (dh_stressDfM*f - dfdDfM*h_stress)/det;
                     dDfM_stress = (-dh_stressDfM*f + dfdDL*h_stress)/det;
@@ -326,10 +335,10 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                     double d = dh_stressDfM;
                     double e = dh_straindDL;
                     double g = dh_strainDfM;
-                    double det = a*d- c*b;   // Pseudo determinant appearing in the inverse
+                    double det = a*d - c*b;   // Pseudo determinant appearing in the inverse
                     dDL = (d*f - b*h_stress)/det;
-                    dDfM_stress = -(c + d*e -c*g)/det*f + (a + b*e - a*g)/det*h_stress + h_strain;
-                    dDfM_strain = (d*e - c*g)/det*f - (b*e-a*g)/det*h_stress - h_strain;
+                    dDfM_stress = -(c + d*e - c*g)/det*f + (a + b*e - a*g)/det*h_stress + h_strain;
+                    dDfM_strain = (d*e - c*g)/det*f - (b*e - a*g)/det*h_stress - h_strain;
                 }
                 if (DL - dDL < 0 || DfM_strain - dDfM_strain < 0) {
                     DL = 0;
@@ -338,12 +347,11 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                     DfM_strain = 0;
                     dDfM_stress = h_stress/dh_stressDfM;
                 }
-
                 if (DfM_stress - dDfM_stress < 0) {
                     DfM_stress = 0;
                     dDfM_stress = 0;
                     double det = dfdDL*(dh_strainDfM - 1) - dfdDfM*dh_straindDL;
-                    dDL = ((dh_strainDfM-1)*f - dfdDfM*h_strain)/det;
+                    dDL = ((dh_strainDfM - 1)*f - dfdDfM*h_strain)/det;
                     dDfM_strain = (-dh_straindDL*f + dfdDL*h_strain)/det;
                 }
             }
@@ -381,11 +389,11 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
         nnt = nij2*nij2.transpose();
         Aijkl = J - 2./3*nnt;
         D_alg = Del;
-        if (s_eq_prime > 0) {
+        if (s_eq_prime > 1e-12) {
             D_alg -= 6*G*G*(DL + RA*DfM)/s_eq_prime*Aijkl;
         }
 
-        double A = dR2dDL -  ds_eq_2_dDL;
+        double A = dR2dDL - ds_eq_2_dDL;
 
         Vector6 Lekl = Vector6::Zero();
         Vector6 Lskl = Vector6::Zero();
@@ -397,13 +405,13 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
             Fskl = bij;
             Lekl = 1./A/B*(2*G*nij2 + params.a()*K*delta_ij);
             Lskl = 1./A*dfdDfM*bij;
-        }
-        else {
-            double B1 = (1 - state.fM())*(1-state.other_phases())/(1 + As*DL + Bs*DSigma);
+        } else {
+            double B1 = (1 - state.fM())*(1 - state.other_phases())/(1 + As*DL + Bs*DSigma);
             double B2 = B1*(As + DL*dAsdDL);
             Lekl = (2*G*nij2 + params.a()*K*delta_ij)/(A*B - B*B2*dfdDfM);
 
-            Vector6 Gkl = B1*Bs*Sigma*(1-norm_drivning_force/params.g_std()*params.g2())*(delta_ij/I1_2 - 1.5*s/s_vM_2);
+            Vector6 Gkl =
+                    B1*Bs*Sigma*(1 - norm_drivning_force/params.g_std()*params.g2())*(delta_ij/I1_2 - 1.5*s/s_vM_2);
             Lskl = Gkl*dfdDfM/(A + B2*dfdDfM);
             Fekl = B2*Lekl;
             Fskl = Gkl*(1 + dfdDfM/(A + B2*dfdDfM)*B2);
@@ -418,11 +426,11 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
             Matrix6x6 Bijkl = I;
             if (DL > 0) {
                 D_alg -= 2*G*(RA + DfM*params.R2()/params.sy0A()*ds_eq_2_dfM)*nij2*Fekl.transpose()
-                        - K*params.dV()*delta_ij*Fekl.transpose();
+                         - K*params.dV()*delta_ij*Fekl.transpose();
                 Bijkl += 2*G*(1 + DfM*params.R2()/params.sy0A()*ds_eq_2_dDL)*nij2*Lskl.transpose();
             }
             Bijkl += 2*G*(RA + DfM*params.R2()/params.sy0A()*ds_eq_2_dfM)*nij2*Fskl.transpose()
-                    + K*params.dV()*delta_ij*Fskl.transpose();
+                     + K*params.dV()*delta_ij*Fskl.transpose();
             /*
             for (unsigned i = 3; i != 6; ++i) {
                 for (unsigned j = 3; j != 6; ++j)
@@ -430,6 +438,15 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
             }
              */
             D_alg = Bijkl.inverse()*D_alg;
+        }
+        if (isnanf(sigma_2(0))) {
+            std::cout << "DL: " << DL << std::endl;
+            std::cout << "nij: " << nij2.transpose().format(CleanFmt) << std::endl;
+            std::cout << "s_eq_2: " << s_eq_2 << std::endl;
+            std::cout << "s_eq_prime: " << s_eq_prime << std::endl;
+            std::cout << "A: " << A << std::endl;
+            std::cout << "B: " << B << std::endl;
+            std::abort();
         }
     }
 }

@@ -24,6 +24,7 @@ extern "C" void getelemnumberuser_(const int& num, int& user_num);
 extern "C" void getpartname_(char* outdir, int&, int);
 extern "C" void rotsig_(double* S, double* R, double* Srot, const int& lstr, const int& ndi,
                         const int& nshr);
+extern "C" void xit_();
 
 
 #endif //CASE_HARDENING_TOOLBOX_COOLING_SUBROUTINE_HEADER_H
