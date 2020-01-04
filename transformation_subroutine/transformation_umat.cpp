@@ -446,7 +446,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
             std::cout << "s_eq_prime: " << s_eq_prime << std::endl;
             std::cout << "A: " << A << std::endl;
             std::cout << "B: " << B << std::endl;
-            std::abort();
+            xit_();
         }
     }
 }
