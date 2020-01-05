@@ -5,6 +5,7 @@
 #include "transformation_umat.h"
 #include "transformation_subroutine_header.h"
 
+#include <cfenv>
 #include <cmath>
 #include <iostream>
 
@@ -12,6 +13,8 @@
 
 #include "simulation_parameters.h"
 #include "stress_functions.h"
+
+#pragma STDC FENV_ACCESS ON
 
 const double pi = 3.14159265359;
 
@@ -439,7 +442,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
              */
             D_alg = Bijkl.inverse()*D_alg;
         }
-        if (isnanf(sigma_2(0))) {
+        if (std::fetestexcept(FE_INVALID)) {
             std::cout << "DL: " << DL << std::endl;
             std::cout << "nij: " << nij2.transpose().format(CleanFmt) << std::endl;
             std::cout << "s_eq_2: " << s_eq_2 << std::endl;
