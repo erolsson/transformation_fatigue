@@ -24,6 +24,7 @@ std::mutex print_mutex;
 void print_at_time(const std::string msg, double time, unsigned noel, unsigned npt) {
     if (time > -0.99) {
         std::cout << "Elem: " << noel << " gp: " << npt << " " << msg << std::endl;
+    }
 }
 
 class State {
