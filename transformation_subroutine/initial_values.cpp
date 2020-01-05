@@ -70,6 +70,7 @@ extern "C" void uexternaldb_(const int* lop, const int* lrestart, const double* 
             }
             heat_treatment_data.push_back(data);
         }
+        std::abort();
     }
 }
 

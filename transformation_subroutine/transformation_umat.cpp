@@ -27,7 +27,7 @@ public:
             double alpha[6] = {0, 0, 0, 0, 0, 0};
             rotsig_(&data_[15 + i*6], drot, alpha, 1, 3, 3);
             for(unsigned j = 0; j != 6; ++j) {
-                data_[15+i*6+j] = alpha[j];
+                data_[15 + i*6 + j] = alpha[j];
             }
         }
     }
@@ -191,7 +191,8 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
         Vector6 nij2 = 1.5*stilde2;
         if (s_eq_2 > 1e-12) {
             nij2 /= s_eq_2;
-        } else {
+        }
+        else {
             nij2 *= 0;
         }
 
