@@ -22,7 +22,7 @@ const double pi = 3.14159265359;
 std::mutex print_mutex;
 
 void print_at_time(const std::string msg, double time, unsigned noel, unsigned npt) {
-    if (time > -1.) {
+    if (time > 0.99) {
         {
             std::lock_guard<std::mutex> lock(print_mutex);
             std::cout << "Elem: " << noel << " gp: " << npt << " " << msg << std::endl;
