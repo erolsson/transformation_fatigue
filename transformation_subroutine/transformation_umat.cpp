@@ -379,16 +379,20 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                 if (DL - dDL < 0 || DfM_strain - dDfM_strain < 0) {
                     DL = 0;
                     dDL = 0;
-                    dDfM_strain = 0;
-                    DfM_strain = 0;
-                    dDfM_stress = h_stress/dh_stressDfM;
+                    if (stress_transformations) {
+                        dDfM_strain = 0;
+                        DfM_strain = 0;
+                        dDfM_stress = h_stress/dh_stressDfM;
+                    }
                 }
                 if (DfM_stress - dDfM_stress < 0) {
                     DfM_stress = 0;
                     dDfM_stress = 0;
-                    double det = dfdDL*(dh_strainDfM - 1) - dfdDfM*dh_straindDL;
-                    dDL = ((dh_strainDfM - 1)*f - dfdDfM*h_strain)/det;
-                    dDfM_strain = (-dh_straindDL*f + dfdDL*h_strain)/det;
+                    if (plastic) {
+                        double det = dfdDL*(dh_strainDfM - 1) - dfdDfM*dh_straindDL;
+                        dDL = ((dh_strainDfM - 1)*f - dfdDfM*h_strain)/det;
+                        dDfM_strain = (-dh_straindDL*f + dfdDL*h_strain)/det;
+                    }
                 }
             }
             print_for_position("Done with updating iteration ", iter, noel, npt);
