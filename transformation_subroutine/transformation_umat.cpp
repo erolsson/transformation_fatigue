@@ -22,7 +22,7 @@ const double pi = 3.14159265359;
 std::mutex print_mutex;
 
 void print_at_time(const std::string msg, double time) {
-    if (time > 0.999) {
+    if (time > 0.) {
         {
             std::lock_guard<std::mutex> lock(print_mutex);
             std::cout << msg << std::endl;
