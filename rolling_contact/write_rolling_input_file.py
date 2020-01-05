@@ -165,7 +165,7 @@ def create_roller_model(simulation_file_name, geometry_file_name, material, p0, 
     file_lines.append('\t*Cload, amplitude=load_amp')
     file_lines.append('\t\troller_ref_node, 2, ' + str(-force/2))
     file_lines.append('\t*Boundary, type=velocity, amplitude=rolling_amp')
-    file_lines.append('\t\troller_ref_node, 6, 6, 0.')
+    file_lines.append('\t\troller_ref_node, 6, 6,' + str(-2*q))
     file_lines.append('\t*Output, field, time interval=0.1')
     file_lines.append('\t\t*Element Output')
     file_lines.append('\t\t\tS, SDV')
