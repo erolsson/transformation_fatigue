@@ -16,7 +16,6 @@
 #include "stress_functions.h"
 
 #pragma STDC FENV_ACCESS ON
-feenableexcept(FE_INVALID | FE_OVERFLOW);
 const double pi = 3.14159265359;
 
 class State {
@@ -108,7 +107,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
         const int& nshr, const int& ntens, const int& nstatv, const double* props, const int& nprops, double *coords,
         double* drot, double& pnewdt, double& celent, double* dfgrd0, double* dfgrd1, const int& noel, const int& npt,
         const int& layer, const int& kspt, const int& kstep, const int& kinc, short cmname_len) {
-
+    feenableexcept(FE_INVALID | FE_OVERFLOW);
     using Matrix6x6 = Eigen::Matrix<double, 6, 6>;
     using Vector6 = Eigen::Matrix<double, 6, 1>;
 
