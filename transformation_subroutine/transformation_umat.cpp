@@ -136,7 +136,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
     Eigen::Map<Vector6> stress_vec(stress);
 
     const Eigen::Map<Vector6> de(dstran);
-    print_for_position("strain_inc", de.transpose().format(CleanFmt), noel, npt);
+    print_for_position("strain_inc: ", de.transpose().format(CleanFmt), noel, npt);
     Eigen::Map<Matrix6x6> D_alg(ddsdde);
 
     // Elastic parameters
