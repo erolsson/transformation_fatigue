@@ -77,7 +77,7 @@ def create_roller_model(simulation_file_name, geometry_file_name, material, p0, 
     file_lines.append('\tRoller_x_pos.ALL_NODES, 22.')
     file_lines.append('\tRoller_x_neg.ALL_NODES, 22.')
     file_lines.append('*Assembly, name=rolling_contact_model')
-    overlap = 0.03
+    overlap = 0.001
     d = 20.1 + (20.1*(1 - np.cos(q)) - overlap)*np.cos(q)
     for side in ['x_pos', 'x_neg']:
         file_lines.append('\t*Instance, name=roller_' + side + ', part=roller_' + side)
