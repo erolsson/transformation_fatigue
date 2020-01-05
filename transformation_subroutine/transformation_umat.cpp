@@ -21,11 +21,11 @@
 const double pi = 3.14159265359;
 std::mutex print_mutex;
 
-void print_at_time(const std::string msg, double time) {
+void print_at_time(const std::string msg, double time, unsigned noel, unsigned npt) {
     if (time > -1.) {
         {
             std::lock_guard<std::mutex> lock(print_mutex);
-            std::cout << msg << std::endl;
+            std::cout << "Elem: " << noel << " gp: " << npt << " " << msg << std::endl;
         }
     }
 }
@@ -120,14 +120,14 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
         double* drot, double& pnewdt, double& celent, double* dfgrd0, double* dfgrd1, const int& noel, const int& npt,
         const int& layer, const int& kspt, const int& kstep, const int& kinc, short cmname_len) {
     feenableexcept(FE_INVALID | FE_OVERFLOW);
-    print_at_time("starting", time[1]);
+    print_at_time("starting", time[1], noel, npt);
     using Matrix6x6 = Eigen::Matrix<double, 6, 6>;
     using Vector6 = Eigen::Matrix<double, 6, 1>;
 
     const TransformationMaterialParameters params(props, statev[4]);
-    print_at_time("setting params", time[1]);
+    print_at_time("setting params", time[1], noel, npt);
     State state(statev, params.back_stresses(), drot);
-    print_at_time("setting state", time[1]);
+    print_at_time("setting state", time[1], noel, npt);
     Eigen::Map<Vector6> stress_vec(stress);
 
     const Eigen::Map<Vector6> de(dstran);
@@ -148,18 +148,18 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
         stilde2 -= state.total_back_stress();
     }
     bool plastic = params.plastic() && yield_function(sigma_t, state.total_back_stress(), sy, params) > 0;
-    print_at_time("yield function evaluated", time[1]);
+    print_at_time("yield function evaluated", time[1], noel, npt);
     bool stress_transformations = stress_transformation_function(sigma_t, temp, params, state, state.fM()) >= 0;
     bool strain_transformations = params.beta() > 0 && plastic;
     bool elastic = !plastic && !stress_transformations;
 
     if (elastic) {     // Use the trial stress as the stress and the elastic stiffness matrix as the tangent
-        print_at_time("Elastic increment", time[1]);
+        print_at_time("Elastic increment", time[1], noel, npt);
         D_alg = Del;
         stress_vec = sigma_t;
     }
     else {  // Inelastic deformations
-        print_at_time("Non elastic increment", time[1]);
+        print_at_time("Non elastic increment", time[1], noel, npt);
         // Increment in plastic strain and martensitic phase fraction
         Vector6 sigma_2 = sigma_t;
         Vector6 s = deviator(sigma_2);
@@ -223,7 +223,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
         unsigned iter = 0;
         while (residual > 1e-15) {
             ++iter;
-            print_at_time("Newton loop iter " + std::to_string(iter), time[1]);
+            print_at_time("Newton loop iter " + std::to_string(iter), time[1], noel, npt);
             double fM2 = state.fM() + DfM;
             sigma_2 = sigma_t;
 
@@ -281,7 +281,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
 
             // h_strain and derivatives of h_strain
             if (plastic) {
-                print_at_time("Entering plastic section", time[1]);
+                print_at_time("Entering plastic section", time[1], noel, npt);
                 Sigma = I1_2/s_vM_2;
                 double DI1 = 3*K*(de[0] + de[1] + de[2] - DfM*params.dV());
                 double DvM = 1.5/s_vM_2*double_contract(deviator(sigma_t),
@@ -315,7 +315,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                 dh_straindDL = (1 - fM2)*(1 - state.other_phases())*(As + DL*dAsdDL + Bs*dDSigmadDL + DSigma*dBsdDL);
                 dh_strainDfM = -(As*DL + Bs*DSigma) +
                                (1 - fM2)*(1 - state.other_phases())*(DL*dAsdfM + Bs*dDSigmadDfM + DSigma*dBsdfM);
-                print_at_time("Plastic section done", time[1]);
+                print_at_time("Plastic section done", time[1], noel, npt);
             }
 
             if (stress_transformations) {
@@ -393,7 +393,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
         }
 
         // Updating state variables
-        print_at_time("Updating state var", time[1]);
+        print_at_time("Updating state var", time[1], noel, npt);
         state.ep_eff() += DL;
         state.q_martensite() += DfM;
         state.austenite() -= DfM;
@@ -411,7 +411,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                 state.total_back_stress() += state.back_stress_vector(i);
             }
         }
-        print_at_time("Calculating tangent", time[1]);
+        print_at_time("Calculating tangent", time[1], noel, npt);
         nnt = nij2*nij2.transpose();
         Aijkl = J - 2./3*nnt;
         D_alg = Del;
