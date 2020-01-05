@@ -310,7 +310,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
             }
             else {
                 if (!stress_transformations && !strain_transformations) {
-                    if (dfdDL > 0) {
+                    if (dfdDL != 0) {
                         dDL = f/dfdDL;
                     }
                     else {
