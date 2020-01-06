@@ -127,17 +127,22 @@ extern "C" void sdvini_(double* statev, const double* coords, const int& nstatev
     auto it = find_heat_treatment_data(user_data.first, gp);
     statev[0] = 0.;
     for (unsigned i = 0; i != 9; ++i) {
-        if (i != 3) {
-            statev[i+1] = it->phase_data[i];
-        }
-        else {
+        if (i == 3) {
             double HRC = it->phase_data[i];
             double HV = (223*HRC + 14500)/(100-HRC);
             statev[i+1] = HV;
         }
+        else {
+            statev[i+1] = it->phase_data[i];
+        }
     }
     for( unsigned i = 10; i != nstatev; ++i) {
-        statev[i] = 0;
+        if (i == 12 || i == 13) {
+            statev[i] = 0.23;       // Initial shear band fraction
+        }
+        else {
+            statev[i] = 0;
+        }
     }
 }
 
@@ -148,10 +153,10 @@ extern "C" void sigini_(double* sigma, const double* coords, const int& ntens, c
     auto it = find_heat_treatment_data(user_data.first, gp);
     for (unsigned i = 0; i != ntens; ++i) {
         if (user_data.second.find("x_neg") != std::string::npos && (i == 3 || i == 4)) {
-            sigma[i] = -(it->stress(i))/1.5;
+            sigma[i] = -(it->stress(i))/1.7;
         }
         else {
-            sigma[i] = it->stress(i)/1.5;
+            sigma[i] = it->stress(i)/1.7;
         }
     }
 }
