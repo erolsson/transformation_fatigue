@@ -83,6 +83,7 @@ def create_roller_model(simulation_file_name, geometry_file_name, material, p0):
         file_lines.append('\t*Instance, name=roller_' + side + ', part=roller_' + side)
         file_lines.append('\t\t0., 0., ' + str(d))
         file_lines.append('\t*End instance')
+    file_lines.append('\t*Instance, name=rigid_plane, part=rigid_plane')
     file_lines.append('\t\t*Node, nset=plane_ref_pt')
     file_lines.append('\t\t\t1, 0., 0., 0.')
     file_lines.append('\t\t*Surface, type=CYLINDER, name=rigid_plane')
