@@ -9,6 +9,7 @@ from scipy.special import ellipe, ellipk
 
 from transformation_fatigue.input_file_reader.input_file_reader import InputFileReader
 from transformation_fatigue.materials.materials import SS2506_no_trans
+from transformation_fatigue.materials.materials import SS2506
 
 
 def calculate_elliptic_eccentricity(R1, R2):
@@ -183,3 +184,4 @@ if __name__ == '__main__':
 
     model_file = os.path.expanduser('~/python_fatigue/rolling_contact/input_files/roller.inp')
     create_roller_model(simulation_directory + 'roller_model_no_trans.inp', model_file, SS2506_no_trans, 2000, 7)
+    create_roller_model(simulation_directory + 'roller_model.inp', model_file, SS2506, 2000, 7)
