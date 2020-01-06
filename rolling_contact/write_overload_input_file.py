@@ -129,8 +129,6 @@ def create_roller_model(simulation_file_name, geometry_file_name, material, p0):
     file_lines.append('\t*Contact Controls, Stabilize')
     file_lines.append('\t*Contact Interference, shrink')
     file_lines.append('\t\tcontact_surface, rigid_plane.rigid_plane')
-    file_lines.append('\t*Boundary, type=velocity')
-    file_lines.append('\t\troller_ref_node, 6, 6, 0.')
     file_lines.append('\t*Output, field')
     file_lines.append('\t\t*Element Output')
     file_lines.append('\t\t\tS, SDV')
