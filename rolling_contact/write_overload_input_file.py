@@ -180,6 +180,6 @@ if __name__ == '__main__':
 
             shutil.copyfile('run_overload.sh', simulation_directory + 'run_overload.sh')
             os.chdir(simulation_directory)
-            chmod = subprocess.Popen('chmod u+x run_overload.sh')
+            chmod = subprocess.Popen('chmod u+x run_overload.sh', shell=True)
             chmod.wait()
             os.chdir(run_directory)
