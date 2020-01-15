@@ -65,6 +65,8 @@ public:
     [[nodiscard]] const double& g_mean() const { return data_[27 + 4*back_stresses_]; } ;
     [[nodiscard]] const double& g_std() const { return data_[28 + 4*back_stresses_]; } ;
 
+    [[nodiscard]] const double& M_sigma() const { return data_[29 + 4*back_stresses_]; } ;
+    [[nodiscard]] const double& M_d() const { return data_[30 + 4*back_stresses_]; } ;
 
     [[nodiscard]] bool plastic() const { return sy0M() > 0 && sy0A() > 0; }
     [[nodiscard]] bool kinematic_hardening() const { return back_stresses_ > 0; }

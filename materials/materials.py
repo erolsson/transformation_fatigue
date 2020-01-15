@@ -58,6 +58,9 @@ class ElasticPlasticTransformMaterial:
 
         self.fsb0 = fsb0
 
+        self.M_sigma = 22
+        self.M_d = 383.585
+
         self.back_stresses = Cm.shape[0]
         self.name = name
         if isinstance(Mss, numbers.Real):
@@ -77,7 +80,8 @@ class ElasticPlasticTransformMaterial:
             kinematic_hardening_params += [C[0], C[1], g[0], g[1]]
         parameters += kinematic_hardening_params + [self.sde, self.R1, self.R2, self.dV, self.Ms, self.Mss,
                                                     self.k, self.a1, self.a2, self.a3, self.beta, self.alpha,
-                                                    self.n, self.g0, self.g1, self.g2, self.g_mean, self.g_std]
+                                                    self.n, self.g0, self.g1, self.g2, self.g_mean, self.g_std,
+                                                    self.M_sigma, self.M_d]
 
         file_lines = ['*Material, name=' + self.name,
                       '\t*Depvar',
@@ -145,12 +149,11 @@ SS2506 = ElasticPlasticTransformMaterial(E=205e3, v=0.27, sy0M=(-662.15481215, 2
                                          gamma_m=np.array([(119.64906081, -0.10120371),
                                                            (2077.94869114, -2.30167388),
                                                            (19024.56244157, -23.72193205)]),
-                                         a=0.04174*np.array([1., 2., 0.])/3,
+                                         a=0.04174*np.array([1., 1., 0.])/2,
                                          Ms=166.69903883197608, name='SS2506', Mss=-43.44, fM=0.8,
-                                         beta=306.6016112399211, alpha=115.6731692918583, n=4., sde=0.0,
-                                         g0=3.077651873747456,
-                                         g1=68.83381914607745, g2=0, g_mean=0, g_std=29.5540022577844,
-                                         fsb0=0.22758101605717712)
+                                         beta=841.893, alpha=129.5, n=4., sde=0.00,
+                                         g0=-1.918/2, g1=5.18, g2=1.918/2., g_mean=0, g_std=1.,
+                                         fsb0=0.12948)
 
 SS2506.k = 0.0132
 SS2506.R1 = 0.035577
