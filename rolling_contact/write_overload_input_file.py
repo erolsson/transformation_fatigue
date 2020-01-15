@@ -172,7 +172,7 @@ if __name__ == '__main__':
 
             model_file = os.path.expanduser('~/python_fatigue/rolling_contact/input_files/roller.inp')
 
-            create_roller_model(simulation_directory + 'overload.inp', model_file, SS2506_no_trans,
+            create_roller_model(simulation_directory + 'overload.inp', model_file, SS2506,
                                 overload*1000, temp)
 
             shutil.copyfile(heat_treatment_directory + 'Toolbox_Cooling_roller.htd',
