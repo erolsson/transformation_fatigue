@@ -161,10 +161,10 @@ def create_roller_model(simulation_file_name, geometry_file_name, material, p0, 
 
 if __name__ == '__main__':
     heat_treatment_directory = os.path.expanduser('~/rolling_contact/2/')
-    for temp in [-20, 0., 22, 90]:
+    for temp in [-20, 0, 22, 90]:
         for overload in [2., 2.5, 3.]:
             simulation_directory = os.path.expanduser('~/rolling_contact/mechanical_FEM/' + str(temp) + 'C_'
-                                                      + str(overload) + 'GPa_overload_2GPa_nom/')
+                                                      + str(overload).replace('.', '_') + 'GPa_overload_2GPa_nom/')
             if not os.path.isdir(simulation_directory):
                 os.makedirs(simulation_directory)
 
@@ -173,8 +173,6 @@ if __name__ == '__main__':
             create_roller_model(simulation_directory + 'overload.inp', model_file, SS2506_no_trans,
                                 overload*1000, temp)
 
-            shutil.copyfile(heat_treatment_directory + 'Toolbox_Cooling_roller.htd',
-                            simulation_directory + 'overload.htd')
             shutil.copyfile(heat_treatment_directory + 'Toolbox_Cooling_roller.htd',
                             simulation_directory + 'overload.htd')
 
