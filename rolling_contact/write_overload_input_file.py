@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import os
+import shutil
 
 import numpy as np
 
@@ -159,6 +160,7 @@ def create_roller_model(simulation_file_name, geometry_file_name, material, p0, 
 
 
 if __name__ == '__main__':
+    heat_treatment_directory = os.path.expanduser('~/rolling_contact/1/')
     for temp in [-20, 0., 22, 90]:
         for overload in [2., 2.5, 3.]:
             simulation_directory = os.path.expanduser('~/rolling_contact/mechanical_FEM/' + str(temp) + 'C_'
@@ -167,6 +169,14 @@ if __name__ == '__main__':
                 os.makedirs(simulation_directory)
 
             model_file = os.path.expanduser('~/python_fatigue/rolling_contact/input_files/roller.inp')
-            create_roller_model(simulation_directory + 'overload_no_trans.inp', model_file, SS2506_no_trans,
+
+            create_roller_model(simulation_directory + 'overload.inp', model_file, SS2506_no_trans,
                                 overload*1000, temp)
+
+            shutil.copyfile(heat_treatment_directory + 'Toolbox_Cooling_roller.htd',
+                            simulation_directory + 'overload.htd')
+            shutil.copyfile(heat_treatment_directory + 'Toolbox_Cooling_roller.htd',
+                            simulation_directory + 'overload.htd')
+
+            shutil.copyfile('run_overload.sh', simulation_directory + 'run_overload.sh')
 
