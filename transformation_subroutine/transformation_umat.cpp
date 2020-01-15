@@ -214,7 +214,8 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
         Vector6 nij2 = 1.5*stilde2;
         if (s_eq_2 > 1e-12) {
             nij2 /= s_eq_2;
-        } else {
+        }
+        else {
             nij2 *= 0;
         }
 
@@ -444,9 +445,13 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
 
         if (DfM_stress > 0) {
             Fskl = bij;
-            Lekl = 1./A/B*(2*G*nij2 + params.a()*K*delta_ij);
-            Lskl = 1./A*dfdDfM*bij;
-        } else {
+            if (DL > 0) {
+                Lekl = 1./A/B*(2*G*nij2 + params.a()*K*delta_ij);
+                Lskl = 1./A*dfdDfM*bij;
+            }
+        }
+
+        else {
             double B1 = (1 - state.fM())*(1 - state.other_phases())/(1 + As*DL + Bs*DSigma);
             double B2 = B1*(As + DL*dAsdDL);
             Lekl = (2*G*nij2 + params.a()*K*delta_ij)/(A*B - B*B2*dfdDfM);
