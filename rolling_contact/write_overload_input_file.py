@@ -159,10 +159,14 @@ def create_roller_model(simulation_file_name, geometry_file_name, material, p0, 
 
 
 if __name__ == '__main__':
-    simulation_directory = os.path.expanduser('~/rolling_contact/mechanical_FEM/2_5GPa_overload_2GPa_nom/')
-    if not os.path.isdir(simulation_directory):
-        os.makedirs(simulation_directory)
+    for temp in [-20, 0., 22, 90]:
+        for overload in [2., 2.5, 3.]:
+            simulation_directory = os.path.expanduser('~/rolling_contact/mechanical_FEM/' + str(temp) + 'C_'
+                                                      + str(overload) + 'GPa_overload_2GPa_nom/')
+            if not os.path.isdir(simulation_directory):
+                os.makedirs(simulation_directory)
 
-    model_file = os.path.expanduser('~/python_fatigue/rolling_contact/input_files/roller.inp')
-    create_roller_model(simulation_directory + 'overload_no_trans.inp', model_file, SS2506_no_trans, 2500)
-    create_roller_model(simulation_directory + 'overload.inp', model_file, SS2506, 2500)
+            model_file = os.path.expanduser('~/python_fatigue/rolling_contact/input_files/roller.inp')
+            create_roller_model(simulation_directory + 'overload_no_trans.inp', model_file, SS2506_no_trans,
+                                overload*1000, temp)
+
