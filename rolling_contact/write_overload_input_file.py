@@ -160,7 +160,7 @@ def create_roller_model(simulation_file_name, geometry_file_name, material, p0, 
 
 
 if __name__ == '__main__':
-    heat_treatment_directory = os.path.expanduser('~/rolling_contact/1/')
+    heat_treatment_directory = os.path.expanduser('~/rolling_contact/2/')
     for temp in [-20, 0., 22, 90]:
         for overload in [2., 2.5, 3.]:
             simulation_directory = os.path.expanduser('~/rolling_contact/mechanical_FEM/' + str(temp) + 'C_'
