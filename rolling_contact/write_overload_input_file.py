@@ -2,6 +2,7 @@ from __future__ import print_function
 
 import os
 import shutil
+import subprocess
 
 import numpy as np
 
@@ -161,6 +162,7 @@ def create_roller_model(simulation_file_name, geometry_file_name, material, p0, 
 
 if __name__ == '__main__':
     heat_treatment_directory = os.path.expanduser('~/rolling_contact/2/')
+    run_directory = os.getcwd()
     for temp in [-20, 0, 22, 90]:
         for overload in [2., 2.5, 3.]:
             simulation_directory = os.path.expanduser('~/rolling_contact/mechanical_FEM/' + str(temp) + 'C_'
@@ -177,4 +179,7 @@ if __name__ == '__main__':
                             simulation_directory + 'overload.htd')
 
             shutil.copyfile('run_overload.sh', simulation_directory + 'run_overload.sh')
-
+            os.chdir(simulation_directory)
+            chmod = subprocess.Popen('chmod u+x run_overload.sh')
+            chmod.wait()
+            os.chdir(run_directory)
