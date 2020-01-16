@@ -298,9 +298,9 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                 DSigma = Sigma*(DI1/I1_2 - DvM/s_vM_2);
                 double n = params.n();
                 double dSigmadDL = -Sigma/s_vM_2*double_contract(dsvMdsij, dsijdDL);
-                double dSigmadDfM = 1/s_vM_2*(3*K*params.dV() - Sigma*double_contract(dsvMdsij, dsijdDfM));
+                double dSigmadDfM = 1/s_vM_2*(-3*K*params.dV() - Sigma*double_contract(dsvMdsij, dsijdDfM));
                 double dDSigmadDL = -DSigma/DI1*double_contract(dsvMdsij, dsijdDL);
-                double dDSigmadDfM = 1/DvM*(3*K*params.dV() - DSigma*double_contract(dsvMdsij, dsijdDfM));
+                double dDSigmadDfM = 1/DvM*(-3*K*params.dV() - DSigma*double_contract(dsvMdsij, dsijdDfM));
                 fsb2 = 1 - (1 - state.fsb0())*exp(-params.alpha()*(state.ep_eff() + DL));
                 dfsb2dDL = params.alpha()*(1 - state.fsb0())*exp(-params.alpha()*(state.ep_eff() + DL));
 
@@ -386,13 +386,12 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                 if ((DL - dDL < 0 || DfM_strain - dDfM_strain < 0) && stress_transformations) {
                     DL = 0;
                     dDL = 0;
-                    if (stress_transformations) {
-                        dDfM_strain = 0;
-                        DfM_strain = 0;
-                        dDfM_stress = h_stress/dh_stressDfM;
-                    }
+                    dDfM_strain = 0;
+                    DfM_strain = 0;
+                    dDfM_stress = h_stress/dh_stressDfM;
+
                 }
-                if (DfM_stress - dDfM_stress < 0 && plastic) {
+                if (DfM_stress - dDfM_stress < 0) {
                     DfM_stress = 0;
                     dDfM_stress = 0;
                     double det = dfdDL*(dh_strainDfM - 1) - dfdDfM*dh_straindDL;
