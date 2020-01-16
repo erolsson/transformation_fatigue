@@ -293,16 +293,14 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                 // print_at_time("Entering plastic section", time[1], noel, npt);
                 Sigma = I1_2/s_vM_2;
                 double DI1 = 3*K*(de[0] + de[1] + de[2] - DfM*params.dV());
-                double DvM = 1.5/s_vM_2*double_contract(deviator(sigma_t),
-                                                        static_cast<Vector6>(2*G*
-                                                                             (deviator(static_cast<Vector6>(de)) -
-                                                                              (DL + RA*DfM)*nij2)));
+                Vector6 Dsij = static_cast<Vector6>(2*G*(deviator(static_cast<Vector6>(de)) - (DL + RA*DfM)*nij2));
+                double DvM = 1.5/s_vM_2*double_contract(deviator(sigma_2), Dsij);
                 DSigma = Sigma*(DI1/I1_2 - DvM/s_vM_2);
                 double n = params.n();
                 double dSigmadDL = -Sigma/s_vM_2*double_contract(dsvMdsij, dsijdDL);
                 double dSigmadDfM = 1/s_vM_2*(3*K*params.dV() - Sigma*double_contract(dsvMdsij, dsijdDfM));
-                double dDSigmadDL = dSigmadDL*(DI1/I1_2 - DvM/s_vM_2);
-                double dDSigmadDfM = dSigmadDfM*(DI1/I1_2 - DvM/s_vM_2);
+                double dDSigmadDL = -DSigma/DI1*double_contract(dsvMdsij, dsijdDL);
+                double dDSigmadDfM = 1/DvM*(3*K*params.dV() - DSigma*double_contract(dsvMdsij, dsijdDfM));
                 fsb2 = 1 - (1 - state.fsb0())*exp(-params.alpha()*(state.ep_eff() + DL));
                 dfsb2dDL = params.alpha()*(1 - state.fsb0())*exp(-params.alpha()*(state.ep_eff() + DL));
 
