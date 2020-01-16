@@ -423,6 +423,8 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                 print_for_position("dh_straindDfM: ", dh_strainDfM, noel, npt);
                 print_for_position("h_stress: ", h_stress, noel, npt);
                 print_for_position("dh_stressDfM: ", dh_stressDfM, noel, npt);
+                print_for_position("Sigma1: ", Sigma1, noel, npt);
+                print_for_position("Sigma2: ", Sigma, noel, npt);
                 return;
             }
         }
