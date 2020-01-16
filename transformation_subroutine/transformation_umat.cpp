@@ -138,6 +138,10 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
     // print_at_time("setting state", time[1], noel, npt);
     Eigen::Map<Vector6> stress_vec(stress);
 
+    double I1_1 = stress_vec[0] + stress_vec[1] + stress_vec[2];
+    double s_vM_1 = von_Mises(static_cast<Vector6>(stress_vec));
+    double Sigma1 = I1_1/s_vM_1;
+
     const Eigen::Map<Vector6> de(dstran);
     // print_for_position("strain_inc: ", de.transpose().format(CleanFmt), noel, npt);
     Eigen::Map<Matrix6x6> D_alg(ddsdde);
@@ -292,15 +296,15 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
             if (plastic) {
                 // print_at_time("Entering plastic section", time[1], noel, npt);
                 Sigma = I1_2/s_vM_2;
-                double DI1 = 3*K*(de[0] + de[1] + de[2] - DfM*params.dV());
-                Vector6 Dsij = static_cast<Vector6>(2*G*(deviator(static_cast<Vector6>(de)) - (DL + RA*DfM)*nij2));
-                double DvM = 1.5/s_vM_2*double_contract(deviator(sigma_2), Dsij);
-                DSigma = Sigma*(DI1/I1_2 - DvM/s_vM_2);
+                // double DI1 = 3*K*(de[0] + de[1] + de[2] - DfM*params.dV());
+                // Vector6 Dsij = static_cast<Vector6>(2*G*(deviator(static_cast<Vector6>(de)) - (DL + RA*DfM)*nij2));
+                // double DvM = 1.5/s_vM_2*double_contract(deviator(sigma_2), Dsij);
+                DSigma = Sigma - Sigma1;
                 double n = params.n();
                 double dSigmadDL = -Sigma/s_vM_2*double_contract(dsvMdsij, dsijdDL);
                 double dSigmadDfM = 1/s_vM_2*(-3*K*params.dV() - Sigma*double_contract(dsvMdsij, dsijdDfM));
-                double dDSigmadDL = -DSigma/DvM*double_contract(dsvMdsij, dsijdDL);
-                double dDSigmadDfM = 1/DvM*(-3*K*params.dV() - DSigma*double_contract(dsvMdsij, dsijdDfM));
+                double dDSigmadDL = dSigmadDL;
+                double dDSigmadDfM = dSigmadDfM;
                 fsb2 = 1 - (1 - state.fsb0())*exp(-params.alpha()*(state.ep_eff() + DL));
                 dfsb2dDL = params.alpha()*(1 - state.fsb0())*exp(-params.alpha()*(state.ep_eff() + DL));
 
