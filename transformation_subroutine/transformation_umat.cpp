@@ -125,7 +125,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
         const int& layer, const int& kspt, const int& kstep, const int& kinc, short cmname_len) {
 
     feenableexcept(FE_INVALID | FE_OVERFLOW);
-    std::lock_guard<std::mutex> lock(print_mutex);
+    // std::lock_guard<std::mutex> lock(print_mutex);
     // print_at_time("starting", time[1], noel, npt);
     using Matrix6x6 = Eigen::Matrix<double, 6, 6>;
     using Vector6 = Eigen::Matrix<double, 6, 1>;
@@ -137,7 +137,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
     Eigen::Map<Vector6> stress_vec(stress);
 
     const Eigen::Map<Vector6> de(dstran);
-    print_for_position("strain_inc: ", de.transpose().format(CleanFmt), noel, npt);
+    // print_for_position("strain_inc: ", de.transpose().format(CleanFmt), noel, npt);
     Eigen::Map<Matrix6x6> D_alg(ddsdde);
 
     // Elastic parameters
@@ -161,12 +161,12 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
     bool elastic = !plastic && !stress_transformations;
 
     if (elastic) {     // Use the trial stress as the stress and the elastic stiffness matrix as the tangent
-        print_at_time("Elastic increment", time[1], noel, npt);
+        // print_at_time("Elastic increment", time[1], noel, npt);
         D_alg = Del;
         stress_vec = sigma_t;
     }
     else {  // Inelastic deformations
-        print_at_time("Non elastic increment", time[1], noel, npt);
+        // print_at_time("Non elastic increment", time[1], noel, npt);
         // Increment in plastic strain and martensitic phase fraction
         Vector6 sigma_2 = sigma_t;
         Vector6 s = deviator(sigma_2);
@@ -230,7 +230,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
         unsigned iter = 0;
         while (residual > 1e-15) {
             ++iter;
-            print_at_time("Newton loop iter " + std::to_string(iter), time[1], noel, npt);
+            // print_at_time("Newton loop iter " + std::to_string(iter), time[1], noel, npt);
             double fM2 = state.fM() + DfM;
             sigma_2 = sigma_t;
 
@@ -288,7 +288,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
 
             // h_strain and derivatives of h_strain
             if (plastic) {
-                print_at_time("Entering plastic section", time[1], noel, npt);
+                // print_at_time("Entering plastic section", time[1], noel, npt);
                 Sigma = I1_2/s_vM_2;
                 double DI1 = 3*K*(de[0] + de[1] + de[2] - DfM*params.dV());
                 double DvM = 1.5/s_vM_2*double_contract(deviator(sigma_t),
@@ -326,11 +326,11 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                 dh_strainDfM = -(As*DL + Bs*DSigma) +
                                (1 - fM2)*(1 - state.other_phases())*(DL*dAsdfM + Bs*dDSigmadDfM + DSigma*dBsdfM);
                 // print_at_time("Plastic section done", time[1], noel, npt);
-                print_for_position("Plasticity done", "", noel, npt);
+                // print_for_position("Plasticity done", "", noel, npt);
             }
 
             if (stress_transformations) {
-                print_for_position("Stress transformation: ", "", noel, npt);
+                // print_for_position("Stress transformation: ", "", noel, npt);
                 h_stress = stress_transformation_function(sigma_2, temp, params, state, fM2);
                 bij = params.a1()*delta_ij;
                 if (J2 > 1e-12) {
@@ -339,7 +339,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                 double exp_fun = 1 - (h_stress + fM2);
                 bij *= exp_fun*params.k();
                 dh_stressDfM = double_contract(bij, dsijdDfM) - 1;
-                print_for_position("Stress transformation done: ", "", noel, npt);
+                // print_for_position("Stress transformation done: ", "", noel, npt);
             }
 
             if (!plastic) {
@@ -347,9 +347,9 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
             }
             else {
                 if (!stress_transformations && !strain_transformations) {
-                    print_for_position("Only plastic", "", noel, npt);
-                    print_for_position("f: ", f, noel, npt);
-                    print_for_position("dfdDL: ", dfdDL, noel, npt);
+                    // print_for_position("Only plastic", "", noel, npt);
+                    // print_for_position("f: ", f, noel, npt);
+                    // print_for_position("dfdDL: ", dfdDL, noel, npt);
                     if (dfdDL != 0) {
                         dDL = f/dfdDL;
                     }
@@ -359,7 +359,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                     }
                 }
                 else if (!stress_transformations) {
-                    print_for_position("Strain transformations", "", noel, npt);
+                    // print_for_position("Strain transformations", "", noel, npt);
                     double det = dfdDL*(dh_strainDfM - 1) - dfdDfM*dh_straindDL;
                     dDL = ((dh_strainDfM - 1)*f - dfdDfM*h_strain)/det;
                     dDfM_strain = (-dh_straindDL*f + dfdDL*h_strain)/det;
@@ -398,7 +398,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                     dDfM_strain = (-dh_straindDL*f + dfdDL*h_strain)/det;
                 }
             }
-            print_for_position("Done with updating iteration ", iter, noel, npt);
+            // print_for_position("Done with updating iteration ", iter, noel, npt);
 
             DL -= dDL;
             DfM_stress -= dDfM_stress;
