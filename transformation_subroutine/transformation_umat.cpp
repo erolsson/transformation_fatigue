@@ -277,12 +277,13 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
             ds_eq_2_dfM = -3*G*RA/B;
             dfdDfM = ds_eq_2_dfM - 3*params.a()*K*params.dV() - (params.sy0M() - params.sy0A());
             sigma_2 -= K*params.dV()*delta_ij*DfM;
-            Vector6 dsijdDfM = -K*params.dV()*delta_ij;
 
+            Vector6 dsijdDfM = Vector6::Zero();
             if (s_eq_prime > 1e-12) {
                 sigma_2 -= 2*G*(DL + RA*DfM)*nij2;
-                dsijdDfM -= 2*G*(RA + DfM*params.R2()/params.sy0A()*ds_eq_2_dfM)*nij2;
+                dsijdDfM = -2*G*(RA + DfM*params.R2()/params.sy0A()*ds_eq_2_dfM)*nij2;
             }
+            Vector6 dsigma2_dDfM = -K*params.dV()*delta_ij + dsijdDfM;
             Vector6 dsijdDL = -2*G*(1 + DfM*params.R2()/params.sy0A()*ds_eq_2_dDL)*nij2;
             // Calculating the von Mises stress at step 2
             s = deviator(sigma_2);
@@ -290,7 +291,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
             s_vM_2 = sqrt(3*J2);
             dsvMdsij = Vector6::Zero();
             if (J2 > 1e-12)
-                dsvMdsij = 1.5*s/sqrt(3*J2);
+                dsvMdsij = 1.5*s/s_vM_2;
 
             // h_strain and derivatives of h_strain
             if (plastic) {
@@ -345,7 +346,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                 }
                 double exp_fun = 1 - (h_stress + fM2);
                 bij *= exp_fun*params.k();
-                dh_stressDfM = double_contract(bij, dsijdDfM) - 1;
+                dh_stressDfM = double_contract(bij, dsigma2_dDfM) - 1;
 
                 // print_for_position("h_stress: ", h_stress, noel, npt);
                 // print_for_position("dh_stressDfM: ", dh_stressDfM, noel, npt);
@@ -415,7 +416,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
             DfM_strain -= dDfM_strain;
             DfM = DfM_stress + DfM_strain;
             residual = abs(dDL) + abs(dDfM_stress) + abs(dDfM_strain);
-            if (iter > 25) {
+            if (iter > 50) {
                 pnewdt = 0.25;
                 print_for_position("f: ", f, noel, npt);
                 print_for_position("dfdDL: ", dfdDL, noel, npt);
