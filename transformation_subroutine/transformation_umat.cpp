@@ -127,7 +127,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
         const int& layer, const int& kspt, const int& kstep, const int& kinc, short cmname_len) {
 
     feenableexcept(FE_INVALID | FE_OVERFLOW);
-    std::lock_guard<std::mutex> lock(print_mutex);
+    // std::lock_guard<std::mutex> lock(print_mutex);
     // print_at_time("starting", time[1], noel, npt);
     using Matrix6x6 = Eigen::Matrix<double, 6, 6>;
     using Vector6 = Eigen::Matrix<double, 6, 1>;
@@ -342,8 +342,8 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                 bij *= exp_fun*params.k();
                 dh_stressDfM = double_contract(bij, dsijdDfM) - 1;
 
-                print_for_position("h_stress: ", h_stress, noel, npt);
-                print_for_position("dh_stressDfM: ", dh_stressDfM, noel, npt);
+                // print_for_position("h_stress: ", h_stress, noel, npt);
+                // print_for_position("dh_stressDfM: ", dh_stressDfM, noel, npt);
             }
 
             if (!plastic) {
@@ -406,7 +406,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
 
             DL -= dDL;
             DfM_stress -= dDfM_stress;
-            print_for_position("dDfM_stress", dDfM_stress, noel, npt);
+            // print_for_position("dDfM_stress", dDfM_stress, noel, npt);
             DfM_strain -= dDfM_strain;
             DfM = DfM_stress + DfM_strain;
             residual = abs(dDL) + abs(dDfM_stress) + abs(dDfM_strain);
@@ -417,7 +417,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
         }
 
         // Updating state variables
-        print_for_position("Increase in martensite", DfM, noel, npt);
+        // print_for_position("Increase in martensite", DfM, noel, npt);
         state.ep_eff() += DL;
         state.q_martensite() += DfM;
         state.austenite() -= DfM;
