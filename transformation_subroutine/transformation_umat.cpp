@@ -330,6 +330,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                 dh_strainDfM = -(As*DL + Bs*DSigma)*(1 - state.other_phases()) +
                                (1 - fM2)*(1 - state.other_phases())*(DL*dAsdfM + Bs*dDSigmadDfM + DSigma*dBsdfM);
                 // print_at_time("Plastic section done", time[1], noel, npt);
+                print_for_position("h_strain", h_strain, noel, npt);
                 print_for_position("Bs", Bs, noel, npt);
                 print_for_position("dBsdDL", dBsdDL, noel, npt);
                 print_for_position("dBsdfM", dBsdfM, noel, npt);
