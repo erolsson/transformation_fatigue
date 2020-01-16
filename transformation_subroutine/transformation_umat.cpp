@@ -321,13 +321,13 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                 dAsdDL = dcdDL*P + c*params.g2()*pdf*dSigmadDL;
                 double dAsdfM = c*params.g2()*pdf*dSigmadDfM;
 
-                double dBsdDL = (pdf*n*pow(fsb2, n - 1)*dfsb2dDL
-                                 - Bs*norm_drivning_force/params.g_std()*params.g2()*dSigmadDL)*(DSigma > 0);
+                double dBsdDL = (pdf*n*pow(fsb2, n - 1)*dfsb2dDL*(DSigma > 0)
+                                 - Bs*norm_drivning_force/params.g_std()*params.g2()*dSigmadDL);
                 double dBsdfM = -Bs*norm_drivning_force/params.g_std()*params.g2()*dSigmadDfM;
                 h_strain = (1 - fM2)*(1 - state.other_phases())*(As*DL + Bs*DSigma) - DfM_strain;
                 dh_straindDL =
                         (1 - fM2)*(1 - state.other_phases())*(As + DL*dAsdDL + Bs*dDSigmadDL + DSigma*dBsdDL);
-                dh_strainDfM = -(As*DL + Bs*DSigma) +
+                dh_strainDfM = -(As*DL + Bs*DSigma)*(1 - state.other_phases()) +
                                (1 - fM2)*(1 - state.other_phases())*(DL*dAsdfM + Bs*dDSigmadDfM + DSigma*dBsdfM);
                 // print_at_time("Plastic section done", time[1], noel, npt);
                 // print_for_position("Plasticity done", "", noel, npt);
