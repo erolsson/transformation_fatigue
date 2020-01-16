@@ -360,6 +360,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                         dDL = f/dfdDL;
                     }
                     else {
+                        std::cout << "Zero tangent" << std::endl;
                         pnewdt = 0.25;
                         return;
                     }
@@ -413,6 +414,15 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
             residual = abs(dDL) + abs(dDfM_stress) + abs(dDfM_strain);
             if (iter > 25) {
                 pnewdt = 0.25;
+                print_for_position("f: ", f, noel, npt);
+                print_for_position("dfdDL: ", dfdDL, noel, npt);
+                print_for_position("f: ", f, noel, npt);
+                print_for_position("dfdDfM: ", dfdDfM, noel, npt);
+                print_for_position("h_strain: ", h_strain, noel, npt);
+                print_for_position("dh_straindDL: ", dh_straindDL, noel, npt);
+                print_for_position("dh_straindDfM: ", dh_strainDfM, noel, npt);
+                print_for_position("h_stress: ", h_stress, noel, npt);
+                print_for_position("dh_stressDfM: ", dh_stressDfM, noel, npt);
                 return;
             }
         }
