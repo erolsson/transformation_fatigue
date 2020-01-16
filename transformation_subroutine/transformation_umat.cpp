@@ -21,19 +21,21 @@
 const double pi = 3.14159265359;
 std::mutex print_mutex;
 
+
 void print_at_time(const std::string msg, double time, unsigned noel, unsigned npt) {
-    if (time > 0.99) {
+    if (time > -1) {
         std::cout << "Elem: " << noel << " gp: " << npt << " " << msg << std::endl;
     }
 }
 
+/*
 template<typename T>
 void print_for_position(const std::string msg, const T& val, unsigned noel, unsigned npt) {
     //if (noel == 57059 && npt == 5) {
     std::cout << "noel=" << noel << "  gp=" <<  npt << msg << val << std::endl;
     //}
 }
-
+*/
 class State {
 public:
     using Vector6 = Eigen::Matrix<double, 6, 1>;
@@ -339,7 +341,9 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                 double exp_fun = 1 - (h_stress + fM2);
                 bij *= exp_fun*params.k();
                 dh_stressDfM = double_contract(bij, dsijdDfM) - 1;
-                // print_for_position("Stress transformation done: ", "", noel, npt);
+
+                print_at_time("h_stress: ", h_stress, noel, npt);
+                print_at_time("dh_stressDfM: ", dh_stressDfM, noel, npt);
             }
 
             if (!plastic) {
