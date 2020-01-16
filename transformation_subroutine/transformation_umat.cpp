@@ -406,6 +406,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
 
             DL -= dDL;
             DfM_stress -= dDfM_stress;
+            print_for_position("dDfM_stress", dDfM_stress, noel, npt);
             DfM_strain -= dDfM_strain;
             DfM = DfM_stress + DfM_strain;
             residual = abs(dDL) + abs(dDfM_stress) + abs(dDfM_strain);
@@ -416,7 +417,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
         }
 
         // Updating state variables
-        // print_at_time("Updating state var", time[1], noel, npt);
+        print_for_position("Increase in martensite", DfM, noel, npt);
         state.ep_eff() += DL;
         state.q_martensite() += DfM;
         state.austenite() -= DfM;
