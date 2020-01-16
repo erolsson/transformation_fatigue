@@ -234,7 +234,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
         double B = 1;
         double residual = 1e99;
         unsigned iter = 0;
-        while (residual > 1e-15) {
+        while (residual > 1e-12) {
             ++iter;
             // print_at_time("Newton loop iter " + std::to_string(iter), time[1], noel, npt);
             double fM2 = state.fM() + DfM;
@@ -418,7 +418,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
             DfM_strain -= dDfM_strain;
             DfM = DfM_stress + DfM_strain;
             residual = abs(dDL) + abs(dDfM_stress) + abs(dDfM_strain);
-            if (iter > 50) {
+            if (iter > 100) {
                 pnewdt = 0.25;
                 print_for_position("f: ", f, noel, npt);
                 print_for_position("dfdDL: ", dfdDL, noel, npt);
