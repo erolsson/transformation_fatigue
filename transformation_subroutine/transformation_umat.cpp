@@ -29,9 +29,9 @@ void print_at_time(const std::string msg, double time, unsigned noel, unsigned n
 
 template<typename T>
 void print_for_position(const std::string msg, const T& val, unsigned noel, unsigned npt) {
-    if (noel == 57059 && npt == 5) {
-        std::cout << msg << val << std::endl;
-    }
+    //if (noel == 57059 && npt == 5) {
+    //    std::cout << msg << val << std::endl;
+    //}
 }
 
 class State {
