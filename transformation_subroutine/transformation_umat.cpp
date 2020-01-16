@@ -21,21 +21,21 @@
 const double pi = 3.14159265359;
 std::mutex print_mutex;
 
-
+/*
 void print_at_time(const std::string msg, double time, unsigned noel, unsigned npt) {
     if (time > -1) {
         std::cout << "Elem: " << noel << " gp: " << npt << " " << msg << std::endl;
     }
 }
+*/
 
-/*
 template<typename T>
 void print_for_position(const std::string msg, const T& val, unsigned noel, unsigned npt) {
     //if (noel == 57059 && npt == 5) {
-    std::cout << "noel=" << noel << "  gp=" <<  npt << msg << val << std::endl;
+    std::cout << "noel=" << noel << "  gp=" <<  npt << "  " << msg << val << std::endl;
     //}
 }
-*/
+
 class State {
 public:
     using Vector6 = Eigen::Matrix<double, 6, 1>;
@@ -127,7 +127,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
         const int& layer, const int& kspt, const int& kstep, const int& kinc, short cmname_len) {
 
     feenableexcept(FE_INVALID | FE_OVERFLOW);
-    // std::lock_guard<std::mutex> lock(print_mutex);
+    std::lock_guard<std::mutex> lock(print_mutex);
     // print_at_time("starting", time[1], noel, npt);
     using Matrix6x6 = Eigen::Matrix<double, 6, 6>;
     using Vector6 = Eigen::Matrix<double, 6, 1>;
@@ -342,8 +342,8 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                 bij *= exp_fun*params.k();
                 dh_stressDfM = double_contract(bij, dsijdDfM) - 1;
 
-                print_at_time("h_stress: ", h_stress, noel, npt);
-                print_at_time("dh_stressDfM: ", dh_stressDfM, noel, npt);
+                print_for_position("h_stress: ", h_stress, noel, npt);
+                print_for_position("dh_stressDfM: ", dh_stressDfM, noel, npt);
             }
 
             if (!plastic) {
