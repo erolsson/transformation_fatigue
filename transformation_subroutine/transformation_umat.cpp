@@ -31,9 +31,9 @@ void print_at_time(const std::string msg, double time, unsigned noel, unsigned n
 
 template<typename T>
 void print_for_position(const std::string msg, const T& val, unsigned noel, unsigned npt) {
-    if (noel == 6577 && npt == 2) {
+    //if (noel == 6577 && npt == 2) {
         std::cout << "noel=" << noel << "  gp=" <<  npt << "  " << msg << val << std::endl;
-    }
+    //}
 }
 
 class State {
@@ -331,10 +331,12 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                 dh_strainDfM = -(As*DL + Bs*DSigma)*(1 - state.other_phases()) +
                                (1 - fM2)*(1 - state.other_phases())*(DL*dAsdfM + Bs*dDSigmadDfM + DSigma*dBsdfM);
                 // print_at_time("Plastic section done", time[1], noel, npt);
+                /*
                 print_for_position("h_strain", h_strain, noel, npt);
                 print_for_position("Bs", Bs, noel, npt);
                 print_for_position("dBsdDL", dBsdDL, noel, npt);
                 print_for_position("dBsdfM", dBsdfM, noel, npt);
+                 */
             }
 
             if (stress_transformations) {
@@ -420,7 +422,6 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                 pnewdt = 0.25;
                 print_for_position("f: ", f, noel, npt);
                 print_for_position("dfdDL: ", dfdDL, noel, npt);
-                print_for_position("f: ", f, noel, npt);
                 print_for_position("dfdDfM: ", dfdDfM, noel, npt);
                 print_for_position("h_strain: ", h_strain, noel, npt);
                 print_for_position("dh_straindDL: ", dh_straindDL, noel, npt);
