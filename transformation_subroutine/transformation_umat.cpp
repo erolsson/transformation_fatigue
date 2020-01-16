@@ -125,6 +125,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
         const int& layer, const int& kspt, const int& kstep, const int& kinc, short cmname_len) {
 
     feenableexcept(FE_INVALID | FE_OVERFLOW);
+    std::lock_guard<std::mutex> lock(print_mutex);
     // print_at_time("starting", time[1], noel, npt);
     using Matrix6x6 = Eigen::Matrix<double, 6, 6>;
     using Vector6 = Eigen::Matrix<double, 6, 1>;
