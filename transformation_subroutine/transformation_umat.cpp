@@ -376,6 +376,9 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                     double det = dfdDL*(dh_strainDfM - 1) - dfdDfM*dh_straindDL;
                     dDL = ((dh_strainDfM - 1)*f - dfdDfM*h_strain)/det;
                     dDfM_strain = (-dh_straindDL*f + dfdDL*h_strain)/det;
+                    if (abs(det) < 1e-15) {
+                        std::cout << "Zero determinant at " << noel << " " << npt << std::endl;
+                    }
                 }
                 else if (!strain_transformations) {
                     double det = dfdDL*dh_stressDfM - dfdDfM*dh_stressDfM;
@@ -418,7 +421,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
             DfM_strain -= dDfM_strain;
             DfM = DfM_stress + DfM_strain;
             residual = abs(dDL) + abs(dDfM_stress) + abs(dDfM_strain);
-            if (iter > 100) {
+            if (iter > 50) {
                 pnewdt = 0.25;
                 print_for_position("f: ", f, noel, npt);
                 print_for_position("dfdDL: ", dfdDL, noel, npt);
