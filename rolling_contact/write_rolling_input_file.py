@@ -8,9 +8,6 @@ from scipy.optimize import fmin
 from scipy.special import ellipe, ellipk
 
 from transformation_fatigue.input_file_reader.input_file_reader import InputFileReader
-from transformation_fatigue.materials.materials import SS2506_no_trans
-from transformation_fatigue.materials.materials import SS2506
-
 
 def calculate_elliptic_eccentricity(R1, R2):
     if R1 < R2:
@@ -33,7 +30,7 @@ def calculate_elastic_contact_force(R1, R2, p0):
     return F1**6*p0**3*np.pi**3*R0**2/6/E0**2
 
 
-def create_roller_model(simulation_file_name, geometry_file_name, material, p0, rolling_angle):
+def create_roller_model(simulation_file_name, geometry_file_name, p0, rolling_angle):
     reader = InputFileReader()
     reader.read_input_file(geometry_file_name)
 
@@ -63,20 +60,17 @@ def create_roller_model(simulation_file_name, geometry_file_name, material, p0, 
         lines = ['*Part, name=roller_' + side,
                  '\t*Include, Input=roller_part_' + side + '.inc',
                  '\t*Include, Input=roller_sets.inc',
-                 '\t*Solid Section, elset=ALL_ELEMENTS, material=' + material.name,
+                 '\t*Solid Section, elset=ALL_ELEMENTS, material=SS2506',
                  '\t\t1.0',
                  '*End Part']
         file_lines.extend(lines)
     file_lines.append('*Part, name=rigid_plane')
     file_lines.append('*End Part')
 
-    file_lines.extend(material.material_input_file_string())
+    file_lines.append('*Material, name=SS2506')
+    file_lines.append('\t*Elastic')
+    file_lines.append('\t\t205e3, 0.27')
     q = rolling_angle/2*np.pi/180
-    file_lines.append('*Initial Conditions, type=Solution, user')
-    file_lines.append('*Initial Conditions, type=Stress, user')
-    file_lines.append('*Initial conditions, type=temperature')
-    file_lines.append('\tRoller_x_pos.ALL_NODES, 22.')
-    file_lines.append('\tRoller_x_neg.ALL_NODES, 22.')
     file_lines.append('*Assembly, name=rolling_contact_model')
     overlap = 0.001
     d = 20.1 + (20.1*(1 - np.cos(q)) - overlap)*np.cos(q)
@@ -183,5 +177,5 @@ if __name__ == '__main__':
         os.makedirs(simulation_directory)
 
     model_file = os.path.expanduser('~/python_fatigue/rolling_contact/input_files/roller.inp')
-    create_roller_model(simulation_directory + 'roller_model_no_trans.inp', model_file, SS2506_no_trans, 2400, 7)
-    create_roller_model(simulation_directory + 'roller_model.inp', model_file, SS2506, 2400, 7)
+    create_roller_model(simulation_directory + 'roller_model_no_trans.inp', model_file, 2400, 7)
+    create_roller_model(simulation_directory + 'roller_model.inp', model_file, 2400, 7)
