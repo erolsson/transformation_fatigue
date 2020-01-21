@@ -148,7 +148,7 @@ def create_roller_model(simulation_file_name, geometry_file_name, p0, rolling_an
     file_lines.append('\t\t*Contact  Output')
     file_lines.append('\t\t\tCSTRESS')
     file_lines.append('*End step')
-    file_lines.append('*step, name=loading, nlgeom=Yes')
+    file_lines.append('*step, name=rolling, nlgeom=Yes')
     file_lines.append('\t*Static')
     file_lines.append('\t\t1e-2, 1., 1e-12, 1.')
     force = calculate_elastic_contact_force(40.2/2, 46, p0)
