@@ -172,10 +172,10 @@ def create_roller_model(simulation_file_name, geometry_file_name, p0, rolling_an
 
 
 if __name__ == '__main__':
-    simulation_directory = os.path.expanduser('~/rolling_contact/mechanical_FEM/2_4GPa/')
+    simulation_directory = os.path.expanduser('~/rolling_contact/mechanical_FEM/rolling_2GPa/')
     if not os.path.isdir(simulation_directory):
         os.makedirs(simulation_directory)
 
     model_file = os.path.expanduser('~/python_fatigue/rolling_contact/input_files/roller.inp')
-    create_roller_model(simulation_directory + 'roller_model_no_trans.inp', model_file, 2400, 7)
-    create_roller_model(simulation_directory + 'roller_model.inp', model_file, 2400, 7)
+    create_roller_model(simulation_directory + 'roller_model_no_trans.inp', model_file, 2000, 7)
+    create_roller_model(simulation_directory + 'roller_model.inp', model_file, 2000, 7)
