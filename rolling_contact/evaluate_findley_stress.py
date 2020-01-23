@@ -21,6 +21,9 @@ from transformation_fatigue.materials.gear_materials import SteelData
 from transformation_fatigue.multiaxial_fatigue.multiaxial_fatigue_criteria import Findley
 
 
+MechanicalData = namedtuple('MechanicalData', ['odb_file_name', 'step_name', 'frame_number'])
+
+
 def perform_effective_stress_analysis(residual_stress_odb, mechanical_data, effective_stress=Findley,
                                       element_set_name=None,
                                       instance_name=None, cpus=8, pickle_file=None, results_odb_file=None,
@@ -100,6 +103,13 @@ if __name__ == '__main__':
     e_labels = reader.set_data['elset']['fatigue_elements']
     overload_odb = os.path.expanduser('~/rolling_contact/mechanical_FEM/90C_3_0GPa_overload_2GPa_nom/overload.odb')
     rolling_odb = os.path.expanduser('~/rolling_contact/mechanical_FEM/rolling_2GPa/roller_model.odb')
+    results_odb_file = os.path.expanduser('~/rolling_contact/findley.odb')
 
     for odb in [overload_odb, rolling_odb]:
         add_element_set(odb, 'fatigue_elements', e_labels, 'ROLLER_X_POS')
+
+    mechanical_odb_data = [MechanicalData(odb_file_name=rolling_odb,
+                                          step_name='rolling', frame_number=i) for i in range(10)]
+    perform_effective_stress_analysis(overload_odb, mechanical_odb_data, element_set_name='fatigue_elements',
+                                      instance_name='ROLLER_X_POS', pickle_file='findley_trans.pkl',
+                                      results_odb_file=results_odb_file, results_odb_step_name='transformation')
