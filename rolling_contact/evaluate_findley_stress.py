@@ -5,10 +5,6 @@ import odbAccess
 from collections import namedtuple
 import pickle
 import os
-import sys
-
-# noinspection PyUnresolvedReferences
-import set_path  # noqa
 
 import numpy as np
 
