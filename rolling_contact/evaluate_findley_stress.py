@@ -60,6 +60,7 @@ def perform_effective_stress_analysis(residual_stress_odb, mechanical_data, effe
 
     residual_stresses = read_field_from_odb('S', residual_stress_odb, set_name=element_set_name,
                                             instance_name=instance_name)
+    print("Maximum residual stress", np.max([residual_stresses[:, 2]]))
 
     hardness_hv = read_field_from_odb('SDV_HARDNESS', residual_stress_odb, set_name=element_set_name,
                                       instance_name=instance_name)
