@@ -1,6 +1,6 @@
 from collections import namedtuple
 
-from multiaxial_fatigue.multiaxial_fatigue_criteria import Findley
+from transformation_fatigue.multiaxial_fatigue.multiaxial_fatigue_criteria import Findley
 
 
 SteelData = namedtuple('Steel_data', ['HV'])
