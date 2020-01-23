@@ -11,6 +11,7 @@ import numpy as np
 from case_hardening_toolbox.abaqus_functions.odb_io_functions import read_field_from_odb
 from case_hardening_toolbox.abaqus_functions.odb_io_functions import write_field_to_odb
 from case_hardening_toolbox.abaqus_functions.create_empty_odb import create_empty_odb
+from case_hardening_toolbox.abaqus_functions.odb_io_functions import add_element_set
 
 from case_hardening_toolbox.input_file_reader.input_file_reader import InputFileReader
 
@@ -96,4 +97,9 @@ def perform_effective_stress_analysis(residual_stress_odb, mechanical_data, effe
 if __name__ == '__main__':
     reader = InputFileReader()
     reader.read_input_file(os.path.expanduser('~/python_fatigue/rolling_contact/input_files/roller.inp'))
-    print(len(reader.set_data['elset']['fatigue_elements']))
+    e_labels = reader.set_data['elset']['fatigue_elements']
+    overload_odb = os.path.expanduser('~/rolling_contact/mechanical_FEM/90C_3_0GPa_overload_2GPa_nom/overload.odb')
+    rolling_odb = os.path.expanduser('~/rolling_contact/mechanical_FEM/rolling_2GPa/roller_model.odb')
+
+    for odb in [overload_odb, rolling_odb]:
+        add_element_set(odb, 'fatigue_elements', e_labels, 'ROLLER_X_POS')
