@@ -14,10 +14,11 @@ from case_hardening_toolbox.abaqus_functions.create_empty_odb import create_empt
 
 from case_hardening_toolbox.input_file_reader.input_file_reader import InputFileReader
 
-from materials.gear_materials import SS2506
-from materials.gear_materials import SteelData
+from transformation_fatigue.materials.gear_materials import SS2506
+from transformation_fatigue.materials.gear_materials import SteelData
 
-from multiaxial_fatigue.multiaxial_fatigue_criteria import Findley
+from transformation_fatigue.multiaxial_fatigue.multiaxial_fatigue_criteria import Findley
+
 
 def perform_effective_stress_analysis(residual_stress_odb, mechanical_data, effective_stress=Findley,
                                       element_set_name=None,
