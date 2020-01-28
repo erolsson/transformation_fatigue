@@ -109,7 +109,7 @@ if __name__ == '__main__':
     rolling_odb = os.path.expanduser('~/rolling_contact/mechanical_FEM/rolling_2GPa/roller_model.odb')
     results_odb_file = os.path.expanduser('~/rolling_contact/findley_smin_10MPa_' + temperature + '_' +
                                           overload + '.odb')
-    pickle_file = os.path.expanduser('~/rolling_contact/findley_' + temperature + '_' + overload + '.pkl')
+    pickle_file = os.path.expanduser('~/rolling_contact/findley_smin_' + temperature + '_' + overload + '.pkl')
     for odb in [overload_odb, rolling_odb]:
         add_element_set(odb, 'fatigue_elements', e_labels, 'ROLLER_X_POS')
 
