@@ -99,7 +99,7 @@ def perform_effective_stress_analysis(residual_stress_odb, mechanical_data, effe
 
 
 if __name__ == '__main__':
-    temperature = '22C'
+    temperature = 'no_trans'
     overload = '2_5GPa'
     reader = InputFileReader()
     reader.read_input_file(os.path.expanduser('~/python_fatigue/rolling_contact/input_files/roller.inp'))
