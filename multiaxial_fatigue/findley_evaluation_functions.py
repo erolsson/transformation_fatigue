@@ -208,7 +208,7 @@ def eval_findley(a_cp, stress_matrix, search_grid, mod=False):
 
                 # Store result if the are larger than the current value (except for first plane, then just store data)
                 sf = 0
-                if max_sigma_n > 0:
+                if max_sigma_n > 10:
                     sf = max_tau_amplitude + a_cp[j] * max_sigma_n
                 if first_run:
                     findley_vec[j, :] = theta, phi, max_sigma_n, max_tau_amplitude, sf
