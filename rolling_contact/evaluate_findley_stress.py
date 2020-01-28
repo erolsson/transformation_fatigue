@@ -99,18 +99,21 @@ def perform_effective_stress_analysis(residual_stress_odb, mechanical_data, effe
 
 
 if __name__ == '__main__':
+    temperature = '22_C'
+    overload = '3_0GPa'
     reader = InputFileReader()
     reader.read_input_file(os.path.expanduser('~/python_fatigue/rolling_contact/input_files/roller.inp'))
     e_labels = reader.set_data['elset']['fatigue_elements']
-    overload_odb = os.path.expanduser('~/rolling_contact/mechanical_FEM/90C_3_0GPa_overload_2GPa_nom/overload.odb')
+    overload_odb = os.path.expanduser('~/rolling_contact/mechanical_FEM/' + temperature + '_' + overload +
+                                      '_overload_2GPa_nom/overload.odb')
     rolling_odb = os.path.expanduser('~/rolling_contact/mechanical_FEM/rolling_2GPa/roller_model.odb')
-    results_odb_file = os.path.expanduser('~/rolling_contact/findley.odb')
-
+    results_odb_file = os.path.expanduser('~/rolling_contact/findley_' + temperature + '_' + overload + '.odb')
+    pickle_file = os.path.expanduser('~/rolling_contact/findley_' + temperature + '_' + overload + '.pkl')
     for odb in [overload_odb, rolling_odb]:
         add_element_set(odb, 'fatigue_elements', e_labels, 'ROLLER_X_POS')
 
     mechanical_odb_data = [MechanicalData(odb_file_name=rolling_odb,
                                           step_name='rolling', frame_number=i) for i in range(10)]
     perform_effective_stress_analysis(overload_odb, mechanical_odb_data, element_set_name='fatigue_elements',
-                                      instance_name='ROLLER_X_POS', pickle_file='findley_trans.pkl',
+                                      instance_name='ROLLER_X_POS', pickle_file=pickle_file,
                                       results_odb_file=results_odb_file, results_odb_step_name='transformation')
