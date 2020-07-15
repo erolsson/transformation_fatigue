@@ -31,8 +31,10 @@ void print_at_time(const std::string msg, double time, unsigned noel, unsigned n
 
 template<typename T>
 void print_for_position(const std::string msg, const T& val, unsigned noel, unsigned npt) {
+    int user_elem_number = 0;
+    getelemnumberuser_(noel, user_elem_number);
     //if (noel == 6577 && npt == 2) {
-        std::cout << "noel=" << noel << "  gp=" <<  npt << "  " << msg << val << std::endl;
+        std::cout << "noel=" << user_elem_number << "  gp=" <<  npt << "  " << msg << val << std::endl;
     //}
 }
 
