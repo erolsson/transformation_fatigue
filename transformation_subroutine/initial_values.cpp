@@ -24,7 +24,12 @@ public:
     }
 };
 
-std::array<std::size_t, 8> gp_order_x_neg = {5, 6, 7, 8, 1, 2, 3, 4};
+std::array<std::size_t, 8> gp_order_x_neg = {2, 1, 4, 3,
+                                             6, 5, 8, 7};
+std::array<std::size_t, 8> gp_order_y_neg = {3, 4, 1, 2,
+                                             7, 8, 5, 6};
+std::array<std::size_t, 8> gp_order_z_neg = {5, 6, 7, 8,
+                                             1, 2, 3, 4};
 
 std::mutex part_info_mutex;
 
@@ -73,10 +78,18 @@ extern "C" void uexternaldb_(const int* lop, const int* lrestart, const double* 
     }
 }
 
-std::size_t reorder_gauss_pt(std::size_t gp, std::string part_name) {
+std::size_t reorder_gauss_pt(std::size_t gp, const std::string& part_name) {
 
     if (part_name.find("x_neg") != std::string::npos) {
         return gp_order_x_neg[gp - 1];
+    }
+
+    if (part_name.find("y_neg") != std::string::npos) {
+        return gp_order_y_neg[gp - 1];
+    }
+
+    if (part_name.find("z_neg") != std::string::npos) {
+        return gp_order_z_neg[gp - 1];
     }
     return gp;
 }
@@ -87,13 +100,18 @@ std::pair<std::size_t, std::string> user_model_data(int noel, const double* coor
         std::lock_guard<std::mutex> lock(part_info_mutex);
         getelemnumberuser_(noel, user_elem_number);
     }
-    std::string part_name;
+    std::string part_name {""};
     if (coords[0] < 0) {
         part_name = "x_neg";
     }
-    else {
-        part_name = "x_pos";
+    if (coords[1] < 0) {
+        part_name = "y_neg";
     }
+
+    if (coords[2] < 0) {
+        part_name = "z_neg";
+    }
+
     return std::make_pair(user_elem_number, part_name);
 }
 
@@ -153,10 +171,10 @@ extern "C" void sigini_(double* sigma, const double* coords, const int& ntens, c
     auto it = find_heat_treatment_data(user_data.first, gp);
     for (unsigned i = 0; i != ntens; ++i) {
         if (user_data.second.find("x_neg") != std::string::npos && (i == 3 || i == 4)) {
-            sigma[i] = -(it->stress(i))/2.;
+            sigma[i] = -(it->stress(i));
         }
         else {
-            sigma[i] = it->stress(i)/2.;
+            sigma[i] = it->stress(i);
         }
     }
 }

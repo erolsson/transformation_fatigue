@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 # Import standard python modules
 import numpy as np
 import time, sys, pickle, multiprocessing
@@ -15,19 +17,19 @@ def evaluate_findley(combined_stress, a_cp, worker_run_out_time=3600, chunk_size
 
     # Get size of the read data
     load_steps, rows, columns = combined_stress.shape
-    print " Read %2i load steps with %i stress tensors" % (load_steps, rows)
+    print(" Read %2i load steps with %i stress tensors" % (load_steps, rows))
 
     # Create workload vector
-    work_loads = range(0, rows, chunk_size)
+    work_loads = list(range(0, rows, chunk_size))
     if not work_loads[-1] == rows:
         work_loads.append(rows)
-    print " Number or work pieces to process: ", len(work_loads)
+    print(" Number or work pieces to process: ", len(work_loads))
 
     # Create storage point for Findley results
     fatigue_results = np.empty(work_loads[-1], dtype=float)
     if True:
         # Submit workloads for evaluation of Findley stress
-        print " Computing critical plane stress:"
+        print(" Computing critical plane stress:")
         findley_load_step_jobs = []
         for work_load in range(0, len(work_loads) - 1):
             findley_load_step_jobs.append(worker_pool.apply_async(findley_worker,
@@ -41,10 +43,10 @@ def evaluate_findley(combined_stress, a_cp, worker_run_out_time=3600, chunk_size
 
             fatigue_results[work_loads[work_load]:work_loads[work_load + 1]] = findley_load_step_job.get(
                 worker_run_out_time)
-            print ".",
+            print(".",)
             # print "Done with workload " + str(work_load)
             sys.stdout.flush()  # Force output of buffered content
-        print "\n Done, Total Time: %1.2f" % (time.time() - s_time)
+        print("\n Done, Total Time: %1.2f" % (time.time() - s_time))
 
         # # Save to pickle dump file    
         # print " Pickle Findly stresses to file,",
@@ -118,7 +120,7 @@ def eval_findley(a_cp, stress_matrix, search_grid, mod=False):
             radius = sqrt((xo[0] - xc) ** 2 + (yo[0] - yc) ** 2)
             return xc, yc, radius
         else:
-            print "warning... caught an unexpected mode... in elif 1"
+            print("warning... caught an unexpected mode... in elif 1")
             raise RuntimeError
 
         # Check if points are within the circle
@@ -136,7 +138,7 @@ def eval_findley(a_cp, stress_matrix, search_grid, mod=False):
                             xo = [xo[0], xo[1], xp[i]]
                             yo = [yo[0], yo[1], yp[i]]
                         else:
-                            print "warning... caught an unexpected mode... in elif 2"
+                            print("warning... caught an unexpected mode... in elif 2")
                             raise RuntimeError
 
                         [xc, yc, radius] = smallest_enclosing_circle(xp[0:i + 1], yp[0:i + 1], xo, yo)
@@ -254,7 +256,7 @@ def findley_worker(job_arguments):
     except KeyboardInterrupt:
         raise KeyboardInterrupt
     except:
-        print "Problem with computing Findley stress:"
-        print sys.exc_info()[0]  # - Exit type:', sys.exc_info()[0]
-        print sys.exc_info()[1]  # - Exit type:', sys.exc_info()[0]
+        print("Problem with computing Findley stress:")
+        print(sys.exc_info()[0])  # - Exit type:', sys.exc_info()[0]
+        print(sys.exc_info()[1])  # - Exit type:', sys.exc_info()[0]
         raise

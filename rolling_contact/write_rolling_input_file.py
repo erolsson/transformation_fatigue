@@ -9,6 +9,7 @@ from scipy.special import ellipe, ellipk
 
 from transformation_fatigue.input_file_reader.input_file_reader import InputFileReader
 
+
 def calculate_elliptic_eccentricity(R1, R2):
     if R1 < R2:
         R2, R1 = R1, R2

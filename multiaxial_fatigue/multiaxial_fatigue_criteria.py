@@ -1,4 +1,4 @@
-from findley_evaluation_functions import evaluate_findley
+from transformation_fatigue.multiaxial_fatigue.findley_evaluation_functions import evaluate_findley
 
 
 class Critera:
