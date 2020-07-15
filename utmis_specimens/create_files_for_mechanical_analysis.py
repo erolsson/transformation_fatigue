@@ -104,7 +104,8 @@ def write_mechanical_input_files(geom_include_file, directory, loads, no_steps=1
         file_lines.append('*Initial Conditions, type=Solution, user')
         file_lines.append('*Initial Conditions, type=Stress, user')
         file_lines.append('*Initial conditions, type=temperature')
-
+        file_lines.append('\tspecimen_part_pos.ALL_NODES, 22')
+        file_lines.append('\tspecimen_part_neg.ALL_NODES, 22')
         for step in range(no_steps):
             for direction in ['max_load', 'min_load']:
                 step_name = 'step_' + str(step+1) + '_' + direction
