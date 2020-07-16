@@ -177,6 +177,8 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
         print_at_time("Non elastic increment", "", time[1], noel, npt);
         // Increment in plastic strain and martensitic phase fractions
         print_at_time("sigma_t: ", sigma_t.transpose().format(CleanFmt), time[1], noel, npt);
+        print_at_time("I1_t: ", sigma_t[0] + sigma_t[1] + sigma_t[2], time[1], noel, npt);
+        print_at_time("se_t ", von_Mises(sigma_t), time[1], noel, npt);
         print_at_time("f: ", yield_function(sigma_t, state.total_back_stress(), sy, params), time[1],
                 noel, npt);
         print_at_time("h: ", stress_transformation_function(sigma_t, temp, params, state, state.fM()), time[1],
