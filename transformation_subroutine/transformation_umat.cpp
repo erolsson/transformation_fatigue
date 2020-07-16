@@ -21,13 +21,13 @@
 const double pi = 3.14159265359;
 std::mutex print_mutex;
 
-/*
-void print_at_time(const std::string msg, double time, unsigned noel, unsigned npt) {
+template<typename T>
+void print_at_time(const std::string msg, const T& val, double time, unsigned noel, unsigned npt) {
     if (time > -1) {
-        std::cout << "Elem: " << noel << " gp: " << npt << " " << msg << std::endl;
+        std::cout << "Elem: " << noel << " gp: " << npt << " " << msg << val << std::endl;
     }
 }
-*/
+
 
 template<typename T>
 void print_for_position(const std::string msg, const T& val, unsigned noel, unsigned npt) {
@@ -174,8 +174,10 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
         stress_vec = sigma_t;
     }
     else {  // Inelastic deformations
-        // print_at_time("Non elastic increment", time[1], noel, npt);
+        print_at_time("Non elastic increment", "", time[1], noel, npt);
         // Increment in plastic strain and martensitic phase fraction
+        print_at_time("sigma_t", sigma_t.transpose().format(CleanFmt), time[1], noel, npt);
+        xit_();
         Vector6 sigma_2 = sigma_t;
         Vector6 s = deviator(sigma_2);
         double DL = 0;
