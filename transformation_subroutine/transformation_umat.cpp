@@ -437,6 +437,9 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                 print_for_position("sigma2: ", sigma_2.transpose().format(CleanFmt), noel, npt);
                 print_for_position("Sigma1: ", Sigma1, noel, npt);
                 print_for_position("Sigma2: ", Sigma, noel, npt);
+                print_for_position("yield_func: ", yield_function(sigma_t, state.total_back_stress(), sy, params),
+                        noel, npt);
+                print_for_position("sigma_t: ", sigma_t.transpose().format(CleanFmt), noel, npt);
                 return;
             }
         }
