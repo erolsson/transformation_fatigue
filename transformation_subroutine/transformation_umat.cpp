@@ -183,6 +183,11 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                 noel, npt);
         print_at_time("h: ", stress_transformation_function(sigma_t, temp, params, state, state.fM()), time[1],
                       noel, npt);
+        print_at_time("a1: ", params.a1(), time[1], noel, npt);
+        print_at_time("a2: ", params.a2(), time[1], noel, npt);
+        print_at_time("Ms: ", params.Ms(), time[1], noel, npt);
+        print_at_time("Mss: ", params.Mss(), time[1], noel, npt);
+        print_at_time("Temp: ", temp, time[1], noel, npt);
         print_at_time("fm: ", state.fM(), time[1], noel, npt);
         print_at_time("other phases: ", state.other_phases(), time[1], noel, npt);
         xit_();
