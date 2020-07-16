@@ -181,6 +181,8 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                 noel, npt);
         print_at_time("h: ", stress_transformation_function(sigma_t, temp, params, state, state.fM()), time[1],
                       noel, npt);
+        print_at_time("fm: ", state.fM(), time[1], noel, npt);
+        print_at_time("other phases: ", state.other_phases(), time[1], noel, npt);
         xit_();
         Vector6 sigma_2 = sigma_t;
         Vector6 s = deviator(sigma_2);
