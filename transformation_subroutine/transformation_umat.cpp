@@ -141,7 +141,9 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
     Eigen::Map<Vector6> stress_vec(stress);
 
     double I1_1 = stress_vec[0] + stress_vec[1] + stress_vec[2];
+    std::cout << "I1_1: " << I1_1 << std::endl;
     double s_vM_1 = von_Mises(static_cast<Vector6>(stress_vec));
+    std::cout << "s_vM_1: " << s_vM_1 << std::endl;
     double Sigma1 = I1_1/s_vM_1;
 
     const Eigen::Map<Vector6> de(dstran);
@@ -162,7 +164,9 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
     if (params.kinematic_hardening()) {
         stilde2 -= state.total_back_stress();
     }
+    std::cout << "Done with initial" << std::endl;
     bool plastic = params.plastic() && yield_function(sigma_t, state.total_back_stress(), sy, params) > 0;
+
     // print_at_time("yield function evaluated", time[1], noel, npt);
     bool stress_transformations = stress_transformation_function(sigma_t, temp, params, state, state.fM()) >= 0;
     bool strain_transformations = params.beta() > 0 && plastic;
