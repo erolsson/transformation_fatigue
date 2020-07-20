@@ -169,7 +169,7 @@ def write_run_file(job_names, heat_treatment_file, directory, cpus=12):
 
 
 if __name__ == '__main__':
-    heat_treatment_data_file = os.path.expanduser('~/utmis_specimens/' + specimen + '/Toolbox_Cooling_' + specimen
+    heat_treatment_data_file = os.path.expanduser('~/utmis_specimens/' + specimen + '/Toolbox_Cooling_utmis_' + specimen
                                                   + '.htd')
     simulation_directory = os.path.expanduser('~/utmis_specimens/' + specimen + '/mechanical_analysis/')
     geom_filename = os.path.expanduser('~/python_projects/python_fatigue/fatigue_specimens/UTMIS/utmis_'
