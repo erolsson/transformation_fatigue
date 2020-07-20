@@ -172,6 +172,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
         // print_at_time("Elastic increment", time[1], noel, npt);
         D_alg = Del;
         stress_vec = sigma_t;
+        std::cout << "Elastic increment" << std::endl;
     }
     else {  // Inelastic deformations
         print_at_time("Non elastic increment", "", time[1], noel, npt);
