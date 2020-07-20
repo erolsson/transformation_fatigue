@@ -10,8 +10,8 @@ except ImportError:
 from transformation_fatigue.input_file_reader.input_file_reader import InputFileReader
 from transformation_fatigue.materials.materials import SS2506
 
-specimen = 'smooth'  # specimen = sys.argv[-2]
-R = -1   # R = float(sys.argv[-1])
+specimen = sys.argv[-2]
+R = float(sys.argv[-1])
 
 specimen_loads = {'smooth': {-1.: [737., 774., 820.], 0.: [425., 440.]},
                   'notched': {-1.: [427., 450.], 0.: [225., 240., 255.]}}
