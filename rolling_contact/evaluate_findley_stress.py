@@ -98,7 +98,7 @@ def perform_effective_stress_analysis(residual_stress_odb, mechanical_data, effe
     return fatigue_data
 
 
-if __name__ == '__main__':
+def main():
     temperature = '22C'
     overload = '3_0GPa'
     reader = InputFileReader()
@@ -118,3 +118,7 @@ if __name__ == '__main__':
     perform_effective_stress_analysis(overload_odb, mechanical_odb_data, element_set_name='fatigue_elements',
                                       instance_name='ROLLER_X_POS', pickle_file=pickle_file,
                                       results_odb_file=results_odb_file, results_odb_step_name='transformation')
+
+
+if __name__ == '__main__':
+    main()
