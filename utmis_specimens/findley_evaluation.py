@@ -118,7 +118,7 @@ def main():
         odb_name = 'utmis_' + specimen + '_' + str(load).replace('.', '_') + '_R=' + str(R) + '.odb'
         odb_file = simulation_path + specimen + '/mechanical_analysis/' + odb_name
         add_element_set(odb_file, 'fatigue_volume_elements', element_labels, instance_name='SPECIMEN_PART_POS')
-        add_element_set(odb_file, 'fatigue_volume_elements', element_labels, instance_name='fatigue_volume_elements')
+        add_element_set(odb_file, 'fatigue_volume_elements', element_labels, instance_name='SPECIMEN_PART_NEG')
         mechanical_data = [MechanicalData(odb_file, 'step_2_min_load', -1),
                            MechanicalData(odb_file, 'step_2_max_load', -1)]
         pickle_directory = os.path.expanduser('~/utmis_specimens/' + specimen + '/pickles/')
