@@ -104,8 +104,10 @@ def perform_effective_stress_analysis(mechanical_data, effective_stress=Findley,
 
 
 def main():
-    specimen = sys.argv[-2]
-    R = int(sys.argv[-1])
+    specimen = sys.argv[-3]
+    R = int(sys.argv[-2])
+    print(R)
+    cpus = int(sys.argv[-1])
 
     simulation_path = os.path.expanduser('~/utmis_specimens/')
     specimen_loads = {'smooth': {-1.: [737., 774., 820.], 0.: [425., 440.]},
@@ -127,7 +129,7 @@ def main():
         pickle_file_name = os.path.expanduser(pickle_directory + '/findley_' + specimen + '_R=' + str(R) + '_'
                                               + str(load).replace('.', '_') + '.pkl')
         perform_effective_stress_analysis(mechanical_data, element_set_name='fatigue_volume_elements',
-                                          instance_name='SPECIMEN_PART_NEG', cpus=12, pickle_file=pickle_file_name,
+                                          instance_name='SPECIMEN_PART_NEG', cpus=cpus, pickle_file=pickle_file_name,
                                           results_odb_file=odb_file, results_odb_step_name='findley')
 
 
