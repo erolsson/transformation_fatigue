@@ -182,7 +182,7 @@ if __name__ == '__main__':
 
     specimen_name = 'utmis_' + specimen
 
-    jobs = write_mechanical_input_files(geom_filename, simulation_directory, specimen_loads[specimen][R], no_steps=2)
+    jobs = write_mechanical_input_files(geom_filename, simulation_directory, specimen_loads[specimen][R], no_steps=5)
     write_run_file(job_names=jobs, directory=simulation_directory, heat_treatment_file=heat_treatment_data_file)
     # current_directory = os.getcwd()
     # os.chdir(simulation_directory)
