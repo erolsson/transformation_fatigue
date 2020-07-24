@@ -121,16 +121,24 @@ def main():
         odb_file = simulation_path + specimen + '/mechanical_analysis/' + odb_name
         add_element_set(odb_file, 'fatigue_volume_elements', element_labels, instance_name='SPECIMEN_PART_POS')
         add_element_set(odb_file, 'fatigue_volume_elements', element_labels, instance_name='SPECIMEN_PART_NEG')
-        mechanical_data = [MechanicalData(odb_file, 'step_2_min_load', -1),
-                           MechanicalData(odb_file, 'step_2_max_load', -1)]
+        mechanical_data = [MechanicalData(odb_file, 'step_5_min_load', -1),
+                           MechanicalData(odb_file, 'step_5_max_load', -1)]
         pickle_directory = os.path.expanduser('~/utmis_specimens/' + specimen + '/pickles/')
         if not os.path.isdir(pickle_directory):
             os.makedirs(pickle_directory)
         pickle_file_name = os.path.expanduser(pickle_directory + '/findley_' + specimen + '_R=' + str(R) + '_'
                                               + str(load).replace('.', '_') + '.pkl')
+
         perform_effective_stress_analysis(mechanical_data, element_set_name='fatigue_volume_elements',
                                           instance_name='SPECIMEN_PART_NEG', cpus=cpus, pickle_file=pickle_file_name,
                                           results_odb_file=odb_file, results_odb_step_name='findley')
+
+        if R == -1:
+            perform_effective_stress_analysis(mechanical_data, element_set_name='fatigue_volume_elements',
+                                              instance_name='SPECIMEN_PART_POS', cpus=cpus,
+                                              pickle_file=pickle_file_name, results_odb_file=odb_file,
+                                              results_odb_step_name='findley')
+
 
 
 if __name__ == '__main__':
