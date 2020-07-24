@@ -129,16 +129,15 @@ def main():
         pickle_file_name = os.path.expanduser(pickle_directory + '/findley_' + specimen + '_R=' + str(R) + '_'
                                               + str(load).replace('.', '_') + '.pkl')
 
-        perform_effective_stress_analysis(mechanical_data, element_set_name='fatigue_volume_elements',
-                                          instance_name='SPECIMEN_PART_NEG', cpus=cpus, pickle_file=pickle_file_name,
-                                          results_odb_file=odb_file, results_odb_step_name='findley')
-
         if R == -1:
             perform_effective_stress_analysis(mechanical_data, element_set_name='fatigue_volume_elements',
                                               instance_name='SPECIMEN_PART_POS', cpus=cpus,
                                               pickle_file=pickle_file_name, results_odb_file=odb_file,
                                               results_odb_step_name='findley')
 
+        perform_effective_stress_analysis(mechanical_data, element_set_name='fatigue_volume_elements',
+                                          instance_name='SPECIMEN_PART_NEG', cpus=cpus, pickle_file=pickle_file_name,
+                                          results_odb_file=odb_file, results_odb_step_name='findley')
 
 
 if __name__ == '__main__':
