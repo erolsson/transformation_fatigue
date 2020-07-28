@@ -44,7 +44,8 @@ public:
 
     // Martensite start temperature
     [[nodiscard]] double Ms() const {
-        return data_[17 + 4*back_stresses_] +  data_[18 + 4*back_stresses_]*carbon_; }
+        return data_[17 + 4*back_stresses_] +  data_[18 + 4*back_stresses_]*carbon_;
+    }
 
     // Stabilisation temperature due to tempering
     [[nodiscard]] const double& Mss() const { return data_[19 + 4*back_stresses_]; }
