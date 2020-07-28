@@ -134,7 +134,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
     using Matrix6x6 = Eigen::Matrix<double, 6, 6>;
     using Vector6 = Eigen::Matrix<double, 6, 1>;
 
-    const TransformationMaterialParameters params(props, statev[4]);
+    const TransformationMaterialParameters params(props, statev[4], statev[2]);
     // print_at_time("setting params", time[1], noel, npt);
     State state(statev, params.back_stresses(), drot);
     // print_at_time("setting state", time[1], noel, npt);

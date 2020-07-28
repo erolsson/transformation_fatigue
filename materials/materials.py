@@ -28,7 +28,8 @@ class ElasticPlasticTransformMaterial:
         self.gamma_m = gamma_m
 
         # Martensite start temperature
-        self.Ms = Ms
+        self.Ms_1 = Ms
+        self.Ms_2 = 0
 
         # parameters for phase transformations
         self.a1 = a[0]
@@ -43,9 +44,12 @@ class ElasticPlasticTransformMaterial:
         self.R1 = 0.02
         self.R2 = 0.012
 
-        self.dV = 0.037
+        self.dV_1 = 0.037
+        self.dV_2 = 0
+        self.dV_3 = 0
 
-        self.k = 0.017
+        self.k_1 = 0.017
+        self.k_2 = 0
 
         self.sde = sde
 
@@ -63,11 +67,8 @@ class ElasticPlasticTransformMaterial:
 
         self.back_stresses = Cm.shape[0]
         self.name = name
-        if isinstance(Mss, numbers.Real):
-            self.Mss = Mss
-        else:
-            self.Mss = (-1./self.k*np.log(1 - Mss[0]) - self.Ms - Mss[2]*(self.a1 + self.a2) +
-                        Mss[1])
+        self.Mss = Mss
+
 
     def umat_depvar(self):
         return 15 + (self.back_stresses + 1)*6
@@ -78,10 +79,10 @@ class ElasticPlasticTransformMaterial:
         kinematic_hardening_params = []
         for C, g in zip(self.Cm, self.gamma_m):
             kinematic_hardening_params += [C[0], C[1], g[0], g[1]]
-        parameters += kinematic_hardening_params + [self.sde, self.R1, self.R2, self.dV, self.Ms, self.Mss,
-                                                    self.k, self.a1, self.a2, self.a3, self.beta, self.alpha,
-                                                    self.n, self.g0, self.g1, self.g2, self.g_mean, self.g_std,
-                                                    self.M_sigma, self.M_d]
+        parameters += kinematic_hardening_params + [self.sde, self.R1, self.R2, self.dV_1, self.dV_2, self.dV_3,
+                                                    self.Ms_1, self.Ms_2, self.Mss, self.k_1, self.k_2, self.a1,
+                                                    self.a2, self.a3, self.beta, self.alpha, self.n, self.g0, self.g1,
+                                                    self.g2, self.g_mean, self.g_std, self.M_sigma, self.M_d]
 
         file_lines = ['*Material, name=' + self.name,
                       '\t*Depvar',
@@ -155,11 +156,16 @@ SS2506 = ElasticPlasticTransformMaterial(E=205e3, v=0.27, sy0M=(-662.15481215, 2
                                          # beta=841.893, alpha=129.5, n=4., sde=0.00,
                                          g0=-0*1.918/2, g1=5.18, g2=0*1.918/2., g_mean=0, g_std=1.,
                                          fsb0=0.12948)
-
-SS2506.k = 0.01804041
+# 0.030870003294479993
+SS2506.k_1 = 0.029693465000000002
+SS2506.k_2 = -1.9448375
+SS2506.Ms_1 = -29723.174464583328
+SS2506.Ms_2 = 417.70350721583327
 SS2506.R1 = 2.98413969e-02
 SS2506.R2 = 1.11373396e-03
-SS2506.dV = 0.030870003294479993
+SS2506.dV_1 = 0.019393029576
+SS2506.dV_2 = 3.2982174
+SS2506.dV_3 = -277.59000000000003
 
 """
 a1=0.0020086602368106056, 
