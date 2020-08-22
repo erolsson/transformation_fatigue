@@ -1,3 +1,4 @@
+from __future__ import division, print_function
 import os
 from subprocess import Popen
 import sys
@@ -28,9 +29,12 @@ def write_mechanical_input_files(geom_include_file, directory, loads, no_steps=1
     x_sym_nodes = input_file_reader.set_data['nset']['Specimen_XSym_Nodes']
     y = -min([input_file_reader.nodal_data[n-1, 2] for n in x_sym_nodes])
     z = max([input_file_reader.nodal_data[n - 1, 3] for n in x_sym_nodes])
-
     load_pos = input_file_reader.nodal_data[load_nodes[0]-1, 1:4]
     support_pos = input_file_reader.nodal_data[support_nodes[0]-1, 1]
+    print("y =", y)
+    print("z =", z)
+    print("load_pos =", load_pos)
+    print("support_pos =", support_pos)
     wb = (2*y)**2*(2*z)/6
 
     for e_data in input_file_reader.elements.values():
