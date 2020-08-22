@@ -110,7 +110,6 @@ def perform_effective_stress_analysis(mechanical_data, effective_stress=Findley,
 def main():
     specimen = sys.argv[-3]
     R = int(sys.argv[-2])
-    print(R)
     cpus = int(sys.argv[-1])
 
     simulation_path = os.path.expanduser('~/utmis_specimens/')
