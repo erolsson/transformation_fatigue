@@ -163,7 +163,7 @@ def write_run_file(job_names, heat_treatment_file, directory, cpus=12):
     file_lines.append('abq=' + abq)
 
     for job_name in job_names:
-        file_lines.append('${abq} j=' + job_name + ' cpus=' + str(cpus) + 'interactive')
+        file_lines.append('${abq} j=' + job_name + ' cpus=' + str(cpus) + ' interactive')
     with open(directory + '/run_utmis_' + specimen + '_R=' + str(int(R)) + '.sh', 'w') as shell_file:
         for line in file_lines:
             shell_file.write(line + '\n')

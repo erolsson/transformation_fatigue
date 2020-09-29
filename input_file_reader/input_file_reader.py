@@ -7,7 +7,7 @@ class InputFileReader:
         self.elements = {}
         self.set_data = {'nset': {}, 'elset': {}}
 
-    def read_input_file(self, model_filename):
+    def read_input_file(self, model_filename, string_to_remove_from_set_names=''):
         nodes = []
         elements = {}
         with open(model_filename) as full_model_file:
@@ -32,6 +32,8 @@ class InputFileReader:
                         elements[element_type].append(data)
                     elif key_word[-3:] == 'set':
                         set_name = key_word_data[0].split('=')[1].rstrip()
+                        set_name = set_name.upper()
+                        set_name = set_name.replace(string_to_remove_from_set_names.upper(), '')
                         if set_name not in self.set_data[key_word]:
                             self.set_data[key_word][set_name] = []
                         self.set_data[key_word][set_name] += [int(label) for label in data if label]
@@ -43,6 +45,9 @@ class InputFileReader:
 
         for element_type, data in elements.items():
             self.elements[element_type] = np.array(data, dtype=int)
+
+    def create_node_set(self, name, node_numbers):
+        self.set_data['nset'][name] = node_numbers
 
     def write_geom_include_file(self, filename, simulation_type='Mechanical'):
         file_lines = ['*NODE, NSET=ALL_NODES']

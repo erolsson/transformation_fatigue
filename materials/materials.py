@@ -69,7 +69,6 @@ class ElasticPlasticTransformMaterial:
         self.name = name
         self.Mss = Mss
 
-
     def umat_depvar(self):
         return 15 + (self.back_stresses + 1)*6
 
@@ -127,6 +126,19 @@ class ElasticPlasticTransformMaterial:
         return fm*self.sy0M + (1 - fm)*self.sy0A
 
 
+class ElasticMaterial:
+    def __init__(self, E, v, name):
+        self.E = E
+        self.v = v
+        self.name = name
+
+    def material_input_file_string(self):
+        file_lines = ['*Material, name=' + self.name,
+                      '\t*Elastic',
+                      '\t\t' + str(self.E) + ',' + str(self.v)]
+        return file_lines
+
+
 SS2506_no_trans = ElasticPlasticTransformMaterial(E=205e3, v=0.27, sy0M=(-662.15481215, 2.28816129), sy0A=(-253., 0.874),
                                                   Q=(0., 0.), b=(100., 0.),
                                                   Cm=np.array([(5767.48146841, 37.40347908),
@@ -157,15 +169,17 @@ SS2506 = ElasticPlasticTransformMaterial(E=205e3, v=0.27, sy0M=(-662.15481215, 2
                                          g0=-0*1.918/2, g1=5.18, g2=0*1.918/2., g_mean=0, g_std=1.,
                                          fsb0=0.12948)
 # 0.030870003294479993
-SS2506.k_1 = 0.029693465000000002
-SS2506.k_2 = -1.9448375
-SS2506.Ms_1 = 417.70350721583327
-SS2506.Ms_2 = -29723.174464583328
+# SS2506.k_1 = 0.029693465000000002
+# SS2506.k_2 = -1.9448375
+# SS2506.Ms_1 = 417.70350721583327
+# SS2506.Ms_2 = -29723.174464583328
 SS2506.R1 = 2.71893819e-02
 SS2506.R2 = 9.42227524e-04
 SS2506.dV_1 = 0.019393029576
 SS2506.dV_2 = 3.2982174
 SS2506.dV_3 = -277.59000000000003
+
+SS2506Elastic = ElasticMaterial(200e3, 0.3, 'SS2506')
 
 """
 a1=0.0020086602368106056, 
