@@ -116,7 +116,6 @@ def write_mechanical_input_files(specimen, geom_include_file, directory, simulat
             file_lines.append('\t*Output, field, frequency=' + str(step.output_frequency))
             file_lines.append('\t\t*Element Output')
             file_lines.append('\t\t\tS, SDV')
-            file_lines.append('\t*Output, field, number interval=100')
             file_lines.append('\t\t*Node Output')
             file_lines.append('\t\t\tU, RF, CF')
             file_lines.append('*End step')

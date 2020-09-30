@@ -3,6 +3,7 @@ import os
 from mechanical_analysis_functions import write_mechanical_input_files, Simulation, Step, write_run_file
 from transformation_fatigue.materials.materials import SS2506
 
+
 def main():
     max_nominal_stress = 1000
     Wb = 2*5**2/6
