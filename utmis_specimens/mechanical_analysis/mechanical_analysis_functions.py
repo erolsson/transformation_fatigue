@@ -22,6 +22,31 @@ class Step:
 Simulation = namedtuple('Simulation', ['name', 'steps', 'mode'])
 
 
+def flip_node_order(element_data, axis):
+    new_elements = np.copy(element_data)
+    if axis == "x":
+        new_elements[:, 1], new_elements[:, 2] = element_data[:, 2], element_data[:, 1]
+        new_elements[:, 3], new_elements[:, 4] = element_data[:, 4], element_data[:, 3]
+        new_elements[:, 5], new_elements[:, 6] = element_data[:, 6], element_data[:, 5]
+        new_elements[:, 7], new_elements[:, 8] = element_data[:, 8], element_data[:, 7]
+
+    elif axis == "y":
+        new_elements[:, 1], new_elements[:, 4] = element_data[:, 4], element_data[:, 1]
+        new_elements[:, 2], new_elements[:, 3] = element_data[:, 3], element_data[:, 2]
+        new_elements[:, 5], new_elements[:, 8] = element_data[:, 8], element_data[:, 5]
+        new_elements[:, 6], new_elements[:, 7] = element_data[:, 7], element_data[:, 6]
+
+    elif axis == "z":
+        new_elements[:, 1] = new_elements[:, 5] = element_data[:, 5], element_data[:, 1]
+        new_elements[:, 2] = new_elements[:, 6] = element_data[:, 6], element_data[:, 2]
+        new_elements[:, 3] = new_elements[:, 7] = element_data[:, 7], element_data[:, 3]
+        new_elements[:, 4] = new_elements[:, 8] = element_data[:, 8], element_data[:, 4]
+
+    else:
+        raise ValueError("Invalid axis argument")
+    return new_elements
+
+
 def write_mechanical_input_files(specimen, geom_include_file, directory, simulations, material, initial_inc=1e-2):
     input_file_reader = InputFileReader()
     input_file_reader.read_input_file(geom_include_file, string_to_remove_from_set_names='Specimen_')
@@ -40,10 +65,9 @@ def write_mechanical_input_files(specimen, geom_include_file, directory, simulat
         os.makedirs(directory + '/include_files')
     input_file_reader.write_geom_include_file(directory + '/include_files/geom_pos.inc')
     input_file_reader.nodal_data[:, 2] *= -1
+    for e_type, e_data in input_file_reader.elements.items():
+        input_file_reader.elements[e_type] = flip_node_order(e_data, "y")
 
-    for e_data in input_file_reader.elements.values():
-        n = e_data.shape[1] - 1
-        e_data[:, n//2 + 1: n + 1], e_data[:, 1: n//2 + 1] = e_data[:, 1: n//2 + 1], e_data[:, n//2 + 1: n + 1].copy()
     input_file_reader.write_geom_include_file(directory + '/include_files/geom_neg.inc')
     input_file_reader.write_sets_file(directory + '/include_files/set_data.inc',
                                       str_to_remove_from_setname='SPECIMEN_',
