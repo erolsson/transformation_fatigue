@@ -100,7 +100,7 @@ std::pair<std::size_t, std::string> user_model_data(int noel, const double* coor
         std::lock_guard<std::mutex> lock(part_info_mutex);
         getelemnumberuser_(noel, user_elem_number);
     }
-    std::string part_name {""};
+    std::string part_name;
     if (coords[0] < 0) {
         part_name = "x_neg";
     }
@@ -171,6 +171,12 @@ extern "C" void sigini_(double* sigma, const double* coords, const int& ntens, c
     auto it = find_heat_treatment_data(user_data.first, gp);
     for (unsigned i = 0; i != ntens; ++i) {
         if (user_data.second.find("x_neg") != std::string::npos && (i == 3 || i == 4)) {
+            sigma[i] = -(it->stress(i));
+        }
+        else if (user_data.second.find("y_neg") != std::string::npos && (i == 3 || i == 5)) {
+            sigma[i] = -(it->stress(i));
+        }
+        else if (user_data.second.find("z_neg") != std::string::npos && (i == 4 || i == 5)) {
             sigma[i] = -(it->stress(i));
         }
         else {
