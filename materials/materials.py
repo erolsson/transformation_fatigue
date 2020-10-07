@@ -154,7 +154,8 @@ SS2506_no_trans = ElasticPlasticTransformMaterial(E=205e3, v=0.27, sy0M=(-662.15
                                                   g0=-0*1.918/2, g1=5.18, g2=0*1.918/2., g_mean=0, g_std=1.,
                                                   fsb0=0.12948)
 
-SS2506 = ElasticPlasticTransformMaterial(E=205e3, v=0.27, sy0M=(-662.15481215, 2.28816129), sy0A=(-253., 0.874),
+SS2506 = ElasticPlasticTransformMaterial(E=205e3, v=0.27, sy0M=(-778.94618316, 2.24830287),
+                                         sy0A=(-343.5635802, 0.99164101),
                                          Q=(0., 0.), b=(100., 0.),
                                          Cm=np.array([(-18357.92204643, 83.24109092),
                                                       (-367924.66298138, 1121.24711644),
@@ -179,7 +180,7 @@ SS2506.dV_1 = 0.019393029576
 SS2506.dV_2 = 3.2982174
 SS2506.dV_3 = -277.59000000000003
 
-SS2506Elastic = ElasticMaterial(201e3, 0.27, 'SS2506')
+SS2506Elastic = ElasticMaterial(205e3, 0.27, 'SS2506')
 
 """
 a1=0.0020086602368106056, 
