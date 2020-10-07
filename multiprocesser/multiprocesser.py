@@ -1,3 +1,4 @@
+from __future__ import print_function
 # Import Python commands
 import multiprocessing
 import time
@@ -50,10 +51,10 @@ def multi_processer(jobs, cpus=multiprocessing.cpu_count(), info=False, timeout=
                 job_args.append([function, arguments, kwarguments])
                 
     except:
-        print " ERROR: multiProcessor - The received arguments could not be interpreted"
-        print "        The data must be on the following form:"
-        print "        [  ( functionReference, arguments, key word arguments as dictionary )\n\t , " \
-              "( myFun,[x,y,z], {'a':2 ,'b':3} ) \n\t ,  (myFun2, None, None),   ]\n"        
+        print(" ERROR: multiProcessor - The received arguments could not be interpreted")
+        print("        The data must be on the following form:")
+        print("        [  ( functionReference, arguments, key word arguments as dictionary )\n\t , " \
+              "( myFun,[x,y,z], {'a':2 ,'b':3} ) \n\t ,  (myFun2, None, None),   ]\n")
         raise
 
     try:
@@ -76,39 +77,39 @@ def multi_processer(jobs, cpus=multiprocessing.cpu_count(), info=False, timeout=
             try:   # noinspection PyBroadException
                 results.append(item.get(timeout=timeout))
                 if info:
-                    print " Completed %s of %s" % (i+1, len(queue))
+                    print(" Completed %s of %s" % (i+1, len(queue)))
                     sys.stdout.flush()
             except multiprocessing.TimeoutError:
-                print "\n ERROR: Timeout\n"
-                print "        To avoid dead lock when workers do not operate as intended"
-                print "        or an unrecoverable error arises a time out time is set."
-                print " "
-                print "        The default timeout is 10s. "
-                print " "
-                print "        This parameter can be manually adjusted as an argument when"
-                print "        calling this module, append timeout='number of seconds'"
-                print "        to adjust when timeout should occur."
+                print("\n ERROR: Timeout\n")
+                print("        To avoid dead lock when workers do not operate as intended")
+                print("        or an unrecoverable error arises a time out time is set.")
+                print(" ")
+                print("        The default timeout is 10s. ")
+                print(" ")
+                print("        This parameter can be manually adjusted as an argument when")
+                print("        calling this module, append timeout='number of seconds'")
+                print ("        to adjust when timeout should occur.")
 
                 if stop_on_error:
-                    print "\n\n Terminating child processes",
+                    print("\n\n Terminating child processes",)
                     worker_pool.terminate()
                     worker_pool.join()
-                    print "-Done\n"
+                    print("-Done\n")
                     raise
                 else:
                     results.append(False)
                     continue
             except:
-                print "\n\n The following problem was encountered:"
-                print sys.exc_info()[0]  # - Exit type:', sys.exc_info()[0]
-                print sys.exc_info()[1]  # - Exit type:', sys.exc_info()[0]
+                print("\n\n The following problem was encountered:")
+                print(sys.exc_info()[0])  # - Exit type:', sys.exc_info()[0]
+                print(sys.exc_info()[1])  # - Exit type:', sys.exc_info()[0]
         
-                print "Stop on error: ", stop_on_error
+                print("Stop on error: ", stop_on_error)
                 if stop_on_error:
-                    print "\n\n Terminating child processes",
+                    print("\n\n Terminating child processes",)
                     worker_pool.terminate()
                     worker_pool.join()
-                    print "-Done\n"
+                    print("-Done\n")
                     raise
                 else:
                     results.append(False)
@@ -120,11 +121,11 @@ def multi_processer(jobs, cpus=multiprocessing.cpu_count(), info=False, timeout=
 
         end_time = float(round((time.time()-start_time)*10))/10
         if info:
-            print " Program used %s sub processes with a total duration of: %ss" % (cpus, end_time)
+            print(" Program used %s sub processes with a total duration of: %ss" % (cpus, end_time))
         return results
         
     except:
-        print "\n\n The following problem was encountered:"
-        print sys.exc_info()[0]  # - Exit type:', sys.exc_info()[0]
-        print sys.exc_info()[1]  # - Exit type:', sys.exc_info()[0]
+        print("\n\n The following problem was encountered:")
+        print(sys.exc_info()[0])  # - Exit type:', sys.exc_info()[0]
+        print(sys.exc_info()[1])  # - Exit type:', sys.exc_info()[0]
         raise
