@@ -1,6 +1,6 @@
 import os
 
-from .mechanical_analysis_functions import write_mechanical_input_files, Simulation, Step, write_run_file
+from mechanical_analysis_functions import write_mechanical_input_files, Simulation, Step, write_run_file
 from transformation_fatigue.materials.materials import SS2506
 
 
