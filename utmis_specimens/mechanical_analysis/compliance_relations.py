@@ -1,6 +1,6 @@
 import os
 
-from mechanical_analysis_functions import write_mechanical_input_files, Simulation, Step, write_run_file
+from .mechanical_analysis_functions import write_mechanical_input_files, Simulation, Step, write_run_file
 from transformation_fatigue.materials.materials import SS2506
 
 
@@ -8,7 +8,7 @@ def main():
     max_nominal_stress = 1000
     Wb = 2*5**2/6
     M = max_nominal_stress*Wb
-    steps = [Step(name='loading', load=M)]
+    steps = [Step(name='loading', load=M, max_inc=0.01)]
     simulations = [Simulation(name='loading', steps=steps, mode='force')]
     for specimen in ['smooth', 'notched']:
         geom_filename = os.path.expanduser('~/python_projects/python_fatigue/fatigue_specimens/UTMIS/utmis_'
