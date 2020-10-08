@@ -462,7 +462,8 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                 print_for_position("yield_func: ", yield_function(sigma_t, state.total_back_stress(), sy, params),
                         noel, npt);
                 print_for_position("sigma_t: ", sigma_t.transpose().format(CleanFmt), noel, npt);
-                xit_();
+                print_for_position("strain-transformations: ", strain_transformations, noel, npt);
+                pnewdt = 0.25;
                 return;
             }
         }
