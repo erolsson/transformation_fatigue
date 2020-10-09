@@ -159,6 +159,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
     const Eigen::Map<Vector6> de(dstran);
     // print_for_position("strain_inc: ", de.transpose().format(CleanFmt), noel, npt);
     Eigen::Map<Matrix6x6> D_alg(ddsdde);
+    state.total_strain() += de;
 
     // Elastic parameters
     double G = params.E()/2/(1 + params.v());
@@ -482,7 +483,6 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
 
         // Updating state variables
         // print_for_position("Increase in martensite", DfM, noel, npt);
-        state.total_strain() += de;
         state.transformation_strain() += DfM*(RA*nij2 + params.dV()*delta_ij);
         state.plastic_strain() += DL*nij2;
         state.ep_eff() += DL;
