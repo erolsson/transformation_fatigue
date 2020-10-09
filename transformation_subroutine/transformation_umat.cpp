@@ -91,6 +91,18 @@ public:
         return Eigen::Map<Vector6>(&data_[15 + back_stresses_*6]);
     }
 
+    Eigen::Map<Vector6> plastic_strain() {
+        return Eigen::Map<Vector6>(&data_[21 + back_stresses_*6]);
+    }
+
+    Eigen::Map<Vector6> transformation_strain() {
+        return Eigen::Map<Vector6>(&data_[27 + back_stresses_*6]);
+    }
+
+    Eigen::Map<Vector6> total_strain() {
+        return Eigen::Map<Vector6>(&data_[33 + back_stresses_*6]);
+    }
+
 private:
     double* data_;
     unsigned back_stresses_;
@@ -470,6 +482,9 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
 
         // Updating state variables
         // print_for_position("Increase in martensite", DfM, noel, npt);
+        state.total_strain() += de;
+        state.transformation_strain() += DfM*(RA*nij2 + params.dV()*delta_ij);
+        state.plastic_strain() += DL*nij2;
         state.ep_eff() += DL;
         state.q_martensite() += DfM;
         state.austenite() -= DfM;
@@ -477,7 +492,6 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
         state.fM_strain() += DfM_strain;
         state.R() = R2;
         state.fsb() = fsb2;
-        stress_vec = sigma_2;
 
         if (params.kinematic_hardening()) {
             state.total_back_stress() = Vector6::Zero();
