@@ -70,7 +70,7 @@ class ElasticPlasticTransformMaterial:
         self.Mss = Mss
 
     def umat_depvar(self):
-        return 15 + (self.back_stresses + 1)*6
+        return 33 + (self.back_stresses + 1)*6
 
     def material_input_file_string(self):
         parameters = [self.E, self.v, self.sy0M[0], self.sy0M[1], self.sy0A[0],  self.sy0A[1], self.Q[0], self.Q[1],
