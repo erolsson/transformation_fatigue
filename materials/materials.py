@@ -110,10 +110,10 @@ class ElasticPlasticTransformMaterial:
             file_lines.append('\t\t' + str(counter) + ', TOTAL_BACK_STRESS_' + comp)
             counter += 1
         for comp in ['11', '22', '33', '12', '13', '23']:
-            file_lines.append('\t\t' + str(counter) + ', TRANSFORMATION_STRAIN' + comp)
+            file_lines.append('\t\t' + str(counter) + ', PLASTIC_STRAIN' + comp)
             counter += 1
         for comp in ['11', '22', '33', '12', '13', '23']:
-            file_lines.append('\t\t' + str(counter) + ', PLASTIC_STRAIN' + comp)
+            file_lines.append('\t\t' + str(counter) + ', TRANSFORMATION_STRAIN' + comp)
             counter += 1
         for comp in ['11', '22', '33', '12', '13', '23']:
             file_lines.append('\t\t' + str(counter) + ', TOTAL_STRAIN' + comp)
