@@ -483,7 +483,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
 
         // Updating state variables
         // print_for_position("Increase in martensite", DfM, noel, npt);
-        state.transformation_strain() += DfM*(RA*nij2 + params.dV()*delta_ij);
+        state.transformation_strain() += DfM*(RA*nij2 + params.dV()*delta_ij)/3;
         state.plastic_strain() += DL*nij2;
         state.ep_eff() += DL;
         state.q_martensite() += DfM;
@@ -492,6 +492,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
         state.fM_strain() += DfM_strain;
         state.R() = R2;
         state.fsb() = fsb2;
+        stress_vec = sigma_2;
 
         if (params.kinematic_hardening()) {
             state.total_back_stress() = Vector6::Zero();
