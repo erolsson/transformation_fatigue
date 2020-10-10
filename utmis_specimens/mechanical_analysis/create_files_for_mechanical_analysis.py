@@ -9,7 +9,7 @@ from transformation_fatigue.materials.materials import SS2506
 
 def main():
     wb = 2*25/6
-    no_steps = 5
+    no_steps = 1
     specimen = sys.argv[-2]
     R = float(sys.argv[-1])
     specimen_loads = {'smooth': {-1.: [737., 774., 820.], 0.: [425., 440.]},
@@ -23,9 +23,9 @@ def main():
 
         steps = []
         for step in range(1, no_steps + 1):
-            steps.append(Step(str(step) + "_max_load", max_load*wb, output_frequency=10.))
-            steps.append(Step(str(step) + "_min_load", min_load*wb, output_frequency=10.))
-        steps.append(Step("relax", 0., output_frequency=10.))
+            steps.append(Step(str(step) + "_max_load", max_load*wb, output_frequency=1.))
+            steps.append(Step(str(step) + "_min_load", min_load*wb, output_frequency=1.))
+        steps.append(Step("relax", 0., output_frequency=1.))
         simulations.append(Simulation("snom=" + str(int(load_amplitude)) + "_R=" + str(int(R)), steps, 'force'))
     geom_filename = os.path.expanduser('~/python_projects/python_fatigue/fatigue_specimens/UTMIS/utmis_'
                                        + specimen + '/utmis_' + specimen + '.inc')
