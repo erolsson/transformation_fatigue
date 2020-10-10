@@ -373,7 +373,8 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
             }
 
             if (stress_transformations) {
-                // print_for_position("Stress transformation: ", "", noel, npt);
+                print_for_position("Stress transformation: ", "", noel, npt);
+                print_for_position("sigma_t: ", sigma_t, noel, npt);
                 h_stress = stress_transformation_function(sigma_2, temp, params, state, fM2);
                 bij = params.a1()*delta_ij;
                 if (J2 > 1e-12) {
