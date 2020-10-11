@@ -29,7 +29,8 @@ def main():
         simulations.append(Simulation("snom=" + str(int(load_amplitude)) + "_R=" + str(int(R)), steps, 'force'))
     geom_filename = os.path.expanduser('~/python_projects/python_fatigue/fatigue_specimens/UTMIS/utmis_'
                                        + specimen + '/utmis_' + specimen + '.inc')
-    simulation_directory = os.path.expanduser('~/utmis_specimens/' + specimen + '/mechanical_analysis/force_control_1/')
+    simulation_directory = os.path.expanduser('~/utmis_specimens/' + specimen
+                                              + '/mechanical_analysis/force_control_no_trans/')
     if not os.path.isdir(simulation_directory):
         os.makedirs(simulation_directory)
     job_names = write_mechanical_input_files(specimen, geom_filename, simulation_directory, simulations, SS2506)
