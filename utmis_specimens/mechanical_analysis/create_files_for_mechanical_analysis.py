@@ -12,8 +12,8 @@ def main():
     no_steps = 1
     specimen = sys.argv[-2]
     R = float(sys.argv[-1])
-    specimen_loads = {'smooth': {-1.: [737., 774., 820.], 0.: [425., 440.]},
-                      'notched': {-1.: [427., 450.], 0.: [225., 240., 255.]}}
+    specimen_loads = {'smooth': {-1.: [737., 774., 820.], 0.: [424. - 26, 424, 424 + 26]},
+                      'notched': {-1.: [427., 450.], 0.: [237. - 16, 237., 237 + 16]}}
 
     simulations = []
     for load_amplitude in specimen_loads[specimen][R]:
