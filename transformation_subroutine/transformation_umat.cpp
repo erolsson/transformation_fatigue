@@ -438,6 +438,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
             residual = abs(dDL) + abs(dDfM_stress) + abs(dDfM_strain);
             if (iter > 50) {
                 pnewdt = 0.25;
+                print_for_position("de: ", de, noel, npt);
                 print_for_position("f: ", f, noel, npt);
                 print_for_position("austenite: ", state.austenite(), noel, npt);
                 print_for_position("Ms: ", params.Ms(), noel, npt);
@@ -459,6 +460,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                 print_for_position("sigma_t: ", sigma_t.transpose().format(CleanFmt), noel, npt);
                 print_for_position("strain-transformations: ", strain_transformations, noel, npt);
                 pnewdt = 0.25;
+                xit_();
                 return;
             }
         }
