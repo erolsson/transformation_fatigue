@@ -189,6 +189,9 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
         stress_vec = sigma_t;
     }
     else {  // Inelastic deformations
+        std::cout << "Inelastic deformation\n";
+        std::cout << "sigma_t: " << sigma_t.transpose().format(CleanFmt) << "\n";
+        xit_();
         Vector6 sigma_2 = sigma_t;
         Vector6 s = deviator(sigma_2);
         double DL = 0;
@@ -543,16 +546,6 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                 }
             }
             D_alg = Bijkl.inverse()*D_alg;
-
-        }
-        if (std::fetestexcept(FE_INVALID)) {
-            std::cout << "DL: " << DL << std::endl;
-            std::cout << "nij: " << nij2.transpose().format(CleanFmt) << std::endl;
-            std::cout << "s_eq_2: " << s_eq_2 << std::endl;
-            std::cout << "s_eq_prime: " << s_eq_prime << std::endl;
-            std::cout << "A: " << A << std::endl;
-            std::cout << "B: " << B << std::endl;
-            xit_();
         }
     }
 
