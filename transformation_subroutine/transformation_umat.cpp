@@ -356,7 +356,6 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
 
             if (stress_transformations) {
                 h_stress = stress_transformation_function(sigma_2, temp, params, state, fM2);
-
                 bij = params.a1()*delta_ij;
                 if (J2 > 1e-12) {
                     bij += params.a2()*s + params.a3()*(contract(s, s) - 2./3*J2*delta_ij);
@@ -489,11 +488,11 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
         nnt = nij2*nij2.transpose();
         Aijkl = J - 2./3*nnt;
         D_alg = Del;
-        if (s_eq_prime > 1e-12) {
+        if (s_eq_prime > 0) {
             D_alg -= 6*G*G*(DL + RA*DfM)/s_eq_prime*Aijkl;
         }
 
-        double A = dR2dDL - ds_eq_2_dDL;
+        double A = dR2dDL -  ds_eq_2_dDL;
 
         Vector6 Lekl = Vector6::Zero();
         Vector6 Lskl = Vector6::Zero();
@@ -503,19 +502,20 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
 
         if (DfM_stress > 0) {
             Fskl = bij;
-            if (DL > 0) {
-                Lekl = 1./A/B*(2*G*nij2 + params.a()*K*delta_ij);
-                Lskl = 1./A*dfdDfM*bij;
-            }
+            Lekl = 1./A/B*(2*G*nij2 + params.a()*K*delta_ij);
+            Lskl = 1./A*dfdDfM*bij;
         }
-
         else {
-            double B1 = (1 - state.fM())*(1 - state.other_phases())/(1 + As*DL + Bs*DSigma);
+            double B1 = (1 - state.fM())/(1 + As*DL + Bs*DSigma);
             double B2 = B1*(As + DL*dAsdDL);
             Lekl = (2*G*nij2 + params.a()*K*delta_ij)/(A*B - B*B2*dfdDfM);
-
-            Vector6 Gkl =
-                    B1*Bs*Sigma*(1 - norm_drivning_force/params.g_std()*params.g2())*(delta_ij/I1_2 - 1.5*s/s_vM_2);
+            Vector6 Gkl;
+            if (abs(I1_2) > 1e-16) {
+                Gkl = B1*Bs*Sigma*(1 - norm_drivning_force/params.g_std()*params.g2())*(delta_ij/I1_2 - 1.5*s/s_vM_2);
+            }
+            else {
+                Gkl = B1*Bs*Sigma*(1 - norm_drivning_force/params.g_std()*params.g2())*(-1.5*s/s_vM_2);
+            }
             Lskl = Gkl*dfdDfM/(A + B2*dfdDfM);
             Fekl = B2*Lekl;
             Fskl = Gkl*(1 + dfdDfM/(A + B2*dfdDfM)*B2);
@@ -535,8 +535,13 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
             }
             Bijkl += 2*G*(RA + DfM*params.R2()/params.sy0A()*ds_eq_2_dfM)*nij2*Fskl.transpose()
                      + K*params.dV()*delta_ij*Fskl.transpose();
-
+            for (unsigned i = 3; i != 6; ++i) {
+                for (unsigned j = 3; j != 6; ++j) {
+                    Bijkl(i, j) *= 2;
+                }
+            }
             D_alg = Bijkl.inverse()*D_alg;
+
         }
         if (std::fetestexcept(FE_INVALID)) {
             std::cout << "DL: " << DL << std::endl;
