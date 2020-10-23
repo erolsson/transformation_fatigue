@@ -120,7 +120,7 @@ double stress_temperature_transformation(const Eigen::Matrix<double, 6, 1>& stre
     Eigen::Matrix<double, 6, 1> s_dev = deviator(stress);
     double m_stress = params.a1()*(stress[0] + stress[1] + stress[2]);   // Contribution from hydrostatic stress
 
-    m_stress += params.a2()*von_Mises(stress);
+    m_stress += 0.5*params.a2()*double_contract(s_dev, s_dev);
     m_stress += params.a3()*vector_det(s_dev);
     return params.k()*(params.Ms() + m_stress + params.Mss() - T);
 }
@@ -180,7 +180,6 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
 
     // print_at_time("yield function evaluated", time[1], noel, npt);
     bool stress_transformations = stress_transformation_function(sigma_t, temp, params, state, state.fM()) >= 0;
-    strain_transformations = stress_transformations && state.austenite() > 0.01;
     bool strain_transformations = params.beta() > 0 && plastic;
     bool elastic = !plastic && !stress_transformations;
 
@@ -190,25 +189,6 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
         stress_vec = sigma_t;
     }
     else {  // Inelastic deformations
-        /*
-        print_at_time("Non elastic increment", "", time[1], noel, npt);
-        // Increment in plastic strain and martensitic phase fractions
-        print_at_time("sigma_t: ", sigma_t.transpose().format(CleanFmt), time[1], noel, npt);
-        print_at_time("I1_t: ", sigma_t[0] + sigma_t[1] + sigma_t[2], time[1], noel, npt);
-        print_at_time("se_t ", von_Mises(sigma_t), time[1], noel, npt);
-        print_at_time("f: ", yield_function(sigma_t, state.total_back_stress(), sy, params), time[1],
-                noel, npt);
-        print_at_time("h: ", stress_transformation_function(sigma_t, temp, params, state, state.fM()), time[1],
-                      noel, npt);
-        print_at_time("a1: ", params.a1(), time[1], noel, npt);
-        print_at_time("a2: ", params.a2(), time[1], noel, npt);
-        print_at_time("Ms: ", params.Ms(), time[1], noel, npt);
-        print_at_time("Mss: ", params.Mss(), time[1], noel, npt);
-        print_at_time("Temp: ", temp, time[1], noel, npt);
-        print_at_time("fm: ", state.fM(), time[1], noel, npt);
-        print_at_time("other phases: ", state.other_phases(), time[1], noel, npt);
-        xit_();
-        */
         Vector6 sigma_2 = sigma_t;
         Vector6 s = deviator(sigma_2);
         double DL = 0;
@@ -379,11 +359,12 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
 
                 bij = params.a1()*delta_ij;
                 if (J2 > 1e-12) {
-                    bij += params.a2()*dsvMdsij + params.a3()*(contract(s, s) - 2./3*J2*delta_ij);
+                    bij += params.a2()*s + params.a3()*(contract(s, s) - 2./3*J2*delta_ij);
                 }
                 double exp_fun = 1 - (h_stress + fM2);
                 bij *= exp_fun*params.k();
                 dh_stressDfM = double_contract(bij, dsigma2_dDfM) - 1;
+                dh_stressDL = double_contract(bij, dsijdDL);
 
                 // print_for_position("h_stress: ", h_stress, noel, npt);
                 // print_for_position("dh_stressDfM: ", dh_stressDfM, noel, npt);
@@ -416,9 +397,9 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                     }
                 }
                 else if (!strain_transformations) {
-                    double det = dfdDL*dh_stressDfM - dfdDfM*dh_stressDfM;
+                    double det = dfdDL*dh_stressDfM - dfdDfM*dh_stressDL;
                     dDL = (dh_stressDfM*f - dfdDfM*h_stress)/det;
-                    dDfM_stress = (-dh_stressDfM*f + dfdDL*h_stress)/det;
+                    dDfM_stress = (-dh_stressDL*f + dfdDL*h_stress)/det;
                 }
                 else {
                     double a = dfdDL;
