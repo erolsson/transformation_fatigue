@@ -23,7 +23,7 @@ std::mutex print_mutex;
 
 template<typename T>
 void print_at_time(const std::string msg, const T& val, double time, unsigned noel, unsigned npt) {
-    if (time > -1) {
+    if (time > 0.3) {
         std::cout << "Elem: " << noel << " gp: " << npt << " " << msg << val << std::endl;
     }
 }
@@ -251,7 +251,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
         unsigned iter = 0;
         while (residual > 1e-12) {
             ++iter;
-            // print_at_time("Newton loop iter " + std::to_string(iter), time[1], noel, npt);
+            print_at_time("Newton loop iter " + std::to_string(iter), "", time[1], noel, npt);
             double fM2 = state.fM() + DfM;
             sigma_2 = sigma_t;
 
@@ -415,16 +415,13 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                     dDfM_strain = (d*e - c*g)/det*f - (b*e - a*g)/det*h_stress - h_strain;
                 }
                 if ((DL - dDL < 0 || DfM_strain - dDfM_strain < 0) && stress_transformations) {
-                    std::cout << "Invalid plasticity" << std::endl;
                     DL = 0;
                     dDL = 0;
                     dDfM_strain = 0;
                     DfM_strain = 0;
                     dDfM_stress = h_stress/dh_stressDfM;
-                    std::cout << "Invalid plasticity corrected" << std::endl;
                 }
                 if (DfM_stress - dDfM_stress < 0) {
-                    std::cout << "Invalid transformation: " << std::endl;
                     DfM_stress = 0;
                     dDfM_stress = 0;
                     if (strain_transformations) {
@@ -435,7 +432,6 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                     else {
                         dDL = f/dfdDL;
                     }
-                    std::cout << "Invalid transformation corrected: " << std::endl;
                 }
             }
             // print_for_position("Done with updating iteration ", iter, noel, npt);
