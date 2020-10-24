@@ -189,15 +189,6 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
         stress_vec = sigma_t;
     }
     else {  // Inelastic deformations
-        std::cout << "Inelastic deformation" << std::endl;
-        std::cout << "sigma_t: " << sigma_t.transpose().format(CleanFmt) << std::endl;
-        std::cout << "de_t: " << de.transpose().format(CleanFmt) << std::endl;
-        std::cout << "noel: " << noel << std::endl;
-        std::cout << "gp: " << npt << std::endl;
-        std::cout << "stress trans function: "
-                  << stress_transformation_function(sigma_t, temp, params, state, state.fM()) << std::endl;
-        std::cout << " yield func: " << yield_function(sigma_t, state.total_back_stress(), sy, params) << std::endl;
-        xit_();
         Vector6 sigma_2 = sigma_t;
         Vector6 s = deviator(sigma_2);
         double DL = 0;
