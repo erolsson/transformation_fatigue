@@ -114,7 +114,7 @@ T von_Mises(const Matrix<T, 6, 1>& s) {
 
 template<typename T>
 T vector_det(const Matrix<T, 6, 1>& s) {
-    return s[0]*(s[1]*s[2] - s[5]*s[5]) - s[3]*(s[3]*s[2] - s[5]*s[4]) + s[4]*(s[1]*s[4] - s[3]*s[5]);
+    return s[0]*(s[1]*s[2] - s[5]*s[5]) - s[3]*(s[3]*s[2] - s[5]*s[4]) + s[4]*(s[3]*s[5] - s[1]*s[4]);
 }
 
 #endif //UTILITIES_H

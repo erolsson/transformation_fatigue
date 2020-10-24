@@ -345,13 +345,6 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                         (1 - fM2)*(1 - state.other_phases())*(As + DL*dAsdDL + Bs*dDSigmadDL + DSigma*dBsdDL);
                 dh_strainDfM = -(As*DL + Bs*DSigma)*(1 - state.other_phases()) +
                                (1 - fM2)*(1 - state.other_phases())*(DL*dAsdfM + Bs*dDSigmadDfM + DSigma*dBsdfM);
-                // print_at_time("Plastic section done", time[1], noel, npt);
-                /*
-                print_for_position("h_strain", h_strain, noel, npt);
-                print_for_position("Bs", Bs, noel, npt);
-                print_for_position("dBsdDL", dBsdDL, noel, npt);
-                print_for_position("dBsdfM", dBsdfM, noel, npt);
-                 */
             }
 
             if (stress_transformations) {
@@ -364,9 +357,6 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                 bij *= exp_fun*params.k();
                 dh_stressDfM = double_contract(bij, dsigma2_dDfM) - 1;
                 dh_stressDL = double_contract(bij, dsijdDL);
-
-                // print_for_position("h_stress: ", h_stress, noel, npt);
-                // print_for_position("dh_stressDfM: ", dh_stressDfM, noel, npt);
             }
 
             if (!plastic) {
