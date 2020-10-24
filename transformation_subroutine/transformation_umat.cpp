@@ -310,6 +310,8 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
 
             // h_strain and derivatives of h_strain
             if (plastic && strain_transformations) {
+                std::cout << "Entering strain transformation: exiting" << std::endl;
+                xit_();
                 // print_at_time("Entering plastic section", time[1], noel, npt);
                 Sigma = I1_2/s_vM_2;
                 // double DI1 = 3*K*(de[0] + de[1] + de[2] - DfM*params.dV());
@@ -363,7 +365,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
             if (!plastic) {
                 if (abs(dh_stressDfM) < 1e-15) {
                     std::cout << "dh_stressDfM = 0" << std::endl;
-                    std::abort();
+                    xit_();
                 }
                 dDfM_stress = h_stress/dh_stressDfM;
             }
@@ -384,17 +386,18 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                 else if (!stress_transformations) {
                     // print_for_position("Strain transformations", "", noel, npt);
                     double det = dfdDL*(dh_strainDfM - 1) - dfdDfM*dh_straindDL;
-                    dDL = ((dh_strainDfM - 1)*f - dfdDfM*h_strain)/det;
-                    dDfM_strain = (-dh_straindDL*f + dfdDL*h_strain)/det;
                     if (abs(det) < 1e-15) {
                         std::cout << "Zero determinant at " << noel << " " << npt << std::endl;
+                        xit_();
                     }
+                    dDL = ((dh_strainDfM - 1)*f - dfdDfM*h_strain)/det;
+                    dDfM_strain = (-dh_straindDL*f + dfdDL*h_strain)/det;
                 }
                 else if (!strain_transformations) {
                     double det = dfdDL*dh_stressDfM - dfdDfM*dh_stressDL;
                     if (abs(det) < 1e-15) {
                         std::cout << "Zero determinant at " << noel << " " << npt << std::endl;
-                        std::abort();
+                        xit_();
                     }
                     dDL = (dh_stressDfM*f - dfdDfM*h_stress)/det;
                     dDfM_stress = (-dh_stressDL*f + dfdDL*h_stress)/det;
@@ -412,14 +415,16 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                     dDfM_strain = (d*e - c*g)/det*f - (b*e - a*g)/det*h_stress - h_strain;
                 }
                 if ((DL - dDL < 0 || DfM_strain - dDfM_strain < 0) && stress_transformations) {
+                    std::cout << "Invalid plasticity" << std::endl;
                     DL = 0;
                     dDL = 0;
                     dDfM_strain = 0;
                     DfM_strain = 0;
                     dDfM_stress = h_stress/dh_stressDfM;
-
+                    std::cout << "Invalid plasticity corrected" << std::endl;
                 }
-                if (DfM_stress - dDfM_stress < 0 && plastic) {
+                if (DfM_stress - dDfM_stress < 0) {
+                    std::cout << "Invalid transformation: " << std::endl;
                     DfM_stress = 0;
                     dDfM_stress = 0;
                     if (strain_transformations) {
@@ -430,6 +435,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                     else {
                         dDL = f/dfdDL;
                     }
+                    std::cout << "Invalid transformation corrected: " << std::endl;
                 }
             }
             // print_for_position("Done with updating iteration ", iter, noel, npt);
@@ -463,7 +469,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                 print_for_position("sigma_t: ", sigma_t.transpose().format(CleanFmt), noel, npt);
                 print_for_position("strain-transformations: ", strain_transformations, noel, npt);
                 pnewdt = 0.25;
-                std::abort();
+                xit_();
                 return;
             }
         }
