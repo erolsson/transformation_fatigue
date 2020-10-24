@@ -309,7 +309,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                 dsvMdsij = 1.5*s/s_vM_2;
 
             // h_strain and derivatives of h_strain
-            if (plastic) {
+            if (plastic && strain_transformations) {
                 // print_at_time("Entering plastic section", time[1], noel, npt);
                 Sigma = I1_2/s_vM_2;
                 // double DI1 = 3*K*(de[0] + de[1] + de[2] - DfM*params.dV());
@@ -360,6 +360,10 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
             }
 
             if (!plastic) {
+                if (abs(dh_stressDfM) < 1e-15) {
+                    std::cout << "dh_stressDfM = 0" << std::endl;
+                    xit_();
+                }
                 dDfM_stress = h_stress/dh_stressDfM;
             }
             else {
@@ -387,6 +391,10 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                 }
                 else if (!strain_transformations) {
                     double det = dfdDL*dh_stressDfM - dfdDfM*dh_stressDL;
+                    if (abs(det) < 1e-15) {
+                        std::cout << "Zero determinant at " << noel << " " << npt << std::endl;
+                        xit_();
+                    }
                     dDL = (dh_stressDfM*f - dfdDfM*h_stress)/det;
                     dDfM_stress = (-dh_stressDL*f + dfdDL*h_stress)/det;
                 }
@@ -413,9 +421,14 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                 if (DfM_stress - dDfM_stress < 0) {
                     DfM_stress = 0;
                     dDfM_stress = 0;
-                    double det = dfdDL*(dh_strainDfM - 1) - dfdDfM*dh_straindDL;
-                    dDL = ((dh_strainDfM - 1)*f - dfdDfM*h_strain)/det;
-                    dDfM_strain = (-dh_straindDL*f + dfdDL*h_strain)/det;
+                    if (strain_transformations) {
+                        double det = dfdDL*(dh_strainDfM - 1) - dfdDfM*dh_straindDL;
+                        dDL = ((dh_strainDfM - 1)*f - dfdDfM*h_strain)/det;
+                        dDfM_strain = (-dh_straindDL*f + dfdDL*h_strain)/det;
+                    }
+                    else {
+                        dDL = f/dfdDL;
+                    }
                 }
             }
             // print_for_position("Done with updating iteration ", iter, noel, npt);
