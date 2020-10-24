@@ -176,19 +176,22 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
     if (params.kinematic_hardening()) {
         stilde2 -= state.total_back_stress();
     }
+    print_at_time("evaluating yield function", "", time[1], noel, npt);
     bool plastic = params.plastic() && yield_function(sigma_t, state.total_back_stress(), sy, params) > 0;
 
-    // print_at_time("yield function evaluated", time[1], noel, npt);
+    print_at_time("yield function evaluated", "", time[1], noel, npt);
     bool stress_transformations = stress_transformation_function(sigma_t, temp, params, state, state.fM()) >= 0;
+    print_at_time("evaluating stress trans function", "", time[1], noel, npt);
     bool strain_transformations = params.beta() > 0 && plastic;
     bool elastic = !plastic && !stress_transformations;
 
     if (elastic) {     // Use the trial stress as the stress and the elastic stiffness matrix as the tangent
-        // print_at_time("Elastic increment", time[1], noel, npt);
+        print_at_time("Elastic increment", "", time[1], noel, npt);
         D_alg = Del;
         stress_vec = sigma_t;
     }
     else {  // Inelastic deformations
+        print_at_time("Inelastic increment", "", time[1], noel, npt);
         Vector6 sigma_2 = sigma_t;
         Vector6 s = deviator(sigma_2);
         double DL = 0;
