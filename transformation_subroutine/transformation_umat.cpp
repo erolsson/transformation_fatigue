@@ -363,7 +363,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
             if (!plastic) {
                 if (abs(dh_stressDfM) < 1e-15) {
                     std::cout << "dh_stressDfM = 0" << std::endl;
-                    xit_();
+                    std::abort();
                 }
                 dDfM_stress = h_stress/dh_stressDfM;
             }
@@ -394,7 +394,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                     double det = dfdDL*dh_stressDfM - dfdDfM*dh_stressDL;
                     if (abs(det) < 1e-15) {
                         std::cout << "Zero determinant at " << noel << " " << npt << std::endl;
-                        xit_();
+                        std::abort();
                     }
                     dDL = (dh_stressDfM*f - dfdDfM*h_stress)/det;
                     dDfM_stress = (-dh_stressDL*f + dfdDL*h_stress)/det;
@@ -463,7 +463,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                 print_for_position("sigma_t: ", sigma_t.transpose().format(CleanFmt), noel, npt);
                 print_for_position("strain-transformations: ", strain_transformations, noel, npt);
                 pnewdt = 0.25;
-                xit_();
+                std::abort();
                 return;
             }
         }
