@@ -155,7 +155,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
 
     double I1_1 = stress_vec[0] + stress_vec[1] + stress_vec[2];
     double s_vM_1 = von_Mises(static_cast<Vector6>(stress_vec));
-    double Sigma1 = I1_1/s_vM_1;
+
 
     const Eigen::Map<Vector6> de(dstran);
     // print_for_position("strain_inc: ", de.transpose().format(CleanFmt), noel, npt);
@@ -315,6 +315,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                 // double DI1 = 3*K*(de[0] + de[1] + de[2] - DfM*params.dV());
                 // Vector6 Dsij = static_cast<Vector6>(2*G*(deviator(static_cast<Vector6>(de)) - (DL + RA*DfM)*nij2));
                 // double DvM = 1.5/s_vM_2*double_contract(deviator(sigma_2), Dsij);
+                double Sigma1 = I1_1/s_vM_1;
                 DSigma = Sigma - Sigma1;
                 double n = params.n();
                 double dSigmadDL = -Sigma/s_vM_2*double_contract(dsvMdsij, dsijdDL);
@@ -418,7 +419,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                     dDfM_stress = h_stress/dh_stressDfM;
 
                 }
-                if (DfM_stress - dDfM_stress < 0) {
+                if (DfM_stress - dDfM_stress < 0 && plastic) {
                     DfM_stress = 0;
                     dDfM_stress = 0;
                     if (strain_transformations) {
@@ -507,13 +508,17 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
 
         if (DfM_stress > 0) {
             Fskl = bij;
-            Lekl = 1./A/B*(2*G*nij2 + params.a()*K*delta_ij);
-            Lskl = 1./A*dfdDfM*bij;
+            if (A != 0.) {
+                Lekl = 1./A/B*(2*G*nij2 + params.a()*K*delta_ij);
+                Lskl = 1./A*dfdDfM*bij;
+            }
         }
         else {
+
             double B1 = (1 - state.fM())/(1 + As*DL + Bs*DSigma);
             double B2 = B1*(As + DL*dAsdDL);
             Lekl = (2*G*nij2 + params.a()*K*delta_ij)/(A*B - B*B2*dfdDfM);
+            /*
             Vector6 Gkl;
             if (abs(I1_2) > 1e-16) {
                 Gkl = B1*Bs*Sigma*(1 - norm_drivning_force/params.g_std()*params.g2())*(delta_ij/I1_2 - 1.5*s/s_vM_2);
@@ -524,6 +529,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
             Lskl = Gkl*dfdDfM/(A + B2*dfdDfM);
             Fekl = B2*Lekl;
             Fskl = Gkl*(1 + dfdDfM/(A + B2*dfdDfM)*B2);
+             */
         }
 
         if (DL > 0) {
