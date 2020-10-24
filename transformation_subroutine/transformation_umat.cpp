@@ -180,6 +180,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
     bool plastic = params.plastic() && yield_function(sigma_t, state.total_back_stress(), sy, params) > 0;
 
     print_at_time("yield function evaluated", "", time[1], noel, npt);
+    print_at_time("sigma_t: ", sigma_t.transpose().format(CleanFmt), time[1], noel, npt);
     print_at_time("a1: ", params.a1()*(sigma_t[0] + sigma_t[1] + sigma_t[2]), time[1], noel, npt);
 
     print_at_time("a2: ", 0.5*params.a2()*double_contract(sij_t, sij_t), time[1], noel, npt);
