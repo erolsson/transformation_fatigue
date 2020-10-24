@@ -180,8 +180,14 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
     bool plastic = params.plastic() && yield_function(sigma_t, state.total_back_stress(), sy, params) > 0;
 
     print_at_time("yield function evaluated", "", time[1], noel, npt);
+    print_at_time("a1: ", params.a1()*(sigma_t[0] + sigma_t[1] + sigma_t[2]), time[1], noel, npt);
+
+    print_at_time("a2: ", 0.5*params.a2()*double_contract(sij_t, sij_t), time[1], noel, npt);
+    print_at_time("a3: ", params.a3()*vector_det(sij_t), time[1], noel, npt);
+    print_at_time("temp func: ", -stress_temperature_transformation(sigma_t, params, temp), time[1], noel, npt);
     bool stress_transformations = stress_transformation_function(sigma_t, temp, params, state, state.fM()) >= 0;
     print_at_time("evaluating stress trans function", "", time[1], noel, npt);
+
     bool strain_transformations = params.beta() > 0 && plastic;
     bool elastic = !plastic && !stress_transformations;
 
