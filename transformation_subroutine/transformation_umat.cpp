@@ -23,7 +23,7 @@ std::mutex print_mutex;
 
 template<typename T>
 void print_at_time(const std::string msg, const T& val, double time, unsigned noel, unsigned npt) {
-    if (time > 2.) {
+    if (time > 0.3) {
         std::cout << "Elem: " << noel << " gp: " << npt << " " << msg << val << std::endl;
     }
 }
@@ -128,11 +128,11 @@ double stress_temperature_transformation(const Eigen::Matrix<double, 6, 1>& stre
 double stress_transformation_function(const Eigen::Matrix<double, 6, 1>& stress, double T,
                                       const TransformationMaterialParameters& params, const State& state, double fM) {
     double temp_function = stress_temperature_transformation(stress, params, T);
-    if (temp_function < -1000) {
-        temp_function = -1000;
+    if (temp_function < -100) {
+        temp_function = -100;
     }
-    else if (temp_function > 1000){
-        temp_function = 1000;
+    else if (temp_function > 100){
+        temp_function = 100;
     }
     return (1 - exp(-temp_function))*(1 - state.other_phases()) - fM;
 }
