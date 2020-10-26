@@ -378,12 +378,14 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
                 print_at_time("Stress transformation calculation", "", time[1], noel, npt);
                 h_stress = stress_transformation_function(sigma_2, temp, params, state, fM2);
                 double I1 = sigma_2[0] + sigma_2[1] + sigma_2[2];
-                bij = params.a1()*delta_ij;
-                if (J2 > 1e-12) {
-                    bij += params.a2()*s + params.a3()*(contract(s, s) - 2./3*J2*delta_ij);
+                if (I1 > 0) {
+                    bij = params.a1()*delta_ij;
+                    if (J2 > 1e-12) {
+                        bij += params.a2()*s + params.a3()*(contract(s, s) - 2./3*J2*delta_ij);
+                    }
+                    double exp_fun = 1 - (h_stress + fM2);
+                    bij *= exp_fun*params.k();
                 }
-                double exp_fun = 1 - (h_stress + fM2);
-                bij *= exp_fun*params.k();
                 dh_stressDfM = double_contract(bij, dsigma2_dDfM) - 1;
                 dh_stressDL = double_contract(bij, dsijdDL);
                 print_at_time("Exiting Stress transformation calculation", "", time[1], noel, npt);
