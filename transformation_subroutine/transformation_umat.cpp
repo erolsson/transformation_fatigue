@@ -120,7 +120,11 @@ double yield_function(const Eigen::Matrix<double, 6, 1>& sigma, const Eigen::Mat
 double stress_temperature_transformation(const Eigen::Matrix<double, 6, 1>& stress,
                                          const TransformationMaterialParameters& params, double T) {
     Eigen::Matrix<double, 6, 1> s_dev = deviator(stress);
-    double m_stress = params.a1()*(stress[0] + stress[1] + stress[2]);   // Contribution from hydrostatic stress
+    double I1 = stress[0] + stress[1] + stress[2];
+    if (I1 < 0) {
+        return 0;
+    }
+    double m_stress = params.a1()*I1;   // Contribution from hydrostatic stress
 
     m_stress += 0.5*params.a2()*double_contract(s_dev, s_dev);
     m_stress += params.a3()*vector_det(s_dev);
@@ -374,12 +378,15 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
             if (stress_transformations) {
                 print_at_time("Stress transformation calculation", "", time[1], noel, npt);
                 h_stress = stress_transformation_function(sigma_2, temp, params, state, fM2);
-                bij = params.a1()*delta_ij;
-                if (J2 > 1e-12) {
-                    bij += params.a2()*s + params.a3()*(contract(s, s) - 2./3*J2*delta_ij);
+                double I1 = sigma_2[0] + sigma_2[1] + sigma_2[2];
+                if (I1 > 0) {
+                    bij = params.a1()*delta_ij;
+                    if (J2 > 1e-12) {
+                        bij += params.a2()*s + params.a3()*(contract(s, s) - 2./3*J2*delta_ij);
+                    }
+                    double exp_fun = 1 - (h_stress + fM2);
+                    bij *= exp_fun*params.k();
                 }
-                double exp_fun = 1 - (h_stress + fM2);
-                bij *= exp_fun*params.k();
                 dh_stressDfM = double_contract(bij, dsigma2_dDfM) - 1;
                 dh_stressDL = double_contract(bij, dsijdDL);
                 print_at_time("Exiting Stress transformation calculation", "", time[1], noel, npt);
