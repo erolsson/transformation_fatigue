@@ -23,9 +23,11 @@ std::mutex print_mutex;
 
 template<typename T>
 void print_at_time(const std::string msg, const T& val, double time, unsigned noel, unsigned npt) {
+    /*
     if (time > 0.3) {
         std::cout << "Elem: " << noel << " gp: " << npt << " " << msg << val << std::endl;
     }
+     */
 }
 
 
