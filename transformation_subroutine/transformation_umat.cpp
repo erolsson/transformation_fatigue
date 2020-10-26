@@ -121,9 +121,9 @@ double stress_temperature_transformation(const Eigen::Matrix<double, 6, 1>& stre
                                          const TransformationMaterialParameters& params, double T) {
     Eigen::Matrix<double, 6, 1> s_dev = deviator(stress);
     double I1 = stress[0] + stress[1] + stress[2];
-    double m_stress;
+    double m_stress = 0;
     if (I1 > 0) {
-        m_stress = params.a1()*I1;   // Contribution from hydrostatic stress
+        m_stress += params.a1()*I1;   // Contribution from hydrostatic stress
         m_stress += 0.5*params.a2()*double_contract(s_dev, s_dev);
         m_stress += params.a3()*vector_det(s_dev);
     }
