@@ -197,7 +197,8 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
     print_at_time("a2: ", 0.5*params.a2()*double_contract(sij_t, sij_t), time[1], noel, npt);
     print_at_time("a3: ", params.a3()*vector_det(sij_t), time[1], noel, npt);
     print_at_time("temp func: ", -stress_temperature_transformation(sigma_t, params, temp), time[1], noel, npt);
-    bool stress_transformations = stress_transformation_function(sigma_t, temp, params, state, state.fM()) >= 0;
+    bool stress_transformations = stress_transformation_function(sigma_t, temp, params, state, state.fM()) >= 0 &&
+            state.austenite() > 0.01;
     print_at_time("evaluating stress trans function", "", time[1], noel, npt);
 
     bool strain_transformations = params.beta() > 0 && plastic;
