@@ -14,7 +14,7 @@ def main():
     R = float(sys.argv[-1])
     specimen_loads = {'smooth': {-1.: [737., 774., 820.], 0.: [424. - 26, 424, 424 + 26]},
                       'notched': {-1.: [427., 450.], 0.: [237. - 16, 237., 237 + 16]}}
-
+    heat_treatment_simulation = 'cooltemp_30C_tempering_200C_120min'
     simulations = []
     for load_amplitude in specimen_loads[specimen][R]:
         mean_load = (1 + R)/(1 - R)*load_amplitude
@@ -34,8 +34,8 @@ def main():
     if not os.path.isdir(simulation_directory):
         os.makedirs(simulation_directory)
     job_names = write_mechanical_input_files(specimen, geom_filename, simulation_directory, simulations, SS2506)
-    heat_treatment_data_file = os.path.expanduser('~/utmis_specimens/' + specimen + '/Toolbox_Cooling_utmis_'
-                                                  + specimen + '.htd')
+    heat_treatment_data_file = os.path.expanduser('~/utmis_specimens/' + specimen + '/' + heat_treatment_simulation +
+                                                  '/Toolbox_Cooling_utmis_' + specimen + '.htd')
     write_run_file(job_names, heat_treatment_data_file, simulation_directory + '/run_R=' + str(int(R)) + '.sh')
 
 
