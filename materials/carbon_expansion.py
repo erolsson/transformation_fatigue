@@ -16,7 +16,9 @@ def main():
     temp = 22.
     carbon = np.linspace(0., 1, 1000)
     ea = -1.146e-2 + 4.22e-3*carbon + 2.377e-5*temp
-    em1 = -4.740e-3 + 1.531e-02*carbon + -9.253e-03*carbon**2 + 1.210e-5*temp -4.361e-06*carbon*temp + 2.238e-09*temp**2
+    em1 = -4.17710388e-03 + 1.09287331e-02*carbon + -2.80343700e-03*carbon**2 + 1.3e-5*temp -4.3e-06*carbon*temp + 2.9e-09*temp**2
+    em1 = -4.28809826e-03 + 1.16715501e-02*carbon + -3.86966876e-03*carbon**2 + 1.3e-5*temp -4.3e-06*carbon*temp + 2.9e-09*temp**2
+    # em1 = -4.40683877e-03 + 1.24340676e-02*carbon + -4.94128875e-03*carbon**2 + 1.3e-5*temp -4.6e-06*carbon*temp + 2.9e-09*temp**2
     a3 = -0.00175278
     a2 = 0.00939213
     a1 = -0.00389193

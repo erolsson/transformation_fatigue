@@ -20,7 +20,7 @@ def main():
             os.makedirs(simulation_directory)
         job_names = write_mechanical_input_files(specimen, geom_filename, simulation_directory, simulations[specimen],
                                                  SS2506)
-        heat_treatment_simulation = 'cooltemp_30C_tempering_200C_120min'
+        heat_treatment_simulation = 'cooltemp_55C_tempering_200C_120min'
         heat_treatment_data_file = os.path.expanduser('~/utmis_specimens/' + specimen + '/' + heat_treatment_simulation +
                                                       '/Toolbox_Cooling_utmis_' + specimen + '.htd')
         write_run_file(job_names, heat_treatment_data_file, simulation_directory + '/run_compliance.sh')

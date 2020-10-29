@@ -50,6 +50,9 @@ def flip_node_order(element_data, axis):
 def write_mechanical_input_files(specimen, geom_include_file, directory, simulations, material, initial_inc=1e-2):
     input_file_reader = InputFileReader()
     input_file_reader.read_input_file(geom_include_file, string_to_remove_from_set_names='Specimen_')
+    input_file_reader.elements['C3D8I'] = input_file_reader.elements['C3D8']
+
+    del input_file_reader.elements['C3D8']
     x = input_file_reader.nodal_data[:, 1]
 
     r = np.sqrt(np.sum(input_file_reader.nodal_data[:, 1:4]**2, 1))
