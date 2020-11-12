@@ -14,7 +14,7 @@ def main():
     R = float(sys.argv[-1])
     specimen_loads = {'smooth': {-1.: [737., 774., 820.], 0.: [424. - 26, 424, 424 + 26]},
                       'notched': {-1.: [427., 450.], 0.: [237. - 16, 237., 237 + 16]}}
-    heat_treatment_simulation = 't=6_min_cooltemp=50'
+    heat_treatment_simulation = 't=8_min_cooltemp=45'
     simulations = []
     for load_amplitude in specimen_loads[specimen][R]:
         mean_load = (1 + R)/(1 - R)*load_amplitude
