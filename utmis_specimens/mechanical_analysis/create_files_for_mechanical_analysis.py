@@ -14,7 +14,7 @@ def main():
     R = float(sys.argv[-1])
     specimen_loads = {'smooth': {-1.: [737., 774., 820.], 0.: [424. - 26, 424, 424 + 26]},
                       'notched': {-1.: [427., 450.], 0.: [237. - 16, 237., 237 + 16]}}
-    heat_treatment_simulation = 't=8_min_cooltemp=45'
+    heat_treatment_simulation = 'CD05_65C'
     simulations = []
     for load_amplitude in specimen_loads[specimen][R]:
         mean_load = (1 + R)/(1 - R)*load_amplitude
@@ -30,7 +30,7 @@ def main():
     geom_filename = os.path.expanduser('~/python_projects/python_fatigue/fatigue_specimens/UTMIS/utmis_'
                                        + specimen + '/utmis_' + specimen + '.inc')
     simulation_directory = os.path.expanduser('~/utmis_specimens/' + specimen
-                                              + '/mechanical_analysis/new_heat_treatment/')
+                                              + '/mechanical_analysis/CD05_65C/')
     if not os.path.isdir(simulation_directory):
         os.makedirs(simulation_directory)
     job_names = write_mechanical_input_files(specimen, geom_filename, simulation_directory, simulations, SS2506)
