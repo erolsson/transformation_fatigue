@@ -40,7 +40,7 @@ def main():
     notched_center = np.genfromtxt('utmis_notched_center.csv', delimiter=',', skip_header=1)
     c = notched_center[0, 1]
     M = -np.log(notched_center[0, 2])/(SS2506.k_1 + SS2506.k_2*c) - SS2506.Ms_1 - SS2506.Ms_2*c + 22.
-    b1, b2, b3, = 0.02, 1e-4, 5e-7
+    b1, b2, b3, = 0.04, 1e-4, 5e-7
     bss = M - m_stress(notched_center, b1, b2, b3)[-1]
     print(bss)
     for data_set, su, c in zip([smooth_center, smooth_edge, notched_center], [424*2, 424*2, 237*2], ['b', 'g', 'r']):
