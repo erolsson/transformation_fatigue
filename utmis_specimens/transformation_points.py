@@ -40,11 +40,11 @@ def main():
     notched_center = np.genfromtxt('utmis_notched_center.csv', delimiter=',', skip_header=1)
     c = notched_center[0, 1]
     M = -np.log(notched_center[0, 2])/(SS2506.k_1 + SS2506.k_2*c) - SS2506.Ms_1 - SS2506.Ms_2*c + 22.
-    b1, b2, b3, = 0.04, 1e-4, 5e-7
+    b1, b2, b3, = 0.04, 2e-4, 1e-6
     bss = M - m_stress(notched_center, b1, b2, b3)[-1]
-    print(bss)
+    print(bss+10)
     for data_set, su, c in zip([smooth_center, smooth_edge, notched_center], [424*2, 424*2, 237*2], ['b', 'g', 'r']):
-        Mss, a1, a2, a3 = -56.05272438731849, 0.02, 1e-4, 0
+        Mss, a1, a2, a3 = -70, 0.02, 1e-4, 5e-7
         fm = calculate_fm(data_set, a1, a2, a3, Mss)
         plt.figure(0)
         plt.plot(data_set[:, 0]/su, fm, c, lw=2)
@@ -54,7 +54,7 @@ def main():
         plt.figure(2)
         plt.plot(data_set[:, 0]/su, m_stress(data_set, a1, a2, a3) + Mss, c, lw=2)
 
-        fm = calculate_fm(data_set, b1, b2, b3, bss)
+        fm = calculate_fm(data_set, b1, b2, b3, bss+10)
         plt.figure(0)
         plt.plot(data_set[:, 0]/su, fm, '--' + c, lw=2)
         plt.figure(2)
