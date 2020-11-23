@@ -1,9 +1,11 @@
 import numpy as np
 
-from transformation_fatigue.materials.materials import SS2506
+from scipy.optimize import fmin
 
 import matplotlib.pyplot as plt
 import matplotlib
+
+from transformation_fatigue.materials.materials import SS2506
 
 matplotlib.style.use('classic')
 plt.rc('text', usetex=True)
@@ -26,6 +28,42 @@ def m_stress(data_set, a1, a2, a3):
     return -3*a1*data_set[:, 3] + a2*data_set[:, 4]**2/3 + 2./27*a3*data_set[:, 5]**3
 
 
+def transformation_start_load(data_set, a1, a2, a3, Mss):
+    Ms = SS2506.Ms_1 + SS2506.Ms_2*data_set[:, 1]
+    k = SS2506.k_1 + SS2506.k_2*data_set[:, 1]
+    fm = 1 - np.exp(-k*(Ms + m_stress(data_set, a1, a2, a3) + Mss - 22.))
+    r = fm - (1 - data_set[0, 2])
+    return np.interp(0, r, data_set[:, 0])
+
+
+def start_load_residual(parameters, data_sets):
+    a1 = abs(parameters[0])
+    a3 = abs(parameters[1])
+    Mss = -abs(parameters[2])
+
+    # Find a2 so that notched is at st
+    st = 450
+
+    def notched_residual(par, notched_data):
+        fm0 = notched_data[0, 2]
+        notched_data = notched_data[notched_data[:, 0] == [st], :]
+        Ms = SS2506.Ms_1 + SS2506.Ms_2*notched_data[:, 1]
+        k = SS2506.k_1 + SS2506.k_2*notched_data[:, 1]
+        fm = np.exp(-k*(Ms + m_stress(notched_data, a1, par, a3) + Mss - 22.))
+        print(fm, fm0)
+        return (fm[0] - fm0)**2*1000
+
+    a2 = fmin(notched_residual, [1e-4], args=(data_sets[2],))[0]
+    s = np.array([transformation_start_load(data_sets[0], a1, a2, a3, Mss),
+                  transformation_start_load(data_sets[1], a1, a2, a3, Mss),
+                  transformation_start_load(data_sets[2], a1, a2, a3, Mss)])
+    smooth_start_load = (s[0] + s[1])/2 + max(s[0:2])
+    r = 0
+    r += 1000*np.count_nonzero(s == 0)
+    print(s, a1, a2, a3, Mss)
+    return smooth_start_load + r
+
+
 def main():
     s = np.linspace(0, 1000, 1000)
     uniaxial = np.zeros((1000, 6))
@@ -38,23 +76,28 @@ def main():
     smooth_center = np.genfromtxt('utmis_smooth_center.csv', delimiter=',', skip_header=1)
     smooth_edge = np.genfromtxt('utmis_smooth_edge.csv', delimiter=',', skip_header=1)
     notched_center = np.genfromtxt('utmis_notched_center.csv', delimiter=',', skip_header=1)
+
     c = notched_center[0, 1]
     M = -np.log(notched_center[0, 2])/(SS2506.k_1 + SS2506.k_2*c) - SS2506.Ms_1 - SS2506.Ms_2*c + 22.
     b1, b2, b3, = 0.02, 1e-4, 0
     bss = M - m_stress(notched_center, b1, b2, b3)[-1]
     print(bss)
+    par = fmin(start_load_residual, [0.02, 0, -56], args=([smooth_center, smooth_edge, notched_center],))
+    print(par)
     for data_set, su, c in zip([smooth_center, smooth_edge, notched_center], [424*2, 424*2, 237*2], ['b', 'g', 'r']):
         Mss, a1, a2, a3 = -56.05272438731849, 0.02, 1e-4, 0
         fm = calculate_fm(data_set, a1, a2, a3, Mss)
+        print(transformation_start_load(data_set, a1, a2, a3, Mss)/su)
         plt.figure(0)
         plt.plot(data_set[:, 0]/su, fm, c, lw=2)
         fm = calculate_fm(data_set, a1, a2, a3, -67.74183011161615)
+
         plt.figure(0)
         plt.plot(data_set[:, 0]/su, fm, ':' + c, lw=2)
         plt.figure(2)
         plt.plot(data_set[:, 0]/su, m_stress(data_set, a1, a2, a3) + Mss, c, lw=2)
 
-        fm = calculate_fm(data_set, b1, b2, b3, bss)
+        fm = calculate_fm(data_set,  0.020, 6e-5, 0, -57.39293797777295)
         plt.figure(0)
         plt.plot(data_set[:, 0]/su, fm, '--' + c, lw=2)
         plt.figure(2)
