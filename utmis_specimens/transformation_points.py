@@ -50,7 +50,6 @@ def start_load_residual(parameters, data_sets):
         Ms = SS2506.Ms_1 + SS2506.Ms_2*notched_data[:, 1]
         k = SS2506.k_1 + SS2506.k_2*notched_data[:, 1]
         fm = np.exp(-k*(Ms + m_stress(notched_data, a1, par, a3) + Mss - 22.))
-        print(fm, fm0)
         return (fm[0] - fm0)**2*1000
 
     a2 = fmin(notched_residual, [1e-4], args=(data_sets[2],))[0]
@@ -60,7 +59,6 @@ def start_load_residual(parameters, data_sets):
     smooth_start_load = (s[0] + s[1])/2 + max(s[0:2])
     r = 0
     r += 1000*np.count_nonzero(s == 0)
-    print(s, a1, a2, a3, Mss)
     return smooth_start_load + r
 
 
@@ -81,41 +79,23 @@ def main():
     M = -np.log(notched_center[0, 2])/(SS2506.k_1 + SS2506.k_2*c) - SS2506.Ms_1 - SS2506.Ms_2*c + 22.
     b1, b2, b3, = 0.02, 1e-4, 0
     bss = M - m_stress(notched_center, b1, b2, b3)[-1]
-    print(bss)
-    par = fmin(start_load_residual, [0.02, 0, -56], args=([smooth_center, smooth_edge, notched_center],))
-    print(par)
+    # par = fmin(start_load_residual, [0.02, 0, -56], args=([smooth_center, smooth_edge, notched_center],))
+    # print(par)
     for data_set, su, c in zip([smooth_center, smooth_edge, notched_center], [424*2, 424*2, 237*2], ['b', 'g', 'r']):
-        Mss, a1, a2, a3 = -56.05272438731849, 0.02, 1e-4, 0
+        Mss, a1, a2, a3 = -115, 0.05052392526831612, 0.0002, 1.22e-7
         fm = calculate_fm(data_set, a1, a2, a3, Mss)
         print(transformation_start_load(data_set, a1, a2, a3, Mss)/su)
         plt.figure(0)
         plt.plot(data_set[:, 0]/su, fm, c, lw=2)
-        fm = calculate_fm(data_set, a1, a2, a3, -67.74183011161615)
-
-        plt.figure(0)
-        plt.plot(data_set[:, 0]/su, fm, ':' + c, lw=2)
-        plt.figure(2)
-        plt.plot(data_set[:, 0]/su, m_stress(data_set, a1, a2, a3) + Mss, c, lw=2)
-
-        fm = calculate_fm(data_set,  0.020, 6e-5, 0, -57.39293797777295)
-        plt.figure(0)
-        plt.plot(data_set[:, 0]/su, fm, '--' + c, lw=2)
-        plt.figure(2)
-        plt.plot(data_set[:, 0]/su, m_stress(data_set, b1, b2, b3) + bss, '--' + c, lw=2)
 
         plt.figure(1)
-        plt.plot(data_set[:, 0]/su, -3*data_set[:, 3], c, lw=2)
+        plt.plot(data_set[:, 0]/su, -3*data_set[:, 3], '-' + c, lw=2)
         plt.plot(data_set[:, 0]/su, data_set[:, 4], '--' + c, lw=2)
         plt.plot(data_set[:, 0]/su, data_set[:, 5], ':' + c, lw=2)
 
     plt.figure(0)
     plt.xlim(0, 1)
 
-    plt.figure(1)
-    plt.xlim(0, 1)
-
-    plt.figure(100)
-    plt.plot(uniaxial[:, 0], calculate_fm(uniaxial, b1, b2, b3, bss))
     plt.show()
 
 
