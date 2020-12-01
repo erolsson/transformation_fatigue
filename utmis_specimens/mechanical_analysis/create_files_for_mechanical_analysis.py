@@ -4,7 +4,7 @@ import sys
 import numpy as np
 
 from mechanical_analysis_functions import write_mechanical_input_files, Simulation, Step, write_run_file
-from transformation_fatigue.materials.materials import SS2506
+from transformation_fatigue.materials.materials import SS2506_no_trans as SS2506
 
 
 def main():
@@ -18,15 +18,16 @@ def main():
                       'notched': {-1.: [427., 450.], 0.: [237.]}}
     heat_treatment_simulation = 't=9min_90C_decarburization'
     simulations = []
+    compliance_data = np.genfromtxt('compliance_utmis_' + specimen + '.csv')
     for load_amplitude in specimen_loads[specimen][R]:
-        mean_load = (1 + R)/(1 - R)*load_amplitude
-        max_load = mean_load + load_amplitude
-        min_load = mean_load - load_amplitude
-
+        amplitude_rot = np.interp(load_amplitude, compliance_data[:, 1], compliance_data[:, 2])
+        mean_rot = 0
+        if R == 0.:
+            mean_rot = amplitude_rot
         steps = []
         for step in range(1, no_steps + 1):
-            steps.append(Step(str(step) + "_max_load", max_load*wb, output_frequency=1.))
-            steps.append(Step(str(step) + "_min_load", min_load*wb, output_frequency=1.))
+            steps.append(Step(str(step) + "_max_load", amplitude_rot + mean_rot, output_frequency=1.))
+            steps.append(Step(str(step) + "_min_load", amplitude_rot - mean_rot, output_frequency=1.))
         steps.append(Step("relax", 0., output_frequency=1.))
         simulations.append(Simulation("snom=" + str(int(load_amplitude)) + "_R=" + str(int(R)), steps, 'displacement'))
     geom_filename = os.path.expanduser('~/python_projects/python_fatigue/fatigue_specimens/UTMIS/utmis_'
