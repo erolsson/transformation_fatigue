@@ -32,7 +32,7 @@ def main():
     geom_filename = os.path.expanduser('~/python_projects/python_fatigue/fatigue_specimens/UTMIS/utmis_'
                                        + specimen + '/utmis_' + specimen + '.inc')
     simulation_directory = os.path.expanduser('~/utmis_specimens/' + specimen
-                                              + '/mechanical_analysis/')
+                                              + '/mechanical_analysis/1/')
     if not os.path.isdir(simulation_directory):
         os.makedirs(simulation_directory)
     job_names = write_mechanical_input_files(specimen, geom_filename, simulation_directory, simulations, SS2506)
