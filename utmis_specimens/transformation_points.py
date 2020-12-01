@@ -77,16 +77,20 @@ def main():
 
     c = notched_center[0, 1]
     M = -np.log(notched_center[0, 2])/(SS2506.k_1 + SS2506.k_2*c) - SS2506.Ms_1 - SS2506.Ms_2*c + 22.
-    b1, b2, b3, = 0.05, 1e-4, 0
+    b1, b2, b3, = 0.035, 1e-4, 0
     bss = M - m_stress(notched_center, b1, b2, b3)[-1]
     # par = fmin(start_load_residual, [0.02, 0, -56], args=([smooth_center, smooth_edge, notched_center],))
     # print(par)
     for data_set, su, c in zip([smooth_center, smooth_edge, notched_center], [424*2, 424*2, 237*2], ['b', 'g', 'r']):
-        Mss, a1, a2, a3 = -105, 0.02, 2e-4, 2.e-07,
+        Mss, a1, a2, a3 = -128, 0.04, 4e-4, 0.e-07,
         fm = calculate_fm(data_set, a1, a2, a3, Mss)
-        print(transformation_start_load(data_set, a1, a2, a3, Mss)/su)
         plt.figure(0)
         plt.plot(data_set[:, 0]/su, fm, c, lw=2)
+
+        Mss, a1, a2, a3 = -105, 0.02, 2e-4, 2.e-07,
+        fm = calculate_fm(data_set, a1, a2, a3, Mss)
+        plt.figure(0)
+        plt.plot(data_set[:, 0]/su, fm, c + ':', lw=2)
 
         plt.figure(1)
         plt.plot(data_set[:, 0]/su, -3*data_set[:, 3], '-' + c, lw=2)
