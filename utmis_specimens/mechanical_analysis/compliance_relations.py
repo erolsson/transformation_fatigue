@@ -9,7 +9,7 @@ def main():
     Wb = 2*5**2/6
     M = max_nominal_stress*Wb
     steps_smooth = [Step(name='loading', load=M, max_inc=0.01)]
-    steps_notched = [Step(name='loading', load=M/2, max_inc=0.01)]
+    steps_notched = [Step(name='loading', load=M/10*6, max_inc=0.01)]
     simulations = {"smooth": [Simulation(name='loading', steps=steps_smooth, mode='force')],
                    "notched": [Simulation(name='loading', steps=steps_notched, mode='force')]}
     for specimen in ['smooth', 'notched']:
