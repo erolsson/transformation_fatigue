@@ -148,7 +148,7 @@ class ElasticMaterial:
         return file_lines
 
 
-SS2506_no_trans = ElasticPlasticTransformMaterial(E=205e3, v=0.27, sy0M=(-778.94618316, 2.24830287),
+SS2506_no_trans = ElasticPlasticTransformMaterial(E=195e3, v=0.27, sy0M=(-778.94618316, 2.24830287),
                                                   sy0A=(-343.5635802, 0.99164101),
                                                   Q=(0., 0.), b=(100., 0.),
                                                   Cm=np.array([(-18357.92204643, 83.24109092),
@@ -164,7 +164,7 @@ SS2506_no_trans = ElasticPlasticTransformMaterial(E=205e3, v=0.27, sy0M=(-778.94
                                                   g0=-0*1.918/2, g1=5.18, g2=0*1.918/2., g_mean=0, g_std=1.,
                                                   fsb0=0.12948)
 
-SS2506 = ElasticPlasticTransformMaterial(E=205e3, v=0.27, sy0M=(-778.94618316, 2.24830287),
+SS2506 = ElasticPlasticTransformMaterial(E=195e3, v=0.27, sy0M=(-778.94618316, 2.24830287),
                                          sy0A=(-343.5635802, 0.99164101),
                                          Q=(0., 0.), b=(100., 0.),
                                          Cm=np.array([(-18357.92204643, 83.24109092),
@@ -174,7 +174,7 @@ SS2506 = ElasticPlasticTransformMaterial(E=205e3, v=0.27, sy0M=(-778.94618316, 2
                                                            (817.79342975, -0.42176205),
                                                            (11039.94247712, -10.3088971)]),
                                          a=np.array([4e-02, 4e-4, 0.e-7]),
-                                         Ms=179.91803165833332, name='SS2506', Mss=-128, fM=0.85,
+                                         Ms=179.91803165833332, name='SS2506', Mss=-135, fM=0.85,
                                          beta=0., alpha=129.5, n=4., sde=0.00,
                                          # beta=841.893, alpha=129.5, n=4., sde=0.00,
                                          g0=-0*1.918/2, g1=5.18, g2=0*1.918/2., g_mean=0, g_std=1.,
