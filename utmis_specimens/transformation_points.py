@@ -82,20 +82,10 @@ def main():
     # par = fmin(start_load_residual, [0.02, 0, -56], args=([smooth_center, smooth_edge, notched_center],))
     # print(par)
     for data_set, su, c in zip([smooth_center, smooth_edge, notched_center], [424*2, 424*2, 237*2], ['b', 'g', 'r']):
-        Mss, a1, a2, a3 = -125, 0.04, 4e-4, 0.e-07,
+        Mss, a1, a2, a3 = -104.94125579733287, 0.037936378433269996, 2e-4, 0.,
         fm = calculate_fm(data_set, a1, a2, a3, Mss)
         plt.figure(0)
         plt.plot(data_set[:, 0]/su, fm, c, lw=2)
-
-        Mss, a1, a2, a3 = -105, 0.02, 2e-4, 2.e-07,
-        fm = calculate_fm(data_set, a1, a2, a3, Mss)
-        plt.figure(0)
-        plt.plot(data_set[:, 0]/su, fm, c + ':', lw=2)
-
-        Mss, a1, a2, a3 = -160, .1, 5e-4, 0.e-07,
-        fm = calculate_fm(data_set, a1, a2, a3, Mss)
-        plt.figure(0)
-        plt.plot(data_set[:, 0]/su, fm, c + '--', lw=2)
 
         plt.figure(1)
         plt.plot(data_set[:, 0]/su, -3*data_set[:, 3], '-' + c, lw=2)
