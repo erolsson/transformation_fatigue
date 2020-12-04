@@ -87,6 +87,11 @@ def main():
         plt.figure(0)
         plt.plot(data_set[:, 0]/su, fm, c, lw=2)
 
+        Mss, a1, a2, a3 = -116.3422588877755, 0.046614079984792604, 2e-4, 0.,
+        fm = calculate_fm(data_set, a1, a2, a3, Mss)
+        plt.figure(0)
+        plt.plot(data_set[:, 0]/su, fm, '--' + c, lw=2)
+
         plt.figure(1)
         plt.plot(data_set[:, 0]/su, -3*data_set[:, 3], '-' + c, lw=2)
         plt.plot(data_set[:, 0]/su, data_set[:, 4], '--' + c, lw=2)
