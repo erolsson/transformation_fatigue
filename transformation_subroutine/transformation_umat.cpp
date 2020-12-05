@@ -510,6 +510,7 @@ extern "C" void umat_(double *stress, double *statev, double *ddsdde, double *ss
         state.R() = R2;
         state.fsb() = fsb2;
         stress_vec = sigma_2;
+        state.hardness_hv() += DfM*(223.*36+14500)/(100-36);
         print_at_time("DL=", DL, time[1], noel, npt);
         print_at_time("DfM=", DfM, time[1], noel, npt);
         if (params.kinematic_hardening()) {
