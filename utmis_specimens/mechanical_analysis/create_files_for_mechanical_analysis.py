@@ -9,13 +9,11 @@ from transformation_fatigue.materials.materials import SS2506 as SS2506
 
 def main():
     wb = 2*25/6
-    no_steps = 1
+    no_steps = 2
     specimen = sys.argv[-2]
     R = float(sys.argv[-1])
-    # specimen_loads = {'smooth': {-1.: [737., 774., 820.], 0.: [424. - 26, 424, 424 + 26]},
-    #                   'notched': {-1.: [427., 450.], 0.: [237. - 16, 237., 237 + 16]}}
-    specimen_loads = {'smooth': {-1.: [737., 774., 820.], 0.: [424]},
-                      'notched': {-1.: [427., 450.], 0.: [237.]}}
+    specimen_loads = {'smooth': {-1.: [760 - 70, 760, 760 + 70], 0.: [424. - 26, 424, 424 + 26]},
+                      'notched': {-1.: [439 - 20, 439, 439 + 20], 0.: [237. - 16, 237., 237 + 16]}}
     heat_treatment_simulation = 't=9min_90C_decarburization'
     simulations = []
     compliance_data = np.genfromtxt('compliance_utmis_' + specimen + '.csv', delimiter=',')
@@ -26,14 +24,14 @@ def main():
             mean_rot = amplitude_rot
         steps = []
         for step in range(1, no_steps + 1):
-            steps.append(Step(str(step) + "_max_load", amplitude_rot + mean_rot, output_frequency=1.))
-            steps.append(Step(str(step) + "_min_load", amplitude_rot - mean_rot, output_frequency=1.))
+            steps.append(Step(str(step) + "_max_load", amplitude_rot + mean_rot, output_frequency=10.))
+            steps.append(Step(str(step) + "_min_load", amplitude_rot - mean_rot, output_frequency=10.))
         steps.append(Step("relax", 0., output_frequency=1.))
         simulations.append(Simulation("snom=" + str(int(load_amplitude)) + "_R=" + str(int(R)), steps, 'displacement'))
     geom_filename = os.path.expanduser('~/python_projects/python_fatigue/fatigue_specimens/UTMIS/utmis_'
                                        + specimen + '/utmis_' + specimen + '.inc')
     simulation_directory = os.path.expanduser('~/utmis_specimens/' + specimen
-                                              + '/mechanical_analysis/disp_control_no_plast/')
+                                              + '/mechanical_analysis/disp_control/')
     if not os.path.isdir(simulation_directory):
         os.makedirs(simulation_directory)
     job_names = write_mechanical_input_files(specimen, geom_filename, simulation_directory, simulations, SS2506)
