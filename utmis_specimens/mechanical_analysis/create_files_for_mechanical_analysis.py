@@ -24,8 +24,8 @@ def main():
             mean_rot = amplitude_rot
         steps = []
         for step in range(1, no_steps + 1):
-            steps.append(Step(str(step) + "_max_load", amplitude_rot + mean_rot, output_frequency=10.))
-            steps.append(Step(str(step) + "_min_load", amplitude_rot - mean_rot, output_frequency=10.))
+            steps.append(Step(str(step) + "_max_load", mean_rot + amplitude_rot, output_frequency=10.))
+            steps.append(Step(str(step) + "_min_load", mean_rot - amplitude_rot, output_frequency=10.))
         simulations.append(Simulation("snom=" + str(int(load_amplitude)) + "_R=" + str(int(R)), steps, 'displacement'))
     geom_filename = os.path.expanduser('~/python_projects/python_fatigue/fatigue_specimens/UTMIS/utmis_'
                                        + specimen + '/utmis_' + specimen + '.inc')
