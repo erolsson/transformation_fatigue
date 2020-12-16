@@ -15,7 +15,7 @@ def main():
     # specimen_loads = {'smooth': {-1.: [760 - 70, 760, 760 + 70], 0.: [424. - 26, 424, 424 + 26]},
     #                   'notched': {-1.: [439 - 20, 439, 439 + 20], 0.: [237. - 16, 237., 237 + 16]}}
     specimen_loads = {'smooth': {-1.: [760], 0.: [424]}, 'notched': {-1.: [439], 0.: [237]}}
-    heat_treatment_simulation = 't=9min_90C_decarburization'
+    heat_treatment_simulation = 't=9min_75C_decarburization'
     simulations = []
     compliance_data = np.genfromtxt('compliance_utmis_' + specimen + '.csv', delimiter=',')
     for load_amplitude in specimen_loads[specimen][R]:
