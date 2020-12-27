@@ -64,6 +64,8 @@ def perform_effective_stress_analysis(mechanical_data, effective_stress=Findley,
                                      instance_name=instance_name)
         if stress_history is None:
             stress_history = np.zeros((len(mechanical_data), stress.shape[0], 6))
+        stress_history[i, :, :] = stress
+
     fatigue_data = np.zeros((stress_history.shape[1], 2))
 
     steel_data = SteelData(HV=hardness_hv)
