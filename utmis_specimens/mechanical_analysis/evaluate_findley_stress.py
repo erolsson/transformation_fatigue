@@ -108,7 +108,7 @@ def main():
                                           instance_name='SPECIMEN_PART_NEG', pickle_file=pickle_file,
                                           results_odb_file=results_odb_file, results_odb_step_name=sim_name)
         if R == -1.:
-            perform_effective_stress_analysis(mechanical_odb_data, element_set_name='fatigue_elements',
+            perform_effective_stress_analysis(mechanical_odb_data, element_set_name='FATIGUE_ELEMENTS',
                                               instance_name='SPECIMEN_PART_POS', pickle_file=pickle_file,
                                               results_odb_file=results_odb_file, results_odb_step_name=sim_name)
 
