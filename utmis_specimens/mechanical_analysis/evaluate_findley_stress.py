@@ -104,7 +104,7 @@ def main():
 
         mechanical_odb_data = [MechanicalData(odb_file_name=odb_file_name, step_name='3_max_load', frame_number=-1),
                                MechanicalData(odb_file_name=odb_file_name, step_name='3_min_load', frame_number=-1)]
-        perform_effective_stress_analysis(mechanical_odb_data, element_set_name='fatigue_elements',
+        perform_effective_stress_analysis(mechanical_odb_data, element_set_name='FATIGUE_ELEMENTS',
                                           instance_name='SPECIMEN_PART_NEG', pickle_file=pickle_file,
                                           results_odb_file=results_odb_file, results_odb_step_name=sim_name)
         if R == -1.:
