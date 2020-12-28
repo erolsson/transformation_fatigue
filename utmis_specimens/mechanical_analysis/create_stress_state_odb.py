@@ -28,7 +28,7 @@ def main():
 
                 s_mean = (s1 + s2)/2
                 s_amp = np.abs(s1 - s2)/2
-                print(np.max(s_mean, s_amp))
+                print(np.max(s_mean), np.max(s_amp))
 
 
 if __name__ == '__main__':
