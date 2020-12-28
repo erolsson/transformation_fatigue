@@ -91,13 +91,11 @@ def perform_effective_stress_analysis(mechanical_data, effective_stress=Findley,
 
 
 def main():
-    k_450 = SS2506.mean_stress_sensitivity_parameters[0] + SS2506.mean_stress_sensitivity_parameters[1]*450
+    k_450 = 0.3
     k_700 = float(sys.argv[-3])
     b = (k_700 - k_450)/250
     a = k_700 - b*700
     SS2506.mean_stress_sensitivity_parameters = (a, b)
-    print(a, b)
-    sadasda
     specimen = sys.argv[-2]
     R = float(sys.argv[-1])
     specimen_loads = {'smooth': {-1.: [760 - 70, 760, 760 + 70], 0.: [424. - 26, 424, 424 + 26]},
