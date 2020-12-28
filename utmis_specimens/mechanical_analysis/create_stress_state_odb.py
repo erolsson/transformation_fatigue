@@ -15,7 +15,7 @@ def main():
     odb_file_directory = os.path.expanduser('~/utmis_specimens/' + specimen
                                             + '/mechanical_analysis/disp_control')
     results_odb_file = os.path.expanduser('~/utmis_specimens/' + specimen + '/stress_state.odb')
-    sim_name = "snom=" + str(int(specimen_loads[specimen][-1])) + "_R=-1"
+    sim_name = "snom=" + str(int(specimen_loads[specimen][-1][0])) + "_R=-1"
     create_empty_odb(results_odb_file, odb_file_directory + '/' + sim_name + '.odb')
     for R in [-1, 0]:
         for load_amplitude in specimen_loads[specimen][R]:
