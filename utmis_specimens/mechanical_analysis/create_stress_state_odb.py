@@ -16,7 +16,7 @@ def main():
             odb_file_directory = os.path.expanduser('~/utmis_specimens/' + specimen
                                                     + '/mechanical_analysis/disp_control')
             sim_name = "snom=" + str(int(load_amplitude)) + "_R=" + str(int(R))
-            odb_file_name = (odb_file_directory + "/utmis_" + specimen + '_' + sim_name + '.odb')
+            odb_file_name = "/utmis_" + specimen + '_' + sim_name
 
             results_odb_file = os.path.expanduser('~/utmis_specimens/' + specimen + '/stress_state.odb')
             for instance_name in ['SPECIMEN_PART_NEG', 'SPECIMEN_PART_POS']:
