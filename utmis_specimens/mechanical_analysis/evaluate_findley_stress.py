@@ -97,6 +97,7 @@ def main():
     a = k_700 - b*700
     SS2506.mean_stress_sensitivity_parameters = (a, b)
     print(a, b)
+    sadasda
     specimen = sys.argv[-2]
     R = float(sys.argv[-1])
     specimen_loads = {'smooth': {-1.: [760 - 70, 760, 760 + 70], 0.: [424. - 26, 424, 424 + 26]},
