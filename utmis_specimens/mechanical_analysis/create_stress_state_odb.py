@@ -14,7 +14,10 @@ def main():
     specimen = sys.argv[-1]
     odb_file_directory = os.path.expanduser('~/utmis_specimens/' + specimen
                                             + '/mechanical_analysis/disp_control')
+
     results_odb_file = os.path.expanduser('~/utmis_specimens/' + specimen + '/stress_state.odb')
+    if os.path.isfile(results_odb_file):
+        os.remove(results_odb_file)
     sim_name = "snom=" + str(int(specimen_loads[specimen][-1][0])) + "_R=-1"
     create_empty_odb(results_odb_file, odb_file_directory + '/utmis_' + specimen + '_' + sim_name + '.odb')
     for R in [-1, 0]:
@@ -32,7 +35,7 @@ def main():
                 s_mean = (s1 + s2)/2
                 s_amp = np.abs(s1 - s2)/2
                 write_field_to_odb(field_data=s_mean, field_id='S_MEAN', odb_file_name=results_odb_file,
-                                   step_name=sim_name, frame_number=None, field_description='mean stress',
+                                   step_name=sim_name, frame_number=-1, field_description='mean stress',
                                    instance_name=instance_name)
                 write_field_to_odb(field_data=s_amp, field_id='S_AMP', odb_file_name=results_odb_file,
                                    step_name=sim_name, frame_number=-1, field_description='amplitude stress',
