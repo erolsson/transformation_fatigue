@@ -19,7 +19,12 @@ def main():
     simulations = []
     compliance_data = np.genfromtxt('compliance_utmis_' + specimen + '.csv', delimiter=',')
     for load_amplitude in specimen_loads[specimen][R]:
-        amplitude_rot = np.interp(load_amplitude, compliance_data[:, 1], compliance_data[:, 2])
+        if load_amplitude == 760:
+            amplitude_rot = np.interp(754, compliance_data[:, 1], compliance_data[:, 2])
+        if load_amplitude == 825:
+            amplitude_rot = np.interp(825, compliance_data[:, 1], compliance_data[:, 2])
+        else:
+            amplitude_rot = np.interp(load_amplitude, compliance_data[:, 1], compliance_data[:, 2])
         mean_rot = 0
         if R == 0.:
             mean_rot = amplitude_rot

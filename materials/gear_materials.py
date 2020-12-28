@@ -16,11 +16,12 @@ class _SS2506Material:
         self.fatigue_life_knee = 1e5
         self.fatigue_exponent_low = 5.
         self.fatigue_exponent_high = 28.
+        self.mean_stress_sensitivity_parameters = (0.017, 8.27e-4)
 
-    @staticmethod
-    def mean_stress_sensitivity(steel_properties, multiaxial_criterion):
+    def mean_stress_sensitivity(self, steel_properties, multiaxial_criterion):
         if multiaxial_criterion == Findley:
-            return 0.017 + 8.27e-4*steel_properties.HV
+            return (self.mean_stress_sensitivity_parameters[0]
+                    + self.mean_stress_sensitivity_parameters[1]*steel_properties.HV)
 
     @staticmethod
     def weibull_stress(steel_properties, multiaxial_criterion):

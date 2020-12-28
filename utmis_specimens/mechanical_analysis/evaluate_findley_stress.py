@@ -10,7 +10,6 @@ import numpy as np
 from case_hardening_toolbox.abaqus_functions.odb_io_functions import read_field_from_odb
 from case_hardening_toolbox.abaqus_functions.odb_io_functions import write_field_to_odb
 from case_hardening_toolbox.abaqus_functions.create_empty_odb import create_empty_odb
-from case_hardening_toolbox.abaqus_functions.odb_io_functions import add_element_set
 
 from transformation_fatigue.materials.gear_materials import SS2506
 from transformation_fatigue.materials.gear_materials import SteelData
@@ -92,6 +91,12 @@ def perform_effective_stress_analysis(mechanical_data, effective_stress=Findley,
 
 
 def main():
+    k_450 = SS2506.mean_stress_sensitivity_parameters[0] + SS2506.mean_stress_sensitivity_parameters[1]*450
+    k_700 = float(sys.argv[-3])
+    b = (k_700 - k_450)/250
+    a = k_700 - b*700
+    SS2506.mean_stress_sensitivity_parameters = (a, b)
+    print(a, b)
     specimen = sys.argv[-2]
     R = float(sys.argv[-1])
     specimen_loads = {'smooth': {-1.: [760 - 70, 760, 760 + 70], 0.: [424. - 26, 424, 424 + 26]},
@@ -101,18 +106,18 @@ def main():
         sim_name = "snom=" + str(int(load_amplitude)) + "_R=" + str(int(R))
         odb_file_name = (odb_file_directory + "/utmis_" + specimen + '_' + sim_name + '.odb')
 
-        results_odb_file = os.path.expanduser('~/utmis_specimens/' + specimen + '/findley_results.odb')
-        pickle_file = os.path.expanduser('~/utmis_specimens/findley_' + sim_name + '.pkl')
+        results_odb_file = os.path.expanduser('~/utmis_specimens/' + specimen + '/findley_results_k='
+                                              + str(k_700).replace('.', '_') + '.odb')
 
         mechanical_odb_data = [MechanicalData(odb_file_name=odb_file_name, step_name='3_max_load', frame_number=-1),
                                MechanicalData(odb_file_name=odb_file_name, step_name='3_min_load', frame_number=-1)]
         perform_effective_stress_analysis(mechanical_odb_data, element_set_name='FATIGUE_ELEMENTS',
-                                          instance_name='SPECIMEN_PART_NEG', pickle_file=pickle_file,
-                                          results_odb_file=results_odb_file, results_odb_step_name=sim_name)
+                                          instance_name='SPECIMEN_PART_NEG', results_odb_file=results_odb_file,
+                                          results_odb_step_name=sim_name)
         if R == -1.:
             perform_effective_stress_analysis(mechanical_odb_data, element_set_name='FATIGUE_ELEMENTS',
-                                              instance_name='SPECIMEN_PART_POS', pickle_file=pickle_file,
-                                              results_odb_file=results_odb_file, results_odb_step_name=sim_name)
+                                              instance_name='SPECIMEN_PART_POS', results_odb_file=results_odb_file,
+                                              results_odb_step_name=sim_name, results_odb_frame_number=-1)
 
 
 if __name__ == '__main__':
