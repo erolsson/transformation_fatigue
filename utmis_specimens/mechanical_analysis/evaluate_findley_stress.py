@@ -92,7 +92,7 @@ def perform_effective_stress_analysis(mechanical_data, effective_stress=Findley,
 
 def main():
     k_450 = 0.3
-    k_750 = float(sys.argv[-3])
+    k_750 = 0.675
     b = (k_750 - k_450)/250
     a = k_750 - b*750
     SS2506.mean_stress_sensitivity_parameters = (a, b)
