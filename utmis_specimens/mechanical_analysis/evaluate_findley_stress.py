@@ -92,9 +92,9 @@ def perform_effective_stress_analysis(mechanical_data, effective_stress=Findley,
 
 def main():
     k_450 = 0.3
-    k_700 = float(sys.argv[-3])
-    b = (k_700 - k_450)/250
-    a = k_700 - b*700
+    k_750 = float(sys.argv[-3])
+    b = (k_750 - k_450)/250
+    a = k_750 - b*750
     SS2506.mean_stress_sensitivity_parameters = (a, b)
     specimen = sys.argv[-2]
     R = float(sys.argv[-1])
@@ -106,7 +106,7 @@ def main():
         odb_file_name = (odb_file_directory + "/utmis_" + specimen + '_' + sim_name + '.odb')
 
         results_odb_file = os.path.expanduser('~/utmis_specimens/' + specimen + '/findley_results_k='
-                                              + str(k_700).replace('.', '_') + '.odb')
+                                              + str(k_750).replace('.', '_') + '.odb')
 
         mechanical_odb_data = [MechanicalData(odb_file_name=odb_file_name, step_name='3_max_load', frame_number=-1),
                                MechanicalData(odb_file_name=odb_file_name, step_name='3_min_load', frame_number=-1)]
