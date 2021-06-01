@@ -101,7 +101,7 @@ def write_mechanical_input_files(specimen, geom_include_file, directory, simulat
         file_lines.append('\t\t*Kinematic')
         file_lines.append('\t\t1, 6')
 
-        file_lines.append('\t*Coupling, Constraint name=load_node_coupling, '
+        file_lines.append('\t*Coupling, Constraint name=symmetry_node_coupling, '
                           'ref node=symmetry_point, surface=xsym_surface')
         file_lines.append('\t\t*Kinematic')
         file_lines.append('\t\t1, 6')
