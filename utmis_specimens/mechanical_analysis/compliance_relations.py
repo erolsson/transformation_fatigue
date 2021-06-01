@@ -13,8 +13,9 @@ def main():
     simulations = {"smooth": [Simulation(name='loading', steps=steps_smooth, mode='force')],
                    "notched": [Simulation(name='loading', steps=steps_notched, mode='force')]}
     for specimen in ['smooth', 'notched']:
-        geom_filename = (pathlib.Path.home() / 'python_projects/python_fatigue/fatigue_specimens/UTMIS/utmis_'
-                         / specimen / ('/utmis_' + specimen + '.inc'))
+        geom_filename = (pathlib.Path.home() / 'python_projects/python_fatigue/fatigue_specimens/UTMIS'
+                         / ('utmis_' + specimen) / ('utmis_' + specimen + '.inc'))
+
         simulation_directory = (pathlib.Path.home() / 'utmis_specimens' / specimen / 'mechanical_analysis')
         if not simulation_directory.is_dir():
             simulation_directory.mkdir(parents=True)
