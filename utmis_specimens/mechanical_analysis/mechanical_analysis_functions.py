@@ -8,7 +8,8 @@ except ImportError:
 
 import numpy as np
 
-from transformation_fatigue.input_file_reader.input_file_reader import InputFileReader
+from input_file_reader.input_file_reader import InputFileReader
+from input_file_reader.input_file_functions import mirror_model
 
 
 class Step:
@@ -22,52 +23,29 @@ class Step:
 Simulation = namedtuple('Simulation', ['name', 'steps', 'mode'])
 
 
-def flip_node_order(element_data, axis):
-    new_elements = np.copy(element_data)
-    if axis == "x":
-        new_elements[:, 1], new_elements[:, 2] = element_data[:, 2], element_data[:, 1]
-        new_elements[:, 3], new_elements[:, 4] = element_data[:, 4], element_data[:, 3]
-        new_elements[:, 5], new_elements[:, 6] = element_data[:, 6], element_data[:, 5]
-        new_elements[:, 7], new_elements[:, 8] = element_data[:, 8], element_data[:, 7]
-
-    elif axis == "y":
-        new_elements[:, 1], new_elements[:, 4] = element_data[:, 4], element_data[:, 1]
-        new_elements[:, 2], new_elements[:, 3] = element_data[:, 3], element_data[:, 2]
-        new_elements[:, 5], new_elements[:, 8] = element_data[:, 8], element_data[:, 5]
-        new_elements[:, 6], new_elements[:, 7] = element_data[:, 7], element_data[:, 6]
-
-    elif axis == "z":
-        new_elements[:, 1] = new_elements[:, 5] = element_data[:, 5], element_data[:, 1]
-        new_elements[:, 2] = new_elements[:, 6] = element_data[:, 6], element_data[:, 2]
-        new_elements[:, 3] = new_elements[:, 7] = element_data[:, 7], element_data[:, 3]
-        new_elements[:, 4] = new_elements[:, 8] = element_data[:, 8], element_data[:, 4]
-
-    else:
-        raise ValueError("Invalid axis argument")
-    return new_elements
-
-
 def write_mechanical_input_files(specimen, geom_include_file, directory, simulations, material, initial_inc=1e-2):
     input_file_reader = InputFileReader()
-    input_file_reader.read_input_file(geom_include_file, string_to_remove_from_set_names='Specimen_')
+    input_file_reader.read_input_file(geom_include_file)
 
     x = input_file_reader.nodal_data[:, 1]
 
     r = np.sqrt(np.sum(input_file_reader.nodal_data[:, 1:4]**2, 1))
     clamped_nodes = input_file_reader.nodal_data[x > 15, 0]
     center_node = input_file_reader.nodal_data[r < 1e-4, 0]
-
-    exposed_nodes = input_file_reader.set_data['nset']['EXPOSED_NODES']
-    y_sym_nodes = input_file_reader.set_data['nset']['YSYM_NODES']
+    input_file_reader.nodal_data[:, 2] *= -1
+    for set_type in ['nset', 'elset']:
+        for name in list(input_file_reader.set_data[set_type].keys()):
+            new_name = name.lower().replace('specimen_', '')
+            input_file_reader.set_data[set_type][new_name] = input_file_reader.set_data[set_type].pop(name)
+    exposed_nodes = input_file_reader.set_data['nset']['exposed_nodes']
+    y_sym_nodes = input_file_reader.set_data['nset']['ysym_nodes']
     clamped_nodes = list((set(clamped_nodes) & set(exposed_nodes)) - set(y_sym_nodes))
     input_file_reader.create_node_set('clamped_nodes', clamped_nodes)
     input_file_reader.create_node_set('center_node', [center_node])
     if not os.path.isdir(directory + '/include_files'):
         os.makedirs(directory + '/include_files')
     input_file_reader.write_geom_include_file(directory + '/include_files/geom_pos.inc')
-    input_file_reader.nodal_data[:, 2] *= -1
-    for e_type, e_data in input_file_reader.elements.items():
-        input_file_reader.elements[e_type] = flip_node_order(e_data, "y")
+    mirror_model(input_file_reader, 'y')
 
     input_file_reader.write_geom_include_file(directory + '/include_files/geom_neg.inc')
     input_file_reader.write_sets_file(directory + '/include_files/set_data.inc',
