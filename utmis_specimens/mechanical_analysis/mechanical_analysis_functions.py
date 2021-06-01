@@ -115,7 +115,7 @@ def write_mechanical_input_files(specimen, geom_include_file, directory, simulat
 
         file_lines.append('*Boundary')
         file_lines.append('\tload_point, 1, 5')
-        file_lines.append('\tsymmetry_point, 1, 5')
+        file_lines.append('\tsymmetry_point, 1, 3, 4, 5')
         file_lines.append('*Initial Conditions, type=Solution, user')
         file_lines.append('*Initial Conditions, type=Stress, user')
         file_lines.append('*Initial conditions, type=temperature')
