@@ -99,7 +99,7 @@ def write_mechanical_input_files(specimen, geom_include_file, directory, simulat
             file_lines.append('\tspecimen_part_' + sign + '.xsym_nodes,\tXSYMM')
 
         file_lines.append('*Boundary')
-        file_lines.append('\tload_point, 3, 5')
+        file_lines.append('\tload_point, 2, 5')
         file_lines.append('*Initial Conditions, type=Solution, user')
         file_lines.append('*Initial Conditions, type=Stress, user')
         file_lines.append('*Initial conditions, type=temperature')
