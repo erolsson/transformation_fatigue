@@ -8,10 +8,10 @@ def main():
     max_nominal_stress = 1000
     Wb = 2*5**2/6
     M = max_nominal_stress*Wb
-    steps_smooth = [Step(name='loading', load=0.02, max_inc=0.01)]
-    steps_notched = [Step(name='loading', load=0.02, max_inc=0.01)]
-    simulations = {"smooth": [Simulation(name='loading', steps=steps_smooth, mode='displacement')],
-                   "notched": [Simulation(name='loading', steps=steps_notched, mode='displacement')]}
+    steps_smooth = [Step(name='loading', load=M, max_inc=0.01)]
+    steps_notched = [Step(name='loading', load=M/10*6, max_inc=0.01)]
+    simulations = {"smooth": [Simulation(name='loading', steps=steps_smooth, mode='force')],
+                   "notched": [Simulation(name='loading', steps=steps_notched, mode='force')]}
     for specimen in ['smooth', 'notched']:
         geom_filename = (pathlib.Path.home() / 'python_projects/python_fatigue/fatigue_specimens/UTMIS'
                          / ('utmis_' + specimen) / ('utmis_' + specimen + '.inc'))

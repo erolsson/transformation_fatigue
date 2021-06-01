@@ -114,6 +114,8 @@ def write_mechanical_input_files(specimen, geom_include_file, directory, simulat
 
         file_lines.append('*Boundary')
         file_lines.append('\tload_point, 1, 5')
+        if simulation.mode == 'force':
+            file_lines.append('\t\tload_point, 6, 6')
         file_lines.append('\tsymmetry_point, 1, 1')
         file_lines.append('\tsymmetry_point, 3, 5')
         file_lines.append('*Initial Conditions, type=Solution, user')
@@ -130,7 +132,7 @@ def write_mechanical_input_files(specimen, geom_include_file, directory, simulat
                 file_lines.append('\t\tload_point, 6, 6, ' + str(step.load))
             elif simulation.mode == 'force':
                 file_lines.append('\t*Cload')
-                file_lines.append('\t\tload_point, 6, ' + str(step.load))
+                file_lines.append('\t\tsymmetry_point, 6, ' + str(step.load))
             file_lines.append('\t*Output, field, frequency=' + str(step.output_frequency))
             file_lines.append('\t\t*Element Output')
             file_lines.append('\t\t\tS, SDV')
