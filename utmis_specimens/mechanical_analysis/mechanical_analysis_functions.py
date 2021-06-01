@@ -1,5 +1,6 @@
 from collections import namedtuple
 import os
+import pathlib
 
 try:
     import distro
@@ -42,15 +43,15 @@ def write_mechanical_input_files(specimen, geom_include_file, directory, simulat
     clamped_nodes = list((set(clamped_nodes) & set(exposed_nodes)) - set(y_sym_nodes))
     input_file_reader.create_node_set('clamped_nodes', clamped_nodes)
     input_file_reader.create_node_set('center_node', [center_node])
-    if not os.path.isdir(directory + '/include_files'):
-        os.makedirs(directory + '/include_files')
-    input_file_reader.write_geom_include_file(directory + '/include_files/geom_pos.inc')
+    if not (directory / 'include_files').is_dir():
+        (directory / 'include_files').mkdir(parents=True)
+    input_file_reader.write_geom_include_file(directory / 'include_files/geom_pos.inc')
     mirror_model(input_file_reader, 'y')
 
-    input_file_reader.write_geom_include_file(directory + '/include_files/geom_neg.inc')
-    input_file_reader.write_sets_file(directory + '/include_files/set_data.inc',
+    input_file_reader.write_geom_include_file(directory / 'include_files/geom_neg.inc')
+    input_file_reader.write_sets_file(directory / 'include_files/set_data.inc',
                                       str_to_remove_from_setname='SPECIMEN_',
-                                      surfaces_from_element_sets=[('YSYM_SURFACE', 'YSYM_ELEMENTS')])
+                                      surfaces_from_element_sets=['ysym'])
 
     def write_inp_file(load_point, simulation_data):
         file_lines = ['*Heading',
@@ -79,6 +80,9 @@ def write_mechanical_input_files(specimen, geom_include_file, directory, simulat
         file_lines.append('\t*Node, nset=load_point')
         file_lines.append('\t\t999999, ' + str(load_point[0]) + ', ' + str(load_point[1]) + ', ' + str(load_point[2]))
 
+        file_lines.append('\t*Node, nset=symmetry_point')
+        file_lines.append('\t\t999998, ' + str(load_point[0]) + ', ' + str(load_point[1]) + ', ' + str(load_point[2]))
+
         file_lines.append('\t*Surface, name=clamped_surface_pos, Type=Node')
         file_lines.append('\t\tspecimen_part_pos.clamped_nodes')
         file_lines.append('\t*Surface, name=clamped_surface_neg, Type=Node')
@@ -86,9 +90,20 @@ def write_mechanical_input_files(specimen, geom_include_file, directory, simulat
         file_lines.append('\t*Surface, name=clamped_surface, Combine=Union')
         file_lines.append('\t\tclamped_surface_pos, clamped_surface_neg')
 
+        file_lines.append('\t*Surface, name=xsym_surface_pos, Type=Node')
+        file_lines.append('\t\tspecimen_part_pos.xsym_nodes')
+        file_lines.append('\t*Surface, name=xsym_surface_neg, Type=Node')
+        file_lines.append('\t\tspecimen_part_neg.xsym_nodes')
+        file_lines.append('\t*Surface, name=xsym_surface, Combine=Union')
+        file_lines.append('\t\txsym_surface_pos, xsym_surface_neg')
+
         file_lines.append('\t*Coupling, Constraint name=load_node_coupling, '
                           'ref node=load_point, surface=clamped_surface')
+        file_lines.append('\t\t*Kinematic')
+        file_lines.append('\t\t1, 6')
 
+        file_lines.append('\t*Coupling, Constraint name=load_node_coupling, '
+                          'ref node=symmetry_point, surface=xsym_surface')
         file_lines.append('\t\t*Kinematic')
         file_lines.append('\t\t1, 6')
 
@@ -96,11 +111,11 @@ def write_mechanical_input_files(specimen, geom_include_file, directory, simulat
         file_lines.extend(material.material_input_file_string())
         for sign in ['pos', 'neg']:
             file_lines.append('*Boundary')
-            file_lines.append('\tspecimen_part_' + sign + '.xsym_nodes,\tXSYMM')
             file_lines.append('\tspecimen_part_' + sign + '.zsym_nodes,\tZSYMM')
 
         file_lines.append('*Boundary')
         file_lines.append('\tload_point, 1, 5')
+        file_lines.append('\tsymmetry_point, 1, 5')
         file_lines.append('*Initial Conditions, type=Solution, user')
         file_lines.append('*Initial Conditions, type=Stress, user')
         file_lines.append('*Initial conditions, type=temperature')
@@ -124,7 +139,7 @@ def write_mechanical_input_files(specimen, geom_include_file, directory, simulat
             file_lines.append('*End step')
 
         job_name = 'utmis_' + specimen + '_' + simulation_data.name
-        with open(directory + '/' + job_name + '.inp', 'w') as input_file:
+        with open(directory / (job_name + '.inp'), 'w') as input_file:
             for line in file_lines:
                 input_file.write(line + '\n')
         return job_name
@@ -147,11 +162,11 @@ def write_run_file(job_names, heat_treatment_file, run_file_name, cpus=12):
                            'cd $PBS_O_WORKDIR'])
 
     file_lines.append('abq=' + abq)
-    file_lines.append('subroutine=' + os.path.expanduser('~/python_projects/transformation_fatigue/'
-                                                         'transformation_subroutine/transformation_subroutine.o'))
+    file_lines.append('subroutine=' + str(pathlib.Path.home() / 'python_projects/transformation_fatigue'
+                      / 'transformation_subroutine/transformation_subroutine.o'))
 
     for job_name in job_names:
-        file_lines.append('cp ' + heat_treatment_file + ' ' + job_name + '.htd')
+        file_lines.append('cp ' + str(heat_treatment_file) + ' ' + job_name + '.htd')
         file_lines.append('${abq} j=' + job_name + ' cpus=' + str(cpus) + ' user=${subroutine} interactive')
     with open(run_file_name, 'w') as shell_file:
         for line in file_lines:

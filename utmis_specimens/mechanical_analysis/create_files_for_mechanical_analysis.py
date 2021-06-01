@@ -1,4 +1,5 @@
 import os
+import pathlib
 import sys
 
 import numpy as np
@@ -33,16 +34,16 @@ def main():
             steps.append(Step(str(step) + "_max_load", mean_rot + amplitude_rot, output_frequency=10.))
             steps.append(Step(str(step) + "_min_load", mean_rot - amplitude_rot, output_frequency=10.))
         simulations.append(Simulation("snom=" + str(int(load_amplitude)) + "_R=" + str(int(R)), steps, 'displacement'))
-    geom_filename = os.path.expanduser('~/python_projects/python_fatigue/fatigue_specimens/UTMIS/utmis_'
-                                       + specimen + '/utmis_' + specimen + '.inc')
-    simulation_directory = os.path.expanduser('~/utmis_specimens/' + specimen
-                                              + '/mechanical_analysis/disp_control/')
+    geom_filename = pathlib.Path.home() / ('python_projects/python_fatigue/fatigue_specimens/UTMIS/utmis_'
+                                           + specimen + '/utmis_' + specimen + '.inc')
+    simulation_directory = pathlib.Path.home() / ('utmis_specimens/' + specimen
+                                                  + '/mechanical_analysis/disp_control/')
     if not os.path.isdir(simulation_directory):
         os.makedirs(simulation_directory)
     job_names = write_mechanical_input_files(specimen, geom_filename, simulation_directory, simulations, SS2506)
-    heat_treatment_data_file = os.path.expanduser('~/utmis_specimens/' + specimen + '/' + heat_treatment_simulation +
-                                                  '/Toolbox_Cooling_utmis_' + specimen + '.htd')
-    write_run_file(job_names, heat_treatment_data_file, simulation_directory + '/run_R=' + str(int(R)) + '.sh')
+    heat_treatment_data_file = pathlib.Path.home() / ('utmis_specimens/' + specimen + '/' + heat_treatment_simulation +
+                                                      '/Toolbox_Cooling_utmis_' + specimen + '.htd')
+    write_run_file(job_names, heat_treatment_data_file, simulation_directory / ('run_R=' + str(int(R)) + '.sh'))
 
 
 if __name__ == '__main__':
