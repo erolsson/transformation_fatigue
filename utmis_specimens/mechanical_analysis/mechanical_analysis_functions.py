@@ -33,7 +33,7 @@ def write_mechanical_input_files(specimen, geom_include_file, directory, simulat
     r = np.sqrt(np.sum(input_file_reader.nodal_data[:, 1:4]**2, 1))
     clamped_nodes = input_file_reader.nodal_data[x > 15, 0]
     center_node = input_file_reader.nodal_data[r < 1e-4, 0]
-    input_file_reader.nodal_data[:, 2] *= -1
+
     for set_type in ['nset', 'elset']:
         for name in list(input_file_reader.set_data[set_type].keys()):
             new_name = name.lower().replace('specimen_', '')
@@ -46,12 +46,11 @@ def write_mechanical_input_files(specimen, geom_include_file, directory, simulat
     if not (directory / 'include_files').is_dir():
         (directory / 'include_files').mkdir(parents=True)
     input_file_reader.write_geom_include_file(directory / 'include_files/geom_pos.inc')
-    mirror_model(input_file_reader, 'y')
-
-    input_file_reader.write_geom_include_file(directory / 'include_files/geom_neg.inc')
     input_file_reader.write_sets_file(directory / 'include_files/set_data.inc',
                                       str_to_remove_from_setname='SPECIMEN_',
                                       surfaces_from_element_sets=['ysym'])
+    mirror_model(input_file_reader, 'y')
+    input_file_reader.write_geom_include_file(directory / 'include_files/geom_neg.inc')
 
     def write_inp_file(load_point, simulation_data):
         file_lines = ['*Heading',
