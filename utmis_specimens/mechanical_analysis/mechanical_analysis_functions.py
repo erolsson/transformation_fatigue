@@ -21,7 +21,7 @@ class Step:
         self.output_frequency = output_frequency
 
 
-Simulation = namedtuple('Simulation', ['name', 'steps', 'mode'])
+Simulation = namedtuple('Simulation', ['name', 'steps'])
 
 
 def write_mechanical_input_files(specimen, geom_include_file, directory, simulations, material, initial_inc=1e-2):
@@ -114,8 +114,6 @@ def write_mechanical_input_files(specimen, geom_include_file, directory, simulat
 
         file_lines.append('*Boundary')
         file_lines.append('\tload_point, 1, 5')
-        if simulation.mode == 'force':
-            file_lines.append('\t\tload_point, 6, 6')
         file_lines.append('\tsymmetry_point, 1, 1')
         file_lines.append('\tsymmetry_point, 3, 5')
         file_lines.append('*Initial Conditions, type=Solution, user')
@@ -127,12 +125,9 @@ def write_mechanical_input_files(specimen, geom_include_file, directory, simulat
             file_lines.append('*step, name=' + step.name + ', nlgeom=Yes, inc=100000')
             file_lines.append('\t*Static')
             file_lines.append('\t\t' + str(initial_inc) + ', 1., 1e-12, ' + str(step.max_inc))
-            if simulation.mode == 'displacement':
-                file_lines.append('\t*Boundary')
-                file_lines.append('\t\tload_point, 6, 6, ' + str(step.load))
-            elif simulation.mode == 'force':
-                file_lines.append('\t*Cload')
-                file_lines.append('\t\tsymmetry_point, 6, ' + str(step.load))
+            file_lines.append('\t*Boundary')
+            file_lines.append('\t\tload_point, 6, 6, ' + str(step.load))
+            file_lines.append('\t\tsymmetry_point, 6, 6, ' + str(step.load/2))
             file_lines.append('\t*Output, field, frequency=' + str(step.output_frequency))
             file_lines.append('\t\t*Element Output')
             file_lines.append('\t\t\tS, SDV')
