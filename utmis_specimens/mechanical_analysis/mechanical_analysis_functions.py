@@ -126,7 +126,7 @@ def write_mechanical_input_files(specimen, geom_include_file, directory, simulat
             file_lines.append('\t\t' + str(initial_inc) + ', 1., 1e-12, ' + str(step.max_inc))
             file_lines.append('\t*Boundary')
             file_lines.append('\t\tload_point, 6, 6, ' + str(step.load))
-            file_lines.append('\t\tsymmetry_point, 6, 6, ' + str(step.load/2))
+            file_lines.append('\t\tsymmetry_point, 6, 6, ' + str(step.load))
             file_lines.append('\t*Output, field, frequency=' + str(step.output_frequency))
             file_lines.append('\t\t*Element Output')
             file_lines.append('\t\t\tS, SDV')
