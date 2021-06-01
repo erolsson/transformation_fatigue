@@ -33,9 +33,7 @@ def main():
                 max_strain = np.interp(max_load, data[:, 1], data[:, 2])
                 mean_strain = np.interp(mean_load, data[:, 1], data[:, 2])
                 plt.plot(max_load, max_strain, '*')
-                P0 = max_strain/elastic_compliance - max_load
-                print(P0)
-                plt.plot([P0, max_load], [0, max_strain])
+
     plt.show()
 
 
