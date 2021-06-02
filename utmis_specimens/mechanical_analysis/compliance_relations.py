@@ -1,7 +1,7 @@
 import pathlib
 
 from mechanical_analysis_functions import write_mechanical_input_files, Simulation, Step, write_run_file
-from transformation_fatigue.materials.materials import SS2506_no_trans as SS2506
+from transformation_fatigue.materials.materials import SS2506 as SS2506
 
 
 def main():

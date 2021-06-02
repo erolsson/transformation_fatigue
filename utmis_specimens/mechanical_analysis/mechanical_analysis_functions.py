@@ -103,8 +103,8 @@ def write_mechanical_input_files(specimen, geom_include_file, directory, simulat
         file_lines.append('*Initial Conditions, type=Solution, user')
         file_lines.append('*Initial Conditions, type=Stress, user')
         file_lines.append('*Initial conditions, type=temperature')
-        file_lines.append('\tspecimen_part_pos.ALL_NODES, 22')
-        file_lines.append('\tspecimen_part_neg.ALL_NODES, 22')
+        file_lines.append('\tspecimen_part_pos.ALL_NODES, 20')
+        file_lines.append('\tspecimen_part_neg.ALL_NODES, 20')
         for step in simulation_data.steps:
             file_lines.append('*step, name=' + step.name + ', nlgeom=Yes, inc=100000')
             file_lines.append('\t*Static')
