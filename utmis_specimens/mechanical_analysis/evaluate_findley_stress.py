@@ -101,7 +101,8 @@ def main():
     specimen_loads = {'smooth': {-1.: [760 - 70, 760, 760 + 70], 0.: [424. - 26, 424, 424 + 26]},
                       'notched': {-1.: [439 - 20, 439, 439 + 20], 0.: [237. - 16, 237., 237 + 16]}}
     for load_amplitude in specimen_loads[specimen][R]:
-        odb_file_directory = os.path.expanduser('~/utmis_specimens/' + specimen + '/mechanical_analysis/disp_control')
+        odb_file_directory = os.path.expanduser('~/utmis_specimens/' + specimen
+                                                + '/mechanical_analysis_relaxed/disp_control')
         sim_name = "snom=" + str(int(load_amplitude)) + "_R=" + str(int(R))
         odb_file_name = (odb_file_directory + "/utmis_" + specimen + '_' + sim_name + '.odb')
 

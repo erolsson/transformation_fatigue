@@ -191,7 +191,7 @@ SS2506.dV_2 = 1.52576700e+00
 SS2506.dV_3 = -5.25834000e+01
 k = SS2506.k_1 + SS2506.k_2*0.008
 Ms = SS2506.Ms_1 + SS2506.Ms_2*0.008
-print(Ms + np.log(0.2)/k+ 45)
+print(Ms + np.log(0.2)/k + 45)
 
 
 SS2506Elastic = ElasticMaterial(205e3, 0.27, 'SS2506')
