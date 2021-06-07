@@ -19,25 +19,24 @@ def main():
     heat_treatment_simulation = 't=9min_75C_decarburization'
     simulations = []
     compliance_data = np.genfromtxt('compliance_utmis_' + specimen + '.csv', delimiter=',')
+    loading = 'force'
     for load_amplitude in specimen_loads[specimen][R]:
-        if load_amplitude == 760:
-            amplitude_rot = np.interp(754, compliance_data[:, 1], compliance_data[:, 2])
-        if load_amplitude == 825:
-            amplitude_rot = np.interp(825, compliance_data[:, 1], compliance_data[:, 2])
+        if loading == 'displacement':
+            amplitude = np.interp(load_amplitude, compliance_data[:, 1], compliance_data[:, 2])
         else:
-            amplitude_rot = np.interp(load_amplitude, compliance_data[:, 1], compliance_data[:, 2])
-        mean_rot = 0
+            amplitude = load_amplitude*wb
+        mean = 0
         if R == 0.:
-            mean_rot = amplitude_rot
+            mean = amplitude
         steps = []
         for step in range(1, no_steps + 1):
-            steps.append(Step(str(step) + "_max_load", mean_rot + amplitude_rot, output_frequency=10.))
-            steps.append(Step(str(step) + "_min_load", mean_rot - amplitude_rot, output_frequency=10.))
-        simulations.append(Simulation("snom=" + str(int(load_amplitude)) + "_R=" + str(int(R)), steps, 'displacement'))
+            steps.append(Step(str(step) + "_max_load", mean + amplitude, output_frequency=10.))
+            steps.append(Step(str(step) + "_min_load", mean - amplitude, output_frequency=10.))
+        simulations.append(Simulation("snom=" + str(int(load_amplitude)) + "_R=" + str(int(R)), steps, 'force'))
     geom_filename = pathlib.Path.home() / ('python_projects/python_fatigue/fatigue_specimens/UTMIS/utmis_'
                                            + specimen + '/utmis_' + specimen + '.inc')
     simulation_directory = pathlib.Path.home() / ('utmis_specimens/' + specimen
-                                                  + '/mechanical_analysis_relaxed/disp_control/')
+                                                  + '/mechanical_analysis_relaxed/' + loading + '_control/')
     if not os.path.isdir(simulation_directory):
         os.makedirs(simulation_directory)
     job_names = write_mechanical_input_files(specimen, geom_filename, simulation_directory, simulations, SS2506)
