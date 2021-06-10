@@ -3,6 +3,7 @@ from __future__ import print_function
 from collections import namedtuple
 import pickle
 import os
+import pathlib
 import sys
 
 import numpy as np
@@ -77,16 +78,23 @@ def perform_effective_stress_analysis(mechanical_data, effective_stress=Findley,
         with open(pickle_file, 'w') as fatigue_pickle:
             pickle.dump(fatigue_data, fatigue_pickle)
 
-    write_field_to_odb(field_data=fatigue_data[:, 0], field_id='SF', odb_file_name=results_odb_file,
-                       step_name=results_odb_step_name, frame_number=results_odb_frame_number,
-                       field_description=effective_stress.name, set_name=element_set_name,
-                       instance_name=instance_name)
-    frame_number = -1 if results_odb_frame_number is None else results_odb_frame_number
-    write_field_to_odb(field_data=fatigue_data[:, 1], field_id='SFI', odb_file_name=results_odb_file,
-                       step_name=results_odb_step_name, frame_number=frame_number,
-                       field_description=(effective_stress.name + ' stress divided by critical '
-                                          + effective_stress.name + ' stress'), set_name=element_set_name,
-                       instance_name=instance_name)
+    if results_odb_file is not None:
+        lck_filename = results_odb_file.parents[0] / (results_odb_file.stem + '.lck')
+        while lck_filename.is_file():
+            pass
+        with open(lck_filename, 'w') as lck_file:
+            lck_file.write('locked!')
+        write_field_to_odb(field_data=fatigue_data[:, 0], field_id='SF', odb_file_name=results_odb_file,
+                           step_name=results_odb_step_name, frame_number=results_odb_frame_number,
+                           field_description=effective_stress.name, set_name=element_set_name,
+                           instance_name=instance_name)
+        frame_number = -1 if results_odb_frame_number is None else results_odb_frame_number
+        write_field_to_odb(field_data=fatigue_data[:, 1], field_id='SFI', odb_file_name=results_odb_file,
+                           step_name=results_odb_step_name, frame_number=frame_number,
+                           field_description=(effective_stress.name + ' stress divided by critical '
+                                              + effective_stress.name + ' stress'), set_name=element_set_name,
+                           instance_name=instance_name)
+        lck_filename.unlink()
     return fatigue_data
 
 
@@ -101,23 +109,23 @@ def main():
     specimen_loads = {'smooth': {-1.: [760 - 70, 760, 760 + 70], 0.: [424. - 26, 424, 424 + 26]},
                       'notched': {-1.: [439 - 20, 439, 439 + 20], 0.: [237. - 16, 237., 237 + 16]}}
     for load_amplitude in specimen_loads[specimen][R]:
-        odb_file_directory = os.path.expanduser('~/utmis_specimens/' + specimen
-                                                + '/mechanical_analysis_relaxed/force_control_ra15')
+        odb_file_directory = (pathlib.Path().expanduser() / 'utmis_specimens' / specimen
+                               / 'mechanical_analysis_relaxed'  / 'force_control_ra15')
         sim_name = "snom=" + str(int(load_amplitude)) + "_R=" + str(int(R))
-        odb_file_name = (odb_file_directory + "/utmis_" + specimen + '_' + sim_name + '.odb')
+        odb_file_name = (odb_file_directory / ("utmis_" + specimen + '_' + sim_name + '.odb'))
 
-        results_odb_file = os.path.expanduser('~/utmis_specimens/' + specimen
-                                              + '/mechanical_analysis_relaxed/force_control_ra15/findley.odb')
+        results_odb_file = (pathlib.Path().expanduser() / 'utmis_specimens' / specimen /
+                            'mechanical_analysis_relaxed' / 'force_control_ra15' / 'findley.odb')
 
         mechanical_odb_data = [MechanicalData(odb_file_name=odb_file_name, step_name='3_max_load', frame_number=-1),
                                MechanicalData(odb_file_name=odb_file_name, step_name='3_min_load', frame_number=-1)]
         perform_effective_stress_analysis(mechanical_odb_data, element_set_name='FATIGUE_ELEMENTS',
                                           instance_name='SPECIMEN_PART_NEG', results_odb_file=results_odb_file,
-                                          results_odb_step_name=sim_name, results_odb_frame_number=1)
+                                          results_odb_step_name=sim_name, results_odb_frame_number=0)
         if R == -1.:
             perform_effective_stress_analysis(mechanical_odb_data, element_set_name='FATIGUE_ELEMENTS',
                                               instance_name='SPECIMEN_PART_POS', results_odb_file=results_odb_file,
-                                              results_odb_step_name=sim_name, results_odb_frame_number=1)
+                                              results_odb_step_name=sim_name, results_odb_frame_number=0)
 
 
 if __name__ == '__main__':
