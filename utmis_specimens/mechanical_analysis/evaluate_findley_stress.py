@@ -59,7 +59,7 @@ def perform_effective_stress_analysis(mechanical_data, effective_stress=Findley,
             pass
         create_empty_odb(results_odb_file, mechanical_data[0].odb_file_name)
 
-    hardness_hv = read_data_from_odb('SDV_HARDNESS', mechanical_data[0].odb_file_name, step_name='cooling',
+    hardness_hv = read_data_from_odb('SDV_HARDNESS', mechanical_data[0].odb_file_name, step_name='3_min_load',
                                      set_name=element_set_name, instance_name=instance_name)
 
     stress_history = None
