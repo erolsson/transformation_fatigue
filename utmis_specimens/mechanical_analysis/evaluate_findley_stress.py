@@ -50,6 +50,13 @@ def perform_effective_stress_analysis(mechanical_data, effective_stress=Findley,
         raise ValueError("No results_odb_step_name is provided but results_odb_file is given")
 
     if results_odb_file is not None and not os.path.isfile(results_odb_file):
+        lock_filename = (os.path.dirname(results_odb_file) + '/'
+                         + os.path.splitext(os.path.basename(results_odb_file))[0] + '.lck')
+        while os.path.isfile(lock_filename):
+            pass
+        with open(lock_filename, 'w') as lock_file:
+            lock_file.write('Lock')
+        os.remove(lock_filename)
         create_empty_odb(results_odb_file, mechanical_data[0].odb_file_name)
 
     hardness_hv = read_field_from_odb('SDV_HARDNESS', mechanical_data[0].odb_file_name, set_name=element_set_name,
