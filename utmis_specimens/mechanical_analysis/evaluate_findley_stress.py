@@ -46,17 +46,17 @@ def perform_effective_stress_analysis(mechanical_data, effective_stress=Findley,
     :return:                            A numpy array with the Fatigue stresses as the first column and
                                         Fatigue stress / critical fatigue stress as second column
     """
+
+    lock_filename = None
+    if results_odb_file:
+        lock_filename = (os.path.dirname(results_odb_file) + '/'
+                         + os.path.splitext(os.path.basename(results_odb_file))[0] + '.lck')
     if results_odb_file is not None and results_odb_step_name is None:
         raise ValueError("No results_odb_step_name is provided but results_odb_file is given")
 
     if results_odb_file is not None and not os.path.isfile(results_odb_file):
-        lock_filename = (os.path.dirname(results_odb_file) + '/'
-                         + os.path.splitext(os.path.basename(results_odb_file))[0] + '.lck')
         while os.path.isfile(lock_filename):
             pass
-        with open(lock_filename, 'w') as lock_file:
-            lock_file.write('Lock')
-        os.remove(lock_filename)
         create_empty_odb(results_odb_file, mechanical_data[0].odb_file_name)
 
     hardness_hv = read_field_from_odb('SDV_HARDNESS', mechanical_data[0].odb_file_name, set_name=element_set_name,
@@ -84,12 +84,8 @@ def perform_effective_stress_analysis(mechanical_data, effective_stress=Findley,
             pickle.dump(fatigue_data, fatigue_pickle)
 
     if results_odb_file:
-        lock_filename = (os.path.dirname(results_odb_file) + '/'
-                         + os.path.splitext(os.path.basename(results_odb_file))[0] + '.lck')
         while os.path.isfile(lock_filename):
             pass
-        with open(lock_filename, 'w') as lock_file:
-            lock_file.write('Lock')
         write_field_to_odb(field_data=fatigue_data[:, 0], field_id='SF', odb_file_name=results_odb_file,
                            step_name=results_odb_step_name, frame_number=results_odb_frame_number,
                            field_description=effective_stress.name, set_name=element_set_name,
@@ -100,7 +96,6 @@ def perform_effective_stress_analysis(mechanical_data, effective_stress=Findley,
                            field_description=(effective_stress.name + ' stress divided by critical '
                                               + effective_stress.name + ' stress'), set_name=element_set_name,
                            instance_name=instance_name)
-        os.remove(lock_filename)
     return fatigue_data
 
 
