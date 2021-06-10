@@ -102,12 +102,12 @@ def main():
                       'notched': {-1.: [439 - 20, 439, 439 + 20], 0.: [237. - 16, 237., 237 + 16]}}
     for load_amplitude in specimen_loads[specimen][R]:
         odb_file_directory = os.path.expanduser('~/utmis_specimens/' + specimen
-                                                + '/mechanical_analysis_relaxed/disp_control')
+                                                + '/mechanical_analysis_relaxed/force_control_ra15')
         sim_name = "snom=" + str(int(load_amplitude)) + "_R=" + str(int(R))
         odb_file_name = (odb_file_directory + "/utmis_" + specimen + '_' + sim_name + '.odb')
 
-        results_odb_file = os.path.expanduser('~/utmis_specimens/' + specimen + '/findley_results_k='
-                                              + str(k_750).replace('.', '_') + '.odb')
+        results_odb_file = os.path.expanduser('~/utmis_specimens/' + specimen
+                                              + '/mechanical_analysis_relaxed/force_control_ra15/findley.odb')
 
         mechanical_odb_data = [MechanicalData(odb_file_name=odb_file_name, step_name='3_max_load', frame_number=-1),
                                MechanicalData(odb_file_name=odb_file_name, step_name='3_min_load', frame_number=-1)]
