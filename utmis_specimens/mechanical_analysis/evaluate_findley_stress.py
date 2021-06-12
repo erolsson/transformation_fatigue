@@ -90,12 +90,18 @@ def perform_effective_stress_analysis(mechanical_data, effective_stress=Findley,
                           step_name=results_odb_step_name, frame_number=results_odb_frame_number,
                           field_description=effective_stress.name, set_name=element_set_name,
                           instance_name=instance_name)
+
         frame_number = -1 if results_odb_frame_number is None else results_odb_frame_number
         write_data_to_odb(field_data=fatigue_data[:, 1], field_id='SFI', odb_file_name=results_odb_file,
                           step_name=results_odb_step_name, frame_number=frame_number,
                           field_description=(effective_stress.name + ' stress divided by critical '
                                              + effective_stress.name + ' stress'), set_name=element_set_name,
                           instance_name=instance_name)
+        write_data_to_odb(field_data=hardness_hv, field_id='HV', odb_file_name=results_odb_file,
+                          step_name=results_odb_step_name, frame_number=results_odb_frame_number,
+                          field_description=effective_stress.name, set_name=element_set_name,
+                          instance_name=instance_name)
+
     return fatigue_data
 
 
