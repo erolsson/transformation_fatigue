@@ -98,20 +98,20 @@ def main():
     simulation_directory = pathlib.Path.home() / "scania_gear_analysis" / "mechanical_analysis" / "elastic"
     model_directory = pathlib.Path.home() / "python_projects" / "python_fatigue" / "planetary_gear" / "input_files"
     number_of_teeth = 10
-    input_files = {"dense":  (model_directory / 'quarter_tooth_tilt2.inp'),
-                   "coarse": (model_directory / 'coarse_tooth.inp')}
+    input_files = {"dense":  model_directory / 'quarter_tooth_tilt2.inp',
+                   "coarse": model_directory / 'coarse_tooth.inp'}
 
     if not simulation_directory.is_dir():
         simulation_directory.mkdir(parents=True)
     for name, input_file in input_files.items():
-        reader = InputFileReader()
-        reader.read_input_file(input_file)
-        reader.renumber_nodes_and_elements()
-        reader.write_geom_include_file(simulation_directory / (name + "_tooth_pos.inc"))
-        reader.write_sets_file(simulation_directory / (name + "_tooth_sets.inc"),
-                               surfaces_from_element_sets=['exposed', 'x0', 'x1'])
-        mirror_model(reader, 'x')
-        reader.write_geom_include_file(simulation_directory / (name + "_tooth_neg.inc"))
+        positive_tooth = InputFileReader()
+        positive_tooth.read_input_file(input_file)
+        positive_tooth.renumber_nodes_and_elements()
+        positive_tooth.write_geom_include_file(simulation_directory / (name + "_tooth_pos.inc"))
+        positive_tooth.write_sets_file(simulation_directory / (name + "_tooth_sets.inc"),
+                                       surfaces_from_element_sets=['exposed', 'x0', 'x1'])
+        negative_tooth = mirror_model(positive_tooth, 'x')
+        negative_tooth.write_geom_include_file(simulation_directory / (name + "_tooth_neg.inc"))
 
     reader = InputFileReader()
     reader.read_input_file(model_directory / "pulsator_jaw.inp")
