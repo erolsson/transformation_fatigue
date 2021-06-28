@@ -24,7 +24,7 @@ def main():
     tooth_odb_directory = pathlib.Path.home() / "scania_gear_analysis" / "odb_files" / "mechanical_analysis"
     tooth_odb_filename = tooth_odb_directory / "elastic_stresses.odb"
     tooth_odb_directory.mkdir(parents=True, exist_ok=True)
-    # create_tooth_odb(inp_file, tooth_odb_filename)
+    create_tooth_odb(inp_file, tooth_odb_filename)
 
     mechanical_odb_filename = (pathlib.Path.home() / "scania_gear_analysis" / "mechanical_analysis" / "elastic"
                                / "pulsator_simulation.odb")
