@@ -18,7 +18,7 @@ def main():
 
     heat_treatment_directory = (pathlib.Path.home() / "scania_gear_analysis" / "heat_simulation_dante_3"
                                 / "carbon_transfer_decarburization")
-    case_depths = [0.5]
+    case_depths = [0.5, 0.8, 1.1, 1.4]
     for cd in case_depths:
         odb_file = heat_treatment_directory / ("CD" + str(cd).replace('.', '')) / "Toolbox_Cooling_VBC_gear.odb"
         step_name = 'results_cd=' + str(cd).replace('.', '')
