@@ -1,6 +1,6 @@
 import pathlib
 
-from abaqus_python.abaqus_interface import ABQInterface, cylindrical_system_z
+from abaqus_python.abaqus_interface import ABQInterface, cylindrical_system_z, OdbInstance
 
 from input_file_reader.input_file_reader import InputFileReader
 
@@ -19,7 +19,7 @@ def main():
     heat_sim_odb = odb_directory / 'carbon_transfer_decarburization.odb'
     dense_tooth = InputFileReader()
     dense_tooth.read_input_file(inp_file)
-    abq.create_empty_odb_from_nodes_and_elements(heat_sim_odb, [dense_tooth])
+    abq.create_empty_odb_from_nodes_and_elements(heat_sim_odb, [OdbInstance('dense_tooth', dense_tooth)])
     create_tooth_odb(inp_file, heat_sim_odb)
 
     heat_treatment_directory = (pathlib.Path.home() / "scania_gear_analysis" / "heat_simulation_dante_3"
