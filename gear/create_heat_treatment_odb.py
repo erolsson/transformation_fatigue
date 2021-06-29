@@ -1,6 +1,9 @@
 import pathlib
 
 from abaqus_python.abaqus_interface import ABQInterface, cylindrical_system_z
+
+from input_file_reader.input_file_reader import InputFileReader
+
 from load_stresses_to_tooth_odb import create_tooth_odb
 from transformation_fatigue.materials.hardess_convertion_functions import HRC2HV
 
@@ -14,6 +17,9 @@ def main():
     inp_file = model_directory / 'quarter_tooth_tilt2.inp'
     odb_directory = pathlib.Path.home() / "scania_gear_analysis" / "odb_files" / "heat_treatment"
     heat_sim_odb = odb_directory / 'carbon_transfer_decarburization.odb'
+    dense_tooth = InputFileReader()
+    dense_tooth.read_input_file(inp_file)
+    abq.create_empty_odb_from_nodes_and_elements(heat_sim_odb, [dense_tooth])
     create_tooth_odb(inp_file, heat_sim_odb)
 
     heat_treatment_directory = (pathlib.Path.home() / "scania_gear_analysis" / "heat_simulation_dante_3"
