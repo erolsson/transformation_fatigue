@@ -2,7 +2,7 @@ import pathlib
 
 from abaqus_python.abaqus_interface import ABQInterface, cylindrical_system_z
 from load_stresses_to_tooth_odb import create_tooth_odb
-from materials.hardess_convertion_functions import HRC2HV
+from transformation_fatigue.materials.hardess_convertion_functions import HRC2HV
 
 abq = ABQInterface('abq2018')
 
