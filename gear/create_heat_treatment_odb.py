@@ -20,7 +20,6 @@ def main():
     dense_tooth = InputFileReader()
     dense_tooth.read_input_file(inp_file)
     abq.create_empty_odb_from_nodes_and_elements(heat_sim_odb, [OdbInstance('dense_tooth', dense_tooth)])
-    create_tooth_odb(inp_file, heat_sim_odb)
 
     heat_treatment_directory = (pathlib.Path.home() / "scania_gear_analysis" / "heat_simulation_dante_3"
                                 / "carbon_transfer_decarburization")
