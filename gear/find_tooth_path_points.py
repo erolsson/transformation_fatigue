@@ -43,6 +43,7 @@ def root_path(input_file, tangent_angle=30., path_points=100, length=3.):
     path_data[:, 1] = r*np.sin(tangent_angle*np.pi/180)
     path_data[:, 0] += -path_data[-1, 0] + x_tangent
     path_data[:, 1] += -path_data[-1, 1] + y_tangent
+    path_data[:, 2] = 1e-3
     return path_data
 
 
