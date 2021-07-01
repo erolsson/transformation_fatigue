@@ -42,10 +42,10 @@ def main():
                 field_name = 'HV'
             field = abq.get_data_from_path(gauss_points, dense_tooth_odb, variable=field_name, step_name=step_name,
                                            output_position='INTEGRATION_POINT')
-            abq.write_data_to_odb(field, field_name, coarse_tooth_odb, step_name)
+            abq.write_data_to_odb(field, field_name, coarse_tooth_odb, step_name, frame_number=0)
         stress = abq.get_tensor_from_path(odb_file_name=dense_tooth_odb, path_points=gauss_points, field_id='S',
                                           step_name=step_name)
-        abq.write_data_to_odb(stress, 'S', coarse_tooth_odb, step_name)
+        abq.write_data_to_odb(stress, 'S', coarse_tooth_odb, step_name, frame_number=0)
 
 
 if __name__ == '__main__':
