@@ -38,6 +38,8 @@ def main():
     for cd in [0.5, 0.8, 1.1, 1.4]:
         step_name = 'results_cd=' + str(cd).replace('.', '')
         for field_name in heat_sim_fields:
+            if field_name == 'HARDNESS':
+                field_name = 'HV'
             field = abq.get_data_from_path(gauss_points, dense_tooth_odb, variable=field_name, step_name=step_name,
                                            output_position='INTEGRATION_POINT')
             abq.write_data_to_odb(field, field_name, coarse_tooth_odb, step_name)
