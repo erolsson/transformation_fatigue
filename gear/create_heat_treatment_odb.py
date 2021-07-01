@@ -4,15 +4,14 @@ from abaqus_python.abaqus_interface import ABQInterface, cylindrical_system_z, O
 
 from input_file_reader.input_file_reader import InputFileReader
 
-from load_stresses_to_tooth_odb import create_tooth_odb
 from transformation_fatigue.materials.hardess_convertion_functions import HRC2HV
 
 abq = ABQInterface('abq2018')
+heat_sim_fields = ['AUSTENITE', 'CARBON', 'FERRITE', 'HARDNESS', 'LBAINITE', 'PEARLITE', 'Q_MARTENSITE',
+                   'T_MARTENSITE', 'UBAINITE']
 
 
 def main():
-    heat_sim_fields = ['AUSTENITE', 'CARBON', 'FERRITE', 'HARDNESS', 'LBAINITE', 'PEARLITE', 'Q_MARTENSITE',
-                       'T_MARTENSITE', 'UBAINITE']
     model_directory = pathlib.Path.home() / "python_projects" / "python_fatigue" / "planetary_gear" / "input_files"
     inp_file = model_directory / 'quarter_tooth_tilt2.inp'
     odb_directory = pathlib.Path.home() / "scania_gear_analysis" / "odb_files" / "heat_treatment"
