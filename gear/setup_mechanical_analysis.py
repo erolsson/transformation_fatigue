@@ -2,7 +2,7 @@ import pathlib
 import shutil
 import sys
 
-from transformation_fatigue.materials.materials import SS2506
+from transformation_fatigue.materials.materials import SS2506_02
 from transformation_fatigue.transformation_subroutine.subroutine_info import subroutine_directory
 
 from write_pulsator_model import create_pulsator_model, LoadStep
@@ -28,7 +28,7 @@ def create_input_files(simulation_directory):
         simulation_name = ("cd=" + str(case_depth).replace('.', '')
                            + "_Pamp=" + str(load_amplitude).replace('.', '_') + "kN")
         create_pulsator_model(simulation_name, input_files, simulation_directory, model_directory, number_of_teeth,
-                              SS2506, steps)
+                              SS2506_02, steps)
         simulation_names.append(simulation_name)
     return simulation_names
 
