@@ -7,9 +7,7 @@ import sys
 
 import numpy as np
 
-from abaqus_python.abaqus_io import create_empty_odb
-from abaqus_python.abaqus_io import read_data_from_odb
-from abaqus_python.abaqus_io import write_data_to_odb
+from abaqus_python.abaqus_interface import ABQInterface
 
 from transformation_fatigue.materials.gear_materials import SS2506
 from transformation_fatigue.materials.gear_materials import SteelData
@@ -18,6 +16,7 @@ from transformation_fatigue.multiaxial_fatigue.multiaxial_fatigue_criteria impor
 
 
 MechanicalData = namedtuple('MechanicalData', ['odb_file_name', 'step_name', 'frame_number'])
+abq = ABQInterface('abq2018')
 
 
 def perform_effective_stress_analysis(mechanical_data, effective_stress=Findley,
@@ -57,16 +56,16 @@ def perform_effective_stress_analysis(mechanical_data, effective_stress=Findley,
     if results_odb_file is not None and not os.path.isfile(results_odb_file):
         while os.path.isfile(lock_filename):
             pass
-        create_empty_odb(results_odb_file, mechanical_data[0].odb_file_name)
+        abq.create_empty_odb_from_odb(results_odb_file, mechanical_data[0].odb_file_name)
 
-    hardness_hv = read_data_from_odb('SDV_HARDNESS', mechanical_data[0].odb_file_name, step_name='3_min_load',
-                                     set_name=element_set_name, instance_name=instance_name)
+    hardness_hv = abq.read_data_from_odb('SDV_HARDNESS', mechanical_data[0].odb_file_name, step_name='3_min_load',
+                                         set_name=element_set_name, instance_name=instance_name)
 
     stress_history = None
     for i, mechanical_data_set in enumerate(mechanical_data):
-        stress = read_data_from_odb('S', mechanical_data_set.odb_file_name, step_name=mechanical_data_set.step_name,
-                                    frame_number=mechanical_data_set.frame_number, set_name=element_set_name,
-                                    instance_name=instance_name)
+        stress = abq.read_data_from_odb('S', mechanical_data_set.odb_file_name, step_name=mechanical_data_set.step_name,
+                                        frame_number=mechanical_data_set.frame_number, set_name=element_set_name,
+                                        instance_name=instance_name)
         if stress_history is None:
             stress_history = np.zeros((len(mechanical_data), stress.shape[0], 6))
         stress_history[i, :, :] = stress
@@ -86,21 +85,21 @@ def perform_effective_stress_analysis(mechanical_data, effective_stress=Findley,
     if results_odb_file:
         while os.path.isfile(lock_filename):
             pass
-        write_data_to_odb(field_data=fatigue_data[:, 0], field_id='SF', odb_file_name=results_odb_file,
-                          step_name=results_odb_step_name, frame_number=results_odb_frame_number,
-                          field_description=effective_stress.name, set_name=element_set_name,
-                          instance_name=instance_name)
+        abq.write_data_to_odb(field_data=fatigue_data[:, 0], field_id='SF', odb_file_name=results_odb_file,
+                              step_name=results_odb_step_name, frame_number=results_odb_frame_number,
+                              field_description=effective_stress.name, set_name=element_set_name,
+                              instance_name=instance_name)
 
         frame_number = -1 if results_odb_frame_number is None else results_odb_frame_number
-        write_data_to_odb(field_data=fatigue_data[:, 1], field_id='SFI', odb_file_name=results_odb_file,
-                          step_name=results_odb_step_name, frame_number=frame_number,
-                          field_description=(effective_stress.name + ' stress divided by critical '
-                                             + effective_stress.name + ' stress'), set_name=element_set_name,
-                          instance_name=instance_name)
-        write_data_to_odb(field_data=hardness_hv, field_id='HV', odb_file_name=results_odb_file,
-                          step_name=results_odb_step_name, frame_number=results_odb_frame_number,
-                          field_description=effective_stress.name, set_name=element_set_name,
-                          instance_name=instance_name)
+        abq.write_data_to_odb(field_data=fatigue_data[:, 1], field_id='SFI', odb_file_name=results_odb_file,
+                              step_name=results_odb_step_name, frame_number=frame_number,
+                              field_description=(effective_stress.name + ' stress divided by critical '
+                                                 + effective_stress.name + ' stress'), set_name=element_set_name,
+                              instance_name=instance_name)
+        abq.write_data_to_odb(field_data=hardness_hv, field_id='HV', odb_file_name=results_odb_file,
+                              step_name=results_odb_step_name, frame_number=results_odb_frame_number,
+                              field_description=effective_stress.name, set_name=element_set_name,
+                              instance_name=instance_name)
 
     return fatigue_data
 
