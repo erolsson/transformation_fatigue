@@ -68,9 +68,10 @@ class ElasticPlasticTransformMaterial:
         self.back_stresses = Cm.shape[0]
         self.name = name
         self.Mss = Mss
+        self.depvar = 33 + (self.back_stresses + 1)*6
 
     def umat_depvar(self):
-        return 33 + (self.back_stresses + 1)*6
+        return self.depvar
 
     def material_input_file_string(self):
         parameters = [self.E, self.v, self.sy0M[0], self.sy0M[1], self.sy0A[0],  self.sy0A[1], self.Q[0], self.Q[1],
@@ -147,6 +148,9 @@ class ElasticMaterial:
                       '\t\t' + str(self.E) + ',' + str(self.v)]
         return file_lines
 
+    @staticmethod
+    def umat_depvar():
+        return 0
 
 SS2506_no_trans = ElasticPlasticTransformMaterial(E=195e3, v=0.27, sy0M=(-734.91839622, 2.15046334),
                                                   sy0A=(-343.5635802, 0.99164101),
@@ -221,7 +225,8 @@ Ms = SS2506.Ms_1 + SS2506.Ms_2*0.008
 print(Ms + np.log(0.15)/k + 45)
 
 
-SS2506Elastic = ElasticMaterial(205e3, 0.27, 'SS2506')
+SS2506Elastic = ElasticMaterial(205e3, 0.27, 'SS2506Elastic')
+
 
 """
 a1=0.0020086602368106056, 

@@ -10,12 +10,6 @@
 #include <vector>
 #include <Eigen/Dense>
 
-struct HeatTreatmentData {
-    std::size_t element = 0;
-    std::size_t gauss_point = 0;
-    Eigen::VectorXd stress;
-    std::vector<double> phase_data;
-};
 
 extern "C" void getoutdir_(char* outdir, int&, int);
 extern "C" void getjobname_(char* outdir, int&, int);
@@ -27,5 +21,5 @@ extern "C" void rotsig_(double* S, double* R, double* Srot, const int& lstr, con
 extern "C" void xit_();
 
 
-#endif //CASE_HARDENING_TOOLBOX_COOLING_SUBROUTINE_HEADER_H
+#endif //TRANSFORMATION_FATIGUE_TRANSFORMATION_SUBROUTINE_HEADER_H
 
