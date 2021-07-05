@@ -2,6 +2,7 @@ from __future__ import print_function
 
 from collections import namedtuple
 import pickle
+import pathlib
 import os
 import sys
 
@@ -46,16 +47,10 @@ def perform_effective_stress_analysis(mechanical_data, effective_stress=Findley,
                                         Fatigue stress / critical fatigue stress as second column
     """
 
-    lock_filename = None
-    if results_odb_file:
-        lock_filename = (os.path.dirname(results_odb_file) + '/'
-                         + os.path.splitext(os.path.basename(results_odb_file))[0] + '.lck')
     if results_odb_file is not None and results_odb_step_name is None:
         raise ValueError("No results_odb_step_name is provided but results_odb_file is given")
 
     if results_odb_file is not None and not os.path.isfile(results_odb_file):
-        while os.path.isfile(lock_filename):
-            pass
         abq.create_empty_odb_from_odb(results_odb_file, mechanical_data[0].odb_file_name)
 
     hardness_hv = abq.read_data_from_odb('SDV_HARDNESS', mechanical_data[0].odb_file_name, step_name='3_min_load',
@@ -83,8 +78,6 @@ def perform_effective_stress_analysis(mechanical_data, effective_stress=Findley,
             pickle.dump(fatigue_data, fatigue_pickle)
 
     if results_odb_file:
-        while os.path.isfile(lock_filename):
-            pass
         abq.write_data_to_odb(field_data=fatigue_data[:, 0], field_id='SF', odb_file_name=results_odb_file,
                               step_name=results_odb_step_name, frame_number=results_odb_frame_number,
                               field_description=effective_stress.name, set_name=element_set_name,
@@ -115,14 +108,14 @@ def main():
     specimen_loads = {'smooth': {-1.: [760 - 70, 760, 760 + 70], 0.: [424. - 26, 424, 424 + 26]},
                       'notched': {-1.: [439 - 20, 439, 439 + 20], 0.: [237. - 16, 237., 237 + 16]}}
     for load_amplitude in specimen_loads[specimen][R]:
-        odb_file_directory = os.path.expanduser('~/utmis_specimens/' + specimen
-                                                + '/mechanical_analysis_relaxed/force_control_ra20')
-        sim_name = "snom=" + str(int(load_amplitude)) + "_R=" + str(int(R))
-        odb_file_name = (odb_file_directory + "/utmis_" + specimen + '_' + sim_name + '.odb')
+        odb_file_directory = (pathlib.Path.home() / "utmis_specimens" / specimen / "mechanical_analysis_relaxed"
+                              / "force_control_ra20")
 
-        results_odb_file = os.path.expanduser('~/utmis_specimens/' + specimen
-                                              + '/mechanical_analysis_relaxed/force_control_ra20/findley_'
-                                              + str(k_750).replace('.', '_') + '.odb')
+        sim_name = "snom=" + str(int(load_amplitude)) + "_R=" + str(int(R))
+        odb_file_name = (odb_file_directory / ("/utmis_" + specimen + '_' + sim_name + '.odb'))
+
+        results_odb_file = (pathlib.Path.home() / "utmis_specimens" / specimen / "mechanical_analysis_relaxed"
+                            / "force_control_ra20" / ("findley_" + str(k_750).replace('.', '_') + ".odb"))
 
         mechanical_odb_data = [MechanicalData(odb_file_name=odb_file_name, step_name='3_max_load', frame_number=-1),
                                MechanicalData(odb_file_name=odb_file_name, step_name='3_min_load', frame_number=-1)]
