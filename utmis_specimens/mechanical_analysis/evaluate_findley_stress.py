@@ -112,7 +112,7 @@ def main():
                               / "force_control_ra20")
 
         sim_name = "snom=" + str(int(load_amplitude)) + "_R=" + str(int(R))
-        odb_file_name = (odb_file_directory / ("/utmis_" + specimen + '_' + sim_name + '.odb'))
+        odb_file_name = odb_file_directory / ("/utmis_" + specimen + '_' + sim_name + '.odb')
 
         results_odb_file = (pathlib.Path.home() / "utmis_specimens" / specimen / "mechanical_analysis_relaxed"
                             / "force_control_ra20" / ("findley_" + str(k_750).replace('.', '_') + ".odb"))
