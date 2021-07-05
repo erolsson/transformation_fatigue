@@ -34,13 +34,13 @@ def create_input_files(simulation_directory):
 
 
 def write_run_file(simulation_directory, simulation_names, pbs_job=True, cpus=12):
-    file_lines = ["#!/bin/bash -i",
-                  "shopt -s expand_aliases"]
+    file_lines = ["#!/bin/bash -i"]
     if pbs_job:
         file_lines.extend(['#PBS -V',
                            '#PBS -z',
                            '#PBS -l select=1:ncpus=' + str(cpus),
                            'cd $PBS_O_WORKDIR'])
+    file_lines.append("shopt -s expand_aliases")
     file_lines.append("cd " + str(subroutine_directory))
     file_lines.append("./compile_gear_subroutine.sh")
     file_lines.append("cp gear_subroutine.o " + str(simulation_directory))
