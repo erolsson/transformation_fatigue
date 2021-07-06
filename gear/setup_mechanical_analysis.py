@@ -22,8 +22,9 @@ def create_input_files(simulation_directory):
         mean_load = (1 + R)/(1 - R)*load_amplitude
         steps = []
         for i in range(load_steps):
-            steps.append(LoadStep(name="loading_" + str(i), load=mean_load + load_amplitude,  output_time_interval=1.))
-            steps.append(LoadStep(name="unloading_" + str(i), load=mean_load - load_amplitude,
+            steps.append(LoadStep(name="loading_" + str(i), load=(mean_load + load_amplitude)*1e3,
+                                  output_time_interval=1.))
+            steps.append(LoadStep(name="unloading_" + str(i), load=(mean_load - load_amplitude)*1e3,
                                   output_time_interval=1.))
         simulation_name = ("cd=" + str(case_depth).replace('.', '')
                            + "_Pamp=" + str(load_amplitude).replace('.', '_') + "kN")

@@ -49,7 +49,7 @@ class LoadStep:
         lines.append('\t\t*Element Output, directions=no')
         lines.append('\t\t\tS, SDV')
         lines.append('\t\t*Node Output')
-        lines.append('\t\t\tU')
+        lines.append('\t\t\tU, CF, RF')
         lines.append('*End step')
         return lines
 
