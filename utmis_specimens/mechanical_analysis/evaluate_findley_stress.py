@@ -114,7 +114,7 @@ def main():
         sim_name = "snom=" + str(int(load_amplitude)) + "_R=" + str(int(R))
         odb_file_name = odb_file_directory / ("utmis_" + specimen + '_' + sim_name + '.odb')
         results_odb_file = (pathlib.Path.home() / "utmis_specimens" / specimen / "mechanical_analysis_relaxed"
-                            / "force_control_ra20" / ("findley_" + str(k_750).replace('.', '_') + ".odb"))
+                            / "force_control_ra15" / ("findley_" + str(k_750).replace('.', '_') + ".odb"))
 
         mechanical_odb_data = [MechanicalData(odb_file_name=odb_file_name, step_name='3_max_load', frame_number=-1),
                                MechanicalData(odb_file_name=odb_file_name, step_name='3_min_load', frame_number=-1)]

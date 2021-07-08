@@ -142,3 +142,6 @@ if __name__ == '__main__':
     element = C3D8(node_list)
     element.B(0, 0, 0)
     print(element.gauss_point_coordinates(4))
+
+
+elements = {'C3D8': C3D8}
