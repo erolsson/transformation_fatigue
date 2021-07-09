@@ -19,7 +19,7 @@ def main():
     heat_treatment_simulation = 't=9min_75C_decarburization'
     simulations = []
     compliance_data = np.genfromtxt('compliance_utmis_' + specimen + '.csv', delimiter=',')
-    loading = 'force'
+    loading = 'displacement'
     for load_amplitude in specimen_loads[specimen][R]:
         if loading == 'displacement':
             amplitude = np.interp(load_amplitude, compliance_data[:, 1], compliance_data[:, 2])
