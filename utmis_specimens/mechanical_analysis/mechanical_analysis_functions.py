@@ -49,8 +49,8 @@ def write_mechanical_input_files(specimen, geom_include_file, directory, simulat
     input_file_reader.write_sets_file(directory / 'include_files/set_data.inc',
                                       str_to_remove_from_setname='SPECIMEN_',
                                       surfaces_from_element_sets=['ysym'])
-    mirror_model(input_file_reader, 'y')
-    input_file_reader.write_geom_include_file(directory / 'include_files/geom_neg.inc')
+    mirror = mirror_model(input_file_reader, 'y')
+    mirror.write_geom_include_file(directory / 'include_files/geom_neg.inc')
 
     def write_inp_file(load_point, simulation_data):
         file_lines = ['*Heading',
