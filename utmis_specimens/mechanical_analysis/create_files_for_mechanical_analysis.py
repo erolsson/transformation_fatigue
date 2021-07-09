@@ -32,7 +32,7 @@ def main():
         for step in range(1, no_steps + 1):
             steps.append(Step(str(step) + "_max_load", mean + amplitude, output_frequency=10.))
             steps.append(Step(str(step) + "_min_load", mean - amplitude, output_frequency=10.))
-        simulations.append(Simulation("snom=" + str(int(load_amplitude)) + "_R=" + str(int(R)), steps, 'force'))
+        simulations.append(Simulation("snom=" + str(int(load_amplitude)) + "_R=" + str(int(R)), steps, 'displacement'))
     geom_filename = pathlib.Path.home() / ('python_projects/python_fatigue/fatigue_specimens/UTMIS/utmis_'
                                            + specimen + '/utmis_' + specimen + '.inc')
     simulation_directory = pathlib.Path.home() / ('utmis_specimens/' + specimen
