@@ -17,7 +17,7 @@ from transformation_fatigue.multiaxial_fatigue.multiaxial_fatigue_criteria impor
 
 
 MechanicalData = namedtuple('MechanicalData', ['odb_file_name', 'step_name', 'frame_number'])
-abq = ABQInterface('abq2018')
+abq = ABQInterface('abq2018', output=True)
 
 
 def perform_effective_stress_analysis(mechanical_data, effective_stress=Findley,
@@ -109,12 +109,12 @@ def main():
                       'notched': {-1.: [439 - 20, 439, 439 + 20], 0.: [237. - 16, 237., 237 + 16]}}
     for load_amplitude in specimen_loads[specimen][R]:
         odb_file_directory = (pathlib.Path.home() / "utmis_specimens" / specimen / "mechanical_analysis_relaxed"
-                              / "force_control_ra15")
+                              / "displacement_control_ra20")
 
         sim_name = "snom=" + str(int(load_amplitude)) + "_R=" + str(int(R))
         odb_file_name = odb_file_directory / ("utmis_" + specimen + '_' + sim_name + '.odb')
         results_odb_file = (pathlib.Path.home() / "utmis_specimens" / specimen / "mechanical_analysis_relaxed"
-                            / "force_control_ra15" / ("findley_" + str(k_750).replace('.', '_') + ".odb"))
+                            / "displacement_control_ra20" / ("findley_" + str(k_750).replace('.', '_') + ".odb"))
 
         mechanical_odb_data = [MechanicalData(odb_file_name=odb_file_name, step_name='3_max_load', frame_number=-1),
                                MechanicalData(odb_file_name=odb_file_name, step_name='3_min_load', frame_number=-1)]
