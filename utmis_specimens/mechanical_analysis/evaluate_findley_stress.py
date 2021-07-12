@@ -8,7 +8,7 @@ import sys
 
 import numpy as np
 
-from abaqus_python.abaqus_interface import ABQInterface
+from abaqus_interface import ABQInterface
 
 from transformation_fatigue.materials.gear_materials import SS2506
 from transformation_fatigue.materials.gear_materials import SteelData

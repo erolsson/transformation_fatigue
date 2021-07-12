@@ -3,10 +3,10 @@ import pathlib
 
 import numpy as np
 
-from abaqus_python.abaqus_interface import ABQInterface, OdbInstance
+from abaqus_interface.abaqus_interface import ABQInterface, OdbInstance
 from input_file_reader.input_file_reader import InputFileReader
 
-from transformation_fatigue.FEM_functions.elements import C3D8
+from FEM_functions.elements import C3D8
 from create_heat_treatment_odb import heat_sim_fields
 
 abq = ABQInterface('abq2018')
