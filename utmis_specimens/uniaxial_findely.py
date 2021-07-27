@@ -18,10 +18,10 @@ def residual(par, smax_data, smin_data):
 
 
 if __name__ == '__main__':
-    smooth_max = np.array([448.904, 479.906])
-    smooth_min = np.array([-1093.3, -380.191])
-    notched_max = np.array([433.557, 437.278])
-    notched_min = [-1150.73, -434.33]
+    smooth_max = np.array([471.198, 505.])
+    smooth_min = np.array([-1133.06, -372.176])
+    notched_max = np.array([470.627,  495.152])
+    notched_min = [-1192.57, -397.71]
     sa = (smooth_max - smooth_min)/2
     sm = (smooth_max + smooth_min)/2
     print((sa[1] - sa[0])/(sm[0] - sm[1]))
@@ -32,10 +32,5 @@ if __name__ == '__main__':
 
     print(fmin(residual, [1, 500], args=(notched_max, notched_min)))
     k, sf = fmin(residual, [1, 500], args=(smooth_max, smooth_min))
-    # print(k, sf)
-    # print(uniaxal_findley_stress(notched_max, notched_min, k))
-    for k in np.arange(0.5, 4, 0.5):
-        print("k =", k)
-        print(uniaxal_findley_stress(notched_max, notched_min, k))
-        print(uniaxal_findley_stress(smooth_max, smooth_min, k))
-        print()
+    print(k, sf)
+
