@@ -64,6 +64,7 @@ def load_specimen_data(specimen, r, load, pf):
     if r == -1:
         specimen_parts.append('pos')
     for part in specimen_parts:
+        print("Starting reading data")
         hv, _, elements = abq.read_data_from_odb('SDV_HARDNESS', odb_filename, step_name='3_max_load',
                                                  set_name='FATIGUE_ELEMENTS',
                                                  instance_name='SPECIMEN_PART_' + part.upper(),
