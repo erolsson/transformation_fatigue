@@ -115,7 +115,7 @@ def main():
                 job_list.append((load_specimen_data, [specimen, r, load, pf_exp], {}))
                 pf_exp += 0.25
     print("Stating collecting data")
-    specimen_data = multi_processer(job_list, cpus=1, timeout=3600)
+    specimen_data = multi_processer(job_list, cpus=12, timeout=3600)
     print(fmin(residual, [800, 500, 0., 6e6], (specimen_data,)))
 
 
