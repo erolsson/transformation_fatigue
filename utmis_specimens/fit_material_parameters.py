@@ -47,7 +47,7 @@ class SpecimenData:
 def evaluate_model(specimen, material):
     ps = 1.
     for part in specimen.stress_history:
-        s = evaluate_effective_stress(specimen.stress_history[part], material, criterion=haigh, cpus=12,
+        s = evaluate_effective_stress(specimen.stress_history[part], material, criterion=haigh, cpus=1,
                                       hv=specimen.hardness[part])
         s = s.reshape(s.shape[0]//8, 8)
         ps *= (1 - specimen.weakest_link_evaluators[part].evaluate(s, material))
@@ -90,11 +90,13 @@ def residual(par, specimens):
     mat.sw1 = par[1]
     mat.sw2 = par[2]
     mat.b = par[3]
-    pf_sim = []
+
     pf_exp = []
+    job_list = []
     for specimen in specimens:
-        pf_sim.append(evaluate_model(specimen, mat))
+        job_list.append([evaluate_model, (specimen, mat), {}])
         pf_exp.append(specimen.pf_exp)
+    pf_sim = multi_processer(job_list, timeout=3600, delay=0, cpus=12)
     print(par)
     print(pf_sim)
     r = np.sum((np.array(pf_sim) - np.array(pf_exp))**2)
@@ -114,7 +116,7 @@ def main():
                 pf_exp += 0.25
     print("Stating collecting data")
     specimen_data = multi_processer(job_list, cpus=1, timeout=3600)
-    print(fmin(residual, [1000, 200, 0.5, 4.42006301e+06], (specimen_data,)))
+    print(fmin(residual, [800, 500, 0., 6e6], (specimen_data,)))
 
 
 if __name__ == '__main__':

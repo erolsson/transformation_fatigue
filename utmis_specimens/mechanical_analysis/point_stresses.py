@@ -26,6 +26,14 @@ def main():
         [-360.9715, 831.5985]
     ])
 
+    ks = -(smooth_data[0, 1] - smooth_data[1, 1])/(smooth_data[0, 0] - smooth_data[1, 0])
+    kn = -(notched_data[0, 1] - notched_data[1, 1])/(notched_data[0, 0] - notched_data[1, 0])
+    su_s = smooth_data[0, 1] + ks*smooth_data[0, 0]
+    print(ks, su_s)
+    su_n = notched_data[0, 1] + kn*notched_data[0, 0]
+    print(kn, su_n)
+    print(750/kn, 750/ks)
+
     plt.plot(smooth_data[:, 0], smooth_data[:, 1], 'rx', ms=12, mew=3)
     plt.plot(notched_data[:, 0], notched_data[:, 1], 'bx', ms=12, mew=3)
     plt.plot(380.5, 380.5, 'kx', ms=12, mew=3)
