@@ -86,10 +86,10 @@ def load_specimen_data(specimen, r, load, pf):
 
 def residual(par, specimens):
     mat = Material()
-    mat.mean_stress_sensitivity_k = par[0]
-    mat.sw1 = par[1]
-    mat.sw2 = par[2]
-    mat.b = par[3]
+    mat.mean_stress_sensitivity_k = abs(par[0])
+    mat.sw1 = abs(par[1])
+    mat.sw2 = abs(par[2])
+    mat.b = abs(par[3])
 
     pf_exp = []
     job_list = []
