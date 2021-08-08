@@ -116,7 +116,7 @@ def main():
                 pf_exp += 0.25
     print("Stating collecting data")
     specimen_data = multi_processer(job_list, cpus=1, timeout=3600)
-    print(fmin(residual, [800, 600, 0., 6e6], (specimen_data,)))
+    print(fmin(residual, [800, 600, 0., 6e6], (specimen_data,), maxfun=1e6, maxiter=1e6))
 
 
 if __name__ == '__main__':
