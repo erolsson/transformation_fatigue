@@ -90,6 +90,10 @@ def residual(par, specimens):
     mat.sw1 = abs(par[1])
     mat.sw2 = abs(par[2])
     mat.b = abs(par[3])
+    if mat.b < 1e6:
+        mat.b = 1e6
+    if mat.b > 1e7:
+        mat.b = 1e7
 
     pf_exp = []
     job_list = []
